@@ -1,0 +1,51 @@
+{
+  "dataset": "Eedi Diagnostic Questions (Math Misconceptions)",
+  "sample_size": 48,
+  "tiers": {
+    "tier_1_correctness_only_pybkt": {
+      "name": "Tier 1: Correctness-Only KT (pyBKT)",
+      "description": "Sequence of question IDs and binary correctness (0/1). Conventional Bayesian Knowledge Tracing.",
+      "metrics": {
+        "auc": 0.9062,
+        "accuracy": 0.75,
+        "brier_score": 0.1653,
+        "ece": 0.1161,
+        "misconception_precision": 0.0,
+        "misconception_recall": 0.0,
+        "misconception_f1": 0.0
+      }
+    },
+    "tier_2_language_aware_baseline": {
+      "name": "Tier 2: Language-Aware Baseline (Direct Text Features)",
+      "description": "TF-IDF text features from student explanation without structured persistence or concept grounding.",
+      "metrics": {
+        "auc": 1.0,
+        "accuracy": 1.0,
+        "brier_score": 0.0958,
+        "ece": 0.2938,
+        "misconception_precision": 1.0,
+        "misconception_recall": 1.0,
+        "misconception_f1": 1.0
+      }
+    },
+    "tier_3_proposed_persistent_state": {
+      "name": "Tier 3: Proposed Structured Evidence + Persistent Bayesian State",
+      "description": "Language -> Structured Evidence -> KC Grounding -> Persistent Bayesian Belief State with slip/misconception tracking.",
+      "metrics": {
+        "auc": 0.4688,
+        "accuracy": 0.5,
+        "brier_score": 0.3176,
+        "ece": 0.4387,
+        "misconception_precision": 0.5,
+        "misconception_recall": 0.5,
+        "misconception_f1": 0.5
+      }
+    }
+  },
+  "comparison_delta_tier3_vs_tier1": {
+    "auc_delta": -0.4374,
+    "accuracy_delta": -0.25,
+    "ece_reduction": -0.3226,
+    "misconception_f1_gain": 0.5
+  }
+}

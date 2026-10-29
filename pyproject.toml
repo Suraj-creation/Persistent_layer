@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "learner-state-platform"
+version = "2.0.0"
+description = "Language-Grounded Learner State Modeling for Misconception-Aware Adaptive Learning"
+authors = [{ name = "Research Team" }]
+readme = "Language_Grounded_Learner_State_Modeling_PRD.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.8.0",
+    "fastapi>=0.110.0",
+    "uvicorn>=0.28.0",
+    "instructor>=1.14.0",
+    "pyBKT>=1.4.3",
+    "scikit-learn>=1.4.0",
+    "pandas>=2.2.0",
+    "numpy>=1.26.0",
+    "sentence-transformers>=3.0.0",
+    "pytest>=8.0.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["packages*"]
