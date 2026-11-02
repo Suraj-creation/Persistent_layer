@@ -61,6 +61,7 @@ class AssessmentService:
             return {"conversation": {k: v for k, v in conversation.items() if k not in ("baseline_state", "ending_state")},
                     "definition": topic["definition"], "state": state,
                     "turns": self.store.answers(cid),
+                    "pending_submission": self.store.pending_submission(cid, conversation.get('current_question_id')) if conversation['status'] == 'active' else None,
                     "active_question": public_question(self.store.question(conversation.get("current_question_id"))) if conversation["status"] != "completed" else None,
                     "sources": self.store.documents(learner_id, conversation["topic_key"])}
 
@@ -346,6 +347,7 @@ class AssessmentService:
         call('input', lambda: {'response_text': req.response_text, 'question': public_question(question),
                              'session_id': cid, 'source_kind': 'learner_response', 'validated': True},
              {'question_id': req.question_id, 'request_id': req.request_id})
+        self.store.receive_submission(cid, req, CURRENT.get().trace_id)
         nlp = call('preprocessing', lambda: analyze(req.response_text), {'original_text': req.response_text},
                    {'version': PREPROCESSING_VERSION, 'offsets': 'original Unicode code points', 'negation_removed': False})
         observation, validation_attempts = None, []
@@ -403,11 +405,13 @@ class AssessmentService:
                     source_trace_id=saved['extraction_trace'].get('trace_id'),
                     discarded_computation=True)
                 persisted['output'] = {'committed': False, 'reused_saved_turn_id': saved['turn_id']}
+                self.store.complete_submission(CURRENT.get().trace_id, saved['turn_id'])
                 return self.session(cid, req.learner_id)
             latest = self.store.topic(req.learner_id, current["topic_key"])
             if current["version"] != conversation["version"] or current.get("current_question_id") != req.question_id or latest["state"]["snapshot_id"] != prior["snapshot_id"]:
                 raise HTTPException(409, "Saved learner state changed while checking this answer. Reload, then retry your explanation.")
             self.store.save_answer(cid, req.request_id, request_hash, turn)
+            self.store.complete_submission(CURRENT.get().trace_id, turn['turn_id'])
             self.store.put_topic(req.learner_id, current["topic_key"], topic["definition"], updated, latest["revision"] + 1)
             self.store.add_chunk(req.learner_id, current["topic_key"], "learner_evidence", evidence["evidence_id"],
                                  question["concept_id"] + " " + topic["definition"]["title"] + " " + evidence["source_quote"] + " " + evidence["claim"],

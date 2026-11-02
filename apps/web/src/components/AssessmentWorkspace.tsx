@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
+import { FormEvent, lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import {
   Activity,
   ArrowDownToLine,
@@ -22,17 +22,19 @@ import {
   ConversationReportData,
 } from "../types/assessment";
 import { AssessmentChat } from "./assessment/AssessmentChat";
-import { ConversationReport } from "./assessment/ConversationReport";
 import { GuidedTour } from "./assessment/GuidedTour";
+import { RenderBoundary } from "./RenderBoundary";
 import { InspectorTab, LearnerInspector } from "./assessment/LearnerInspector";
 import { displayDate, displayProse, exportJSON } from "./assessment/utils";
 import { MathText } from "./assessment/MathText";
 import { readDrafts, saveDraft, SavedDraft } from "./assessment/drafts";
 import { SavedDrafts } from "./assessment/SavedDrafts";
-import { NlpObservability } from "./assessment/NlpObservability";
 import { SourceMode } from "./assessment/SourceRecovery";
 
 type View = "practice" | "history" | "reports" | "observability";
+
+const ConversationReport = lazy(() => import("./assessment/ConversationReport").then(m => ({ default: m.ConversationReport })));
+const NlpObservability = lazy(() => import("./assessment/NlpObservability").then(m => ({ default: m.NlpObservability })));
 
 function localIdentity() {
   let id = localStorage.getItem("learner-state:identity:v2");
@@ -130,6 +132,7 @@ export function AssessmentWorkspace() {
                 data.conversation.current_question_id),
           );
           if (saved) setDraft(saved.text);
+          else if (data.pending_submission) setDraft(data.pending_submission.response_text);
         }
       })
       .catch((err) => {
@@ -142,7 +145,10 @@ export function AssessmentWorkspace() {
   }, [activeId, learner, reload]);
 
   useEffect(() => {
-    if (view !== "reports" || !activeId) return;
+    if (view !== "reports" || !activeId) {
+      setReportLoading(false);
+      return;
+    }
     const controller = new AbortController();
     setReportLoading(true);
     setReport(null);
@@ -378,6 +384,7 @@ export function AssessmentWorkspace() {
     <div
       className={`workspace workspace-${view}${view === "practice" ? (session ? " workspace-session" : " workspace-setup") : ""}`}
     >
+      <a className="skip-link" href="#workspace-content">Skip to workspace</a>
       <aside className="sidebar">
         <a
           href="#"
@@ -483,7 +490,7 @@ export function AssessmentWorkspace() {
           </p>
         </div>
       </aside>
-      <div className="main-shell">
+      <div className="main-shell" id="workspace-content" tabIndex={-1}>
         <header className="topbar">
           <div className="breadcrumb">
             Your learning <ChevronRight size={14} />
@@ -539,6 +546,8 @@ export function AssessmentWorkspace() {
             </button>
           </div>
         )}
+        <RenderBoundary key={view}>
+        <Suspense fallback={<div className="loading-state" role="status"><LoaderCircle className="spin" size={24} /><p>Opening {view === "observability" ? "execution records" : "your report"}…</p></div>}>
         {view === "observability" ? (
           <NlpObservability
             learner={learner}
@@ -606,6 +615,7 @@ export function AssessmentWorkspace() {
               </nav>
               <div className={`assessment-layout show-${practicePanel}`}>
                 <main className="learning-column">
+                  {session.pending_submission && <p className="recovered-submission" role="status">Your previous submission is saved. It has not changed learner state; review the explanation below and retry when ready.</p>}
                   <SavedDrafts
                     drafts={savedDrafts.filter(
                       (item) =>
@@ -650,7 +660,7 @@ export function AssessmentWorkspace() {
                 <span className="setup-mark">
                   <Activity size={29} />
                 </span>
-                <h1>What would you like to understand better?</h1>
+                <h1>Explore your understanding</h1>
                 <p>
                   Choose a topic you’ve studied. Explain your thinking and let
                   the next question follow your reasoning.
@@ -715,10 +725,9 @@ export function AssessmentWorkspace() {
           <main className="history-page">
             <div className="page-heading">
               <div>
-                <h1>Your conversations.</h1>
+                <h1>Conversations</h1>
                 <p>
-                  Real topics, explanations, and questions saved as you use the
-                  platform.
+                  Revisit your questions, explanations, and evidence.
                 </p>
               </div>
               <button
@@ -730,6 +739,7 @@ export function AssessmentWorkspace() {
                 New assessment
               </button>
             </div>
+            {session && <button className="text-button collection-back" onClick={() => setActiveId(null)}>All conversations</button>}
             {session ? (
               <>
                 <div className="conversation-detail-heading">
@@ -842,6 +852,7 @@ export function AssessmentWorkspace() {
                   </button>
                 </aside>
               )}
+            {activeId && <button className="text-button collection-back" onClick={() => setActiveId(null)}>All reports</button>}
             {reportLoading ? (
               <div className="loading-state" role="status">
                 <LoaderCircle className="spin" size={25} />
@@ -861,7 +872,7 @@ export function AssessmentWorkspace() {
               <>
                 <div className="page-heading">
                   <div>
-                    <h1>Your learning reports.</h1>
+                    <h1>Learning reports</h1>
                     <p>
                       A report for every conversation, based on its saved
                       evidence.
@@ -885,6 +896,8 @@ export function AssessmentWorkspace() {
             )}
           </main>
         )}
+        </Suspense>
+        </RenderBoundary>
       </div>
       <GuidedTour
         onTarget={revealGuideTarget}
@@ -929,9 +942,20 @@ function ConversationCollection({
   items: Conversation[];
   onOpen: (id: string) => void;
 }) {
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
+  const [from, setFrom] = useState("");
+  const filtered = items.filter(item => item.title.toLocaleLowerCase().includes(search.trim().toLocaleLowerCase()) && (!status || item.status === status) && (!from || item.updated_at.slice(0, 10) >= from));
   return (
     <div className="conversation-collection">
-      {items.map((item) => (
+      <div className="collection-filters">
+        <label>Search conversations<input type="search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Find a topic" /></label>
+        <label>Conversation status<select value={status} onChange={e => setStatus(e.target.value)}><option value="">All conversations</option><option value="active">In progress</option><option value="needs_question">Waiting for a question</option><option value="completed">Completed</option></select></label>
+        <label>Updated since (UTC)<input type="date" value={from} onChange={e => setFrom(e.target.value)} /></label>
+      </div>
+      <p className="collection-count" role="status">{filtered.length} of {items.length} conversations</p>
+      {!filtered.length && <p className="collection-count">No conversations match. <button className="text-button" onClick={() => { setSearch(""); setStatus(""); setFrom(""); }}>Clear filters</button></p>}
+      {filtered.map((item) => (
         <button
           key={item.conversation_id}
           onClick={() => onOpen(item.conversation_id)}
@@ -943,6 +967,7 @@ function ConversationCollection({
               {item.answered_count}{" "}
               {item.answered_count === 1 ? "explanation" : "explanations"} ·{" "}
               {displayDate(item.updated_at)}
+              {" · "}{item.status === "completed" ? "Completed" : item.status === "needs_question" ? "Waiting for a question" : "In progress"}
             </small>
           </span>
           <ChevronRight size={18} />

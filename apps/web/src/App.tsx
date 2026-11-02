@@ -1,4 +1,5 @@
 import { AssessmentWorkspace } from "./components/AssessmentWorkspace";
+import "./tokens.css";
 import "./styles.css";
 
 export function App() {

@@ -92,8 +92,10 @@ def test_atomic_rollback(monkeypatch):
         raise RuntimeError("simulated disk failure")
 
     monkeypatch.setattr(main.db_manager, "save_turn", fail)
-    with pytest.raises(RuntimeError, match="simulated disk failure"):
-        chat(client)
+    failed = chat(client)
+    assert failed.status_code == 500
+    assert failed.json()['request_id'] == failed.headers['x-request-id']
+    assert 'simulated disk failure' not in failed.text
     assert client.get("/api/v1/learners/alice/state").json() == prior
     assert client.get("/api/v1/learners/alice/evidence").json() == []
 

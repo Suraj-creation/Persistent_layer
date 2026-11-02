@@ -55,7 +55,7 @@ export function ConversationReport({
               ? "Completed conversation"
               : "Report in progress"}
           </span>
-          <h2>{report.conversation.title}</h2>
+          <h1>{report.conversation.title}</h1>
           <p>
             {displayDate(report.conversation.created_at)} ·{" "}
             {report.answered_count}{" "}

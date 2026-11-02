@@ -126,8 +126,10 @@ def test_persistence_rollback_leaves_failed_trace_but_no_learner_update(flow, mo
     def fail(*args, **kwargs):
         raise RuntimeError('private database information')
     monkeypatch.setattr(AssessmentStore, 'add_chunk', fail)
-    with pytest.raises(RuntimeError):
-        answer(client, session)
+    failed = answer(client, session)
+    assert failed.status_code == 500
+    assert failed.json()['request_id'] == failed.headers['x-request-id']
+    assert 'private database information' not in failed.text
     trace = detail(client, traces(client, operation='answer')['items'][0]['trace_id']).json()
     assert trace['status'] == 'failed'
     assert next(s for s in trace['stages'] if s['key'] == 'persistence')['status'] == 'failed'

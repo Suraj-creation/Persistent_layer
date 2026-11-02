@@ -145,7 +145,18 @@ def main():
                 turn = context.request.get(f"http://127.0.0.1:{port}/api/v2/observability/records/{records['items'][0]['turn_id']}?learner_id=verification_synthetic_learner").json()
                 all_traces = context.request.get(f'http://127.0.0.1:{port}/api/v2/observability/traces?learner_id=verification_synthetic_learner').json()
                 linked = [context.request.get(f"http://127.0.0.1:{port}/api/v2/observability/traces/{item['trace_id']}?learner_id=verification_synthetic_learner").json() for item in all_traces['items']]
+                with api.db_manager.connection() as conn:
+                    assert conn.execute('PRAGMA integrity_check').fetchone()[0] == 'ok'
+                    assert conn.execute('PRAGMA foreign_key_check').fetchall() == []
+                    stored = json.loads(conn.execute('SELECT payload_json FROM assessment_answers WHERE turn_id=?', (turn['turn_id'],)).fetchone()[0])
+                    assert stored == turn
+                    assert conn.execute('SELECT question_id FROM assessment_questions WHERE question_id=?', (turn['question']['question_id'],)).fetchone()
+                    assert conn.execute('SELECT snapshot_id FROM assessment_state_history WHERE snapshot_id=?', (turn['state_after']['snapshot_id'],)).fetchone()
+                    receipt = dict(conn.execute('SELECT status,turn_id,question_id FROM assessment_submissions WHERE trace_id=?', (trace_id,)).fetchone())
+                    assert receipt['status'] == 'completed' and receipt['turn_id'] == turn['turn_id']
+                    database_counts = {table: conn.execute(f'SELECT count(*) FROM {table}').fetchone()[0] for table in ['assessment_answers','assessment_questions','assessment_state_history','assessment_submissions','nlp_executions','nlp_stages']}
                 report = {'provider_mode': 'live_configured_model' if args.live else 'fixture_inference',
+                          'database_verification': {'integrity':'ok','foreign_key_violations':0,'counts':database_counts,'submission':receipt},
                           'synthetic_learner': True, 'is_research_evaluation': False,
                           'checks': ['UI topic creation', 'UI answer submission', 'distinct visible next question', 'next question uses committed state', 'question and memory survive reload', 'observability leaves learner state unchanged', 'navigation during inference', 'persisted trace', 'text/evidence/state inspectors', 'historical saved response', 'records outage and refresh recovery', 'technique search', 'truthful research matrix', 'desktop/mobile', 'reload', 'cross-profile isolation'],
                           'javascript_errors': errors, 'mobile_overflow': overflow,

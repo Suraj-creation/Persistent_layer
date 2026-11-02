@@ -6,3 +6,6 @@ node_modules/
 dist/
 data/*.db*
 .venv/
+.presentation-build/
+.taste-skill/
+*.tsbuildinfo

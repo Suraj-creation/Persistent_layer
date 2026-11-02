@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
 
 export function GuidedTour({
@@ -14,6 +14,30 @@ export function GuidedTour({
 }) {
   const [step, setStep] = useState(0);
   const [rect, setRect] = useState<DOMRect | null>(null);
+  const nextButton = useRef<HTMLButtonElement>(null);
+  const close = useRef(onClose);
+  close.current = onClose;
+  const positioned = Boolean(rect);
+  useEffect(() => {
+    if (!active) return;
+    const previousFocus = document.activeElement;
+    const dismiss = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        close.current();
+      }
+    };
+    window.addEventListener("keydown", dismiss);
+    return () => {
+      window.removeEventListener("keydown", dismiss);
+      if (previousFocus instanceof HTMLElement && previousFocus.isConnected) {
+        previousFocus.focus({ preventScroll: true });
+      }
+    };
+  }, [active]);
+  useEffect(() => {
+    if (active && positioned) nextButton.current?.focus({ preventScroll: true });
+  }, [active, positioned]);
   const steps = hasSession
     ? [
         {
@@ -141,6 +165,7 @@ export function GuidedTour({
           </button>
           <button
             className="primary-button"
+            ref={nextButton}
             onClick={() =>
               step === steps.length - 1 ? onClose() : setStep((s) => s + 1)
             }

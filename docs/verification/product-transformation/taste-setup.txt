@@ -1,0 +1,23 @@
+TASTESKILL · INSPECT   http://127.0.0.1:64867/__visual_check?screen=setup
+
+MEASURED (first viewport listed)
+  hero headline   "Explore your understanding"  3 words · 2 line(s) · 32px (2.2vw) · Segoe UI 700 · tracking -0.03em · leading 1.2
+  @768px          1 line(s) · 27px
+  @390px          1 line(s) · 24px
+  typefaces       Segoe UI 100%
+  sizes in use    13 / 14 / 15 / 23 / 32 px   body 13px / 1.9
+  colour          page #f1f4f2 · button #202b2b
+  page            1 screens · 101 words · 0 images · hero media none
+  headings        1 · longest 2 line(s) · median - words
+
+FINDINGS  none. Measurements are clean — now judge the pictures.
+LOOK AT THE RENDER — open these with your image viewer / Read tool before saying anything about quality:
+  desktop 1440px  docs/verification/product-transformation/taste-setup/desktop-fold.jpg
+                  docs/verification/product-transformation/taste-setup/desktop-page-01.jpg
+  tablet 768px    docs/verification/product-transformation/taste-setup/tablet-fold.jpg
+                  docs/verification/product-transformation/taste-setup/tablet-page-01.jpg
+  mobile 390px    docs/verification/product-transformation/taste-setup/mobile-fold.jpg
+                  docs/verification/product-transformation/taste-setup/mobile-page-01.jpg
+
+report: docs/verification/product-transformation/taste-setup/report.json
+RESULT: 0 FAIL, 0 WARN — measurements pass. Passing the meter is the floor, not the grade: score the screenshots with references/critique.md.

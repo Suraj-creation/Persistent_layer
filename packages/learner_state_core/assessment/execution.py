@@ -10,9 +10,11 @@ from datetime import datetime, timedelta, timezone
 
 from .models import new_id
 from .storage import now
+from .execution_queries import TELEMETRY_STATUS_SQL, execution_filter, summarize
 
 logger = logging.getLogger('learner.observability')
 CURRENT = contextvars.ContextVar('assessment_execution', default=None)
+REQUEST_ID = contextvars.ContextVar('http_request_id', default=None)
 VALIDATION_CODES = {'wrong_concept', 'unverifiable_quote', 'invalid_rubric_partition', 'unsupported_ambiguity_claim',
                     'unsupported_misconception', 'incomplete_understanding', 'unknown_contradiction', 'unsupported_contradiction',
                     'unsupported_source', 'target_mismatch', 'unsupported_citations', 'duplicate_rubric_ids',
@@ -106,18 +108,14 @@ class ExecutionStore:
         # Includes abandoned executions; retention bounds raw trace content even after a crash.
         self.write(lambda c: c.execute('DELETE FROM nlp_executions WHERE started_at < ?', (cutoff,)))
 
-    def list(self, learner_id, conversation_id=None, operation=None, status=None, question_id=None, limit=30, before=None):
+    def list(self, learner_id, conversation_id=None, operation=None, status=None, question_id=None, limit=30, before=None, **filters):
         self.prune()
-        clauses, values = ['learner_id=?'], [learner_id]
-        for key, value in [('conversation_id', conversation_id), ('operation', operation), ('status', status), ('question_id', question_id)]:
-            if value:
-                clauses.append(key + '=?')
-                values.append(value)
+        where, values = execution_filter(learner_id, conversation_id, operation, status, question_id, **filters)
         if before is not None:
-            clauses.append('ordinal < ?')
+            where += ' AND e.ordinal < ?'
             values.append(before)
         with self.db.connection() as conn:
-            rows = conn.execute('SELECT * FROM nlp_executions WHERE ' + ' AND '.join(clauses) + ' ORDER BY ordinal DESC LIMIT ?', (*values, limit + 1)).fetchall()
+            rows = conn.execute('SELECT e.* FROM nlp_executions e WHERE ' + where + ' ORDER BY e.ordinal DESC LIMIT ?', (*values, limit + 1)).fetchall()
         items = [self.decode(r) for r in rows[:limit]]
         return {'items': items, 'has_more': len(rows) > limit, 'next_cursor': items[-1]['ordinal'] if len(rows) > limit else None}
 
@@ -125,27 +123,26 @@ class ExecutionStore:
     def decode(row):
         result = dict(row)
         result['metadata'] = json.loads(result.pop('metadata_json'))
+        result['execution_id'] = result['trace_id']
         return result
 
     def get(self, learner_id, trace_id):
         self.prune()
         with self.db.connection() as conn:
-            row = conn.execute('SELECT * FROM nlp_executions WHERE learner_id=? AND trace_id=?', (learner_id, trace_id)).fetchone()
+            row = conn.execute(f'SELECT e.*, {TELEMETRY_STATUS_SQL} AS telemetry_status FROM nlp_executions e WHERE e.learner_id=? AND e.trace_id=?', (learner_id, trace_id)).fetchone()
             if row is None:
                 return None
             result = self.decode(row)
             result['stages'] = [json.loads(r[0]) for r in conn.execute('SELECT payload_json FROM nlp_stages WHERE trace_id=? ORDER BY sequence', (trace_id,))]
-        result['incomplete_warning'] = 'No completion was recorded; execution may still be running or may have been interrupted.' if result['status'] == 'running' else None
+        incomplete = result['telemetry_status'] == 'incomplete'
+        result['incomplete_warning'] = ('No completion was recorded; execution may still be running or may have been interrupted.' if result['status'] == 'running'
+            else 'Some execution events could not be recorded. Business status and saved evidence are separate from telemetry completeness.' if incomplete else None)
         return result
 
-    def summary(self, learner_id, conversation_id=None):
+    def summary(self, learner_id, conversation_id=None, **filters):
+        where, values = execution_filter(learner_id, conversation_id, **filters)
         with self.db.connection() as conn:
-            rows = conn.execute('SELECT status, count(*) AS n, avg(duration_ms) AS average FROM nlp_executions WHERE learner_id=?' + (' AND conversation_id=?' if conversation_id else '') + ' GROUP BY status', (learner_id, conversation_id) if conversation_id else (learner_id,)).fetchall()
-        counts = {r['status']: r['n'] for r in rows}
-        total = sum(counts.values())
-        timed = [r for r in rows if r['average'] is not None]
-        return {'total': total, 'completed': counts.get('completed', 0), 'failed': counts.get('failed', 0), 'running': counts.get('running', 0),
-                'average_ms': round(sum(r['average'] * r['n'] for r in timed) / sum(r['n'] for r in timed), 2) if timed else None}
+            return summarize(conn, where, values)
 
     def records(self, learner_id, conversation_id=None, limit=30, before=None):
         clauses, values = ['c.learner_id=?'], [learner_id]
@@ -180,18 +177,24 @@ class Execution:
         self.started, self.started_at = time.perf_counter(), now()
         self.sequence, self.last_stage, self.active_stage = 0, None, None
         parent = CURRENT.get()
-        self.metadata = {'parent_trace_id': parent.trace_id if parent else None, 'confidence_calibrated': False}
+        self.metadata = {'parent_trace_id': parent.trace_id if parent else None, 'confidence_calibrated': False,
+                         'http_request_id': REQUEST_ID.get(), 'telemetry_write_failures': 0}
         self.status = 'running'
         self.store.prune()
-        self.store.write(lambda c: c.execute('INSERT INTO nlp_executions(trace_id,learner_id,conversation_id,question_id,operation,status,started_at,metadata_json) VALUES(?,?,?,?,?,?,?,?)',
+        self.write(lambda c: c.execute('INSERT INTO nlp_executions(trace_id,learner_id,conversation_id,question_id,operation,status,started_at,metadata_json) VALUES(?,?,?,?,?,?,?,?)',
             (self.trace_id, learner_id, conversation_id, question_id, operation, self.status, self.started_at, json.dumps(self.metadata))))
+
+    def write(self, action):
+        if not self.store.write(action):
+            self.metadata['telemetry_write_failures'] += 1
 
     def finish(self, error=None):
         status = 'failed' if error or self.status == 'failed' else 'completed'
         if error:
             self.metadata['error'] = {'type': type(error).__name__, 'code': 'execution_failed', 'http_status': getattr(error, 'status_code', None)}
         duration = round((time.perf_counter() - self.started) * 1000, 3)
-        self.store.write(lambda c: c.execute('UPDATE nlp_executions SET status=?,conversation_id=?,question_id=?,completed_at=?,duration_ms=?,metadata_json=? WHERE trace_id=?',
+        self.metadata['expected_stage_count'] = self.sequence
+        self.write(lambda c: c.execute('UPDATE nlp_executions SET status=?,conversation_id=?,question_id=?,completed_at=?,duration_ms=?,metadata_json=? WHERE trace_id=?',
             (status, self.conversation_id, self.question_id, now(), duration, json.dumps(bounded(self.metadata)), self.trace_id)))
 
     @contextmanager
@@ -208,7 +211,7 @@ class Execution:
                 payload['output'] = {'omitted': 'payload exceeds 192 KB; inspect the linked saved record', 'record_reference': self.metadata.get('turn_id')}
                 payload['input'] = {'omitted': 'payload exceeds 192 KB; inspect the linked saved record'}
                 encoded = json.dumps(payload, ensure_ascii=False)
-            self.store.write(lambda c: c.execute('INSERT INTO nlp_stages VALUES(?,?,?,?) ON CONFLICT(stage_id) DO UPDATE SET payload_json=excluded.payload_json',
+            self.write(lambda c: c.execute('INSERT INTO nlp_stages VALUES(?,?,?,?) ON CONFLICT(stage_id) DO UPDATE SET payload_json=excluded.payload_json',
                                                (payload['stage_id'], self.trace_id, payload['sequence'], encoded)))
         save()
         started, parent = time.perf_counter(), self.active_stage
@@ -261,6 +264,8 @@ def traced(operation):
                 cid, learner = args
                 qid = None
             execution = Execution(self.db, learner, operation, cid, qid)
+            if operation in ('create', 'answer'):
+                execution.metadata['request_id'] = req.request_id
             token, error = CURRENT.set(execution), None
             try:
                 result = function(self, *args, **kwargs)
@@ -272,6 +277,11 @@ def traced(operation):
                 return result
             except Exception as caught:
                 error = caught
+                if operation == 'answer':
+                    try:
+                        self.store.fail_submission(execution.trace_id, type(caught).__name__)
+                    except Exception as journal_error:
+                        logger.warning('submission_status_unavailable error_type=%s', type(journal_error).__name__)
                 raise
             finally:
                 CURRENT.reset(token)

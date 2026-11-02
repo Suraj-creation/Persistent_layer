@@ -33,6 +33,7 @@ export interface Stage {
 export interface ExecutionDetail extends ExecutionSummary {
   stages: Stage[];
   incomplete_warning: string | null;
+  telemetry_status: "complete" | "incomplete" | "unknown";
 }
 export interface ExecutionPage {
   items: ExecutionSummary[];
@@ -44,6 +45,14 @@ export interface ExecutionPage {
     failed: number;
     running: number;
     average_ms: number | null;
+    success_rate: number | null;
+    failure_rate: number | null;
+    provider_ms: number | null;
+    retrieval_ms: number | null;
+    persistence_ms: number | null;
+    retry_count: number;
+    persistence_failures: number;
+    incomplete_telemetry: number;
   };
 }
 export interface Technique {

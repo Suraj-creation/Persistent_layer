@@ -31,6 +31,7 @@ from packages.learner_state_core.assessment.service import AssessmentService
 from packages.learner_state_core.assessment.reports import build_report
 from packages.learner_state_core.assessment.execution import ExecutionStore, catalog
 from packages.learner_state_core.assessment.research import research_status
+from .reliability import install_reliability
 
 # Load environment variables from .env
 load_dotenv()
@@ -40,6 +41,7 @@ app = FastAPI(
     version="2.0.0",
     description="Transforms natural-language student interactions into structured Cognitive Evidence and maintains persistent, uncertainty-aware learner states.",
 )
+install_reliability(app)
 
 # Enable CORS for web console
 app.add_middleware(
@@ -138,10 +140,22 @@ def list_nlp_executions(learner_id: str = Query(min_length=1, max_length=80, pat
                         conversation_id: str | None = None, question_id: str | None = None,
                         operation: str | None = Query(default=None, pattern=r'^(create|answer|generation)$'),
                         status: str | None = Query(default=None, pattern=r'^(running|completed|failed)$'),
-                        limit: int = Query(default=30, ge=1, le=100), before: int | None = Query(default=None, ge=1)):
+                        limit: int = Query(default=30, ge=1, le=100), before: int | None = Query(default=None, ge=1),
+                        search: str | None = Query(default=None, max_length=160),
+                        stage: str | None = Query(default=None, max_length=40), error_only: bool = False,
+                        started_after: datetime | None = None, started_before: datetime | None = None):
     store = ExecutionStore(db_manager)
-    return {**store.list(learner_id, conversation_id, operation, status, question_id, limit, before),
-            'summary': store.summary(learner_id, conversation_id)}
+    if started_after and started_after.tzinfo is None:
+        started_after = started_after.replace(tzinfo=timezone.utc)
+    if started_before and started_before.tzinfo is None:
+        started_before = started_before.replace(tzinfo=timezone.utc)
+    if started_after and started_before and started_after > started_before:
+        raise HTTPException(422, 'The start date must be before the end date.')
+    filters = dict(operation=operation, status=status, question_id=question_id, search=search, stage=stage,
+                   error_only=error_only, started_after=started_after.isoformat() if started_after else None,
+                   started_before=started_before.isoformat() if started_before else None)
+    listed = store.list(learner_id, conversation_id, limit=limit, before=before, **filters)
+    return {**listed, 'summary': store.summary(learner_id, conversation_id, **filters)}
 
 
 @app.get('/api/v2/observability/traces/{trace_id}')

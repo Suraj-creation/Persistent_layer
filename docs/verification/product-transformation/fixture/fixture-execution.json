@@ -1,0 +1,2913 @@
+{
+  "provider_mode": "fixture_inference",
+  "synthetic_learner": true,
+  "is_research_evaluation": false,
+  "checks": [
+    "UI topic creation",
+    "UI answer submission",
+    "distinct visible next question",
+    "next question uses committed state",
+    "question and memory survive reload",
+    "observability leaves learner state unchanged",
+    "navigation during inference",
+    "persisted trace",
+    "text/evidence/state inspectors",
+    "historical saved response",
+    "records outage and refresh recovery",
+    "technique search",
+    "truthful research matrix",
+    "desktop/mobile",
+    "reload",
+    "cross-profile isolation"
+  ],
+  "javascript_errors": [],
+  "mobile_overflow": false,
+  "execution": {
+    "ordinal": 3,
+    "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+    "learner_id": "verification_synthetic_learner",
+    "conversation_id": "conversation_6bd9fdf6576c41c29d5f9b27234a4af5",
+    "question_id": "question_b085864669694dc4a555916a882fa665",
+    "operation": "answer",
+    "status": "completed",
+    "started_at": "2026-11-02T20:43:01.992286+00:00",
+    "completed_at": "2026-11-02T20:43:02.776816+00:00",
+    "duration_ms": 759.721,
+    "metadata": {
+      "parent_trace_id": null,
+      "confidence_calibrated": false,
+      "http_request_id": "08b3c131c5b04b57b5c093c653771412",
+      "telemetry_write_failures": 0,
+      "request_id": "574b8ab1-c9cb-4b55-ab12-92f66c0f42ef",
+      "turn_id": "turn_d485539400684fd7a10550f0e4a29d4d",
+      "evidence_id": "evidence_17aa4346bd194a0b85306a5bd15ace87",
+      "snapshot_before_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+      "snapshot_after_id": "state_ee4e0b24ab644c12aec1ceebd71e97cc",
+      "expected_stage_count": 9
+    },
+    "execution_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+    "stages": [
+      {
+        "stage_id": "stage_e75d79701af64be08f39105bb4d6b4cd",
+        "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+        "sequence": 1,
+        "key": "retrieval",
+        "name": "Scoped source retrieval",
+        "parent_stage_id": null,
+        "previous_stage_id": null,
+        "technique": "SQLite FTS5 · Porter/unicode61 · BM25",
+        "implementation": "packages/learner_state_core/assessment/storage.py:retrieve",
+        "input": {
+          "concept_id": "tokens",
+          "snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3"
+        },
+        "parameters": {
+          "limit": 5,
+          "ranking": "bm25",
+          "fallback": "scoped_recent"
+        },
+        "status": "completed",
+        "attempt": 1,
+        "started_at": "2026-11-02T20:43:02.010157+00:00",
+        "completed_at": "2026-11-02T20:43:02.017311+00:00",
+        "duration_ms": 1.308,
+        "output": {
+          "query": "Tokenization Split text into tokens while preserving boundaries. ",
+          "scope": {
+            "learner_id": "verification_synthetic_learner",
+            "topic_key": "5c848bc470d3f4bc75d886777d3e34deaf42d5ef"
+          },
+          "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+          "materials": [
+            {
+              "chunk_id": "chunk_b62320f1c2c042da9bc3f30938bddef8",
+              "source_id": "source_5b2101cbf979463ead8bb55b71042947",
+              "kind": "study_notes",
+              "content": "Tokenization divides text into tokens while preserving boundaries. A token need not be a whole word. Context affects interpretation of a token in a sentence.",
+              "metadata": {
+                "start": 0,
+                "end": 157,
+                "title": "Tokenization · supplied notes"
+              },
+              "rank": -8.384615384615385e-06,
+              "retrieval_method": "fts5_bm25"
+            }
+          ],
+          "evidence": []
+        },
+        "error": null
+      },
+      {
+        "stage_id": "stage_2aa119ba380c4842ac3121d163cf7b00",
+        "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+        "sequence": 2,
+        "key": "input",
+        "name": "Input validation",
+        "parent_stage_id": null,
+        "previous_stage_id": "stage_e75d79701af64be08f39105bb4d6b4cd",
+        "technique": "Pydantic request contract",
+        "implementation": "packages/learner_state_core/assessment/models.py",
+        "input": {
+          "question_id": "question_b085864669694dc4a555916a882fa665",
+          "request_id": "574b8ab1-c9cb-4b55-ab12-92f66c0f42ef"
+        },
+        "parameters": {},
+        "status": "completed",
+        "attempt": 1,
+        "started_at": "2026-11-02T20:43:02.032145+00:00",
+        "completed_at": "2026-11-02T20:43:02.039808+00:00",
+        "duration_ms": 0.362,
+        "output": {
+          "response_text": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+          "question": {
+            "concept_id": "tokens",
+            "kind": "explain",
+            "prompt": "Explain how token boundaries affect the interpretation of a sentence. Assessment case 1.",
+            "expected_focus": "Give a reason and connect it to the concept.",
+            "learning_support": "",
+            "source_citations": [
+              "chunk_b62320f1c2c042da9bc3f30938bddef8"
+            ],
+            "usage": null,
+            "question_id": "question_b085864669694dc4a555916a882fa665",
+            "created_at": "2026-11-02T20:43:01.690124+00:00",
+            "generation_trace": {
+              "trace_id": "nlp_a1b241df07d04b0bb2396a74da205a37",
+              "state_snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+              "context_sha256": "8d3442ff620e837a4cb7150ecef392929600bdee518f76ac9ca85981bfb5eea1",
+              "context": {
+                "topic": {
+                  "title": "Tokenization",
+                  "overview": "Tokens are spans of text; context changes meaning.",
+                  "concepts": [
+                    {
+                      "concept_id": "tokens",
+                      "name": "Tokenization",
+                      "description": "Split text into tokens while preserving boundaries.",
+                      "prerequisites": []
+                    },
+                    {
+                      "concept_id": "context",
+                      "name": "Context",
+                      "description": "Interpret tokens in their surrounding context.",
+                      "prerequisites": [
+                        "tokens"
+                      ]
+                    }
+                  ]
+                },
+                "state": {
+                  "snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+                  "timestamp": "2026-11-02T20:43:01.522813+00:00",
+                  "policy_version": "criterion-weighted-state-v1",
+                  "concepts": {
+                    "tokens": {
+                      "concept_id": "tokens",
+                      "name": "Tokenization",
+                      "alpha": 1.0,
+                      "beta": 1.0,
+                      "estimate": 0.5,
+                      "uncertainty": 0.28868,
+                      "observation_count": 0,
+                      "informative_count": 0,
+                      "evidence_ids": [],
+                      "response_hashes": [],
+                      "hypotheses": {},
+                      "criterion_gaps": {},
+                      "missing_criteria": [],
+                      "last_category": null
+                    },
+                    "context": {
+                      "concept_id": "context",
+                      "name": "Context",
+                      "alpha": 1.0,
+                      "beta": 1.0,
+                      "estimate": 0.5,
+                      "uncertainty": 0.28868,
+                      "observation_count": 0,
+                      "informative_count": 0,
+                      "evidence_ids": [],
+                      "response_hashes": [],
+                      "hypotheses": {},
+                      "criterion_gaps": {},
+                      "missing_criteria": [],
+                      "last_category": null
+                    }
+                  }
+                },
+                "plan": {
+                  "concept_id": "tokens",
+                  "kind": "explain",
+                  "intent": "diagnose",
+                  "reason": "Collect an initial explanation; there is no evidence for this concept yet.",
+                  "difficulty": "foundational",
+                  "missing_criteria": [],
+                  "required_criteria": [],
+                  "hypotheses": [],
+                  "evidence_ids": [],
+                  "state_snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+                  "policy_version": "focused-adaptive-planner-v2"
+                },
+                "retrieval": {
+                  "query": "Tokenization Split text into tokens while preserving boundaries. ",
+                  "scope": {
+                    "learner_id": "verification_synthetic_learner",
+                    "topic_key": "5c848bc470d3f4bc75d886777d3e34deaf42d5ef"
+                  },
+                  "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+                  "materials": [
+                    {
+                      "chunk_id": "chunk_b62320f1c2c042da9bc3f30938bddef8",
+                      "source_id": "source_5b2101cbf979463ead8bb55b71042947",
+                      "kind": "study_notes",
+                      "content": "Tokenization divides text into tokens while preserving boundaries. A token need not be a whole word. Context affects interpretation of a token in a sentence.",
+                      "metadata": {
+                        "start": 0,
+                        "end": 157,
+                        "title": "Tokenization · supplied notes"
+                      },
+                      "rank": -8.384615384615385e-06,
+                      "retrieval_method": "fts5_bm25"
+                    }
+                  ],
+                  "evidence": []
+                },
+                "allowed_source_citations": [
+                  "chunk_b62320f1c2c042da9bc3f30938bddef8"
+                ],
+                "previous_questions": [],
+                "contract_version": "saved-state-question-v2"
+              },
+              "plan": {
+                "concept_id": "tokens",
+                "kind": "explain",
+                "intent": "diagnose",
+                "reason": "Collect an initial explanation; there is no evidence for this concept yet.",
+                "difficulty": "foundational",
+                "missing_criteria": [],
+                "required_criteria": [],
+                "hypotheses": [],
+                "evidence_ids": [],
+                "state_snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+                "policy_version": "focused-adaptive-planner-v2"
+              },
+              "source_citations": [
+                "chunk_b62320f1c2c042da9bc3f30938bddef8"
+              ],
+              "model": "test-provider",
+              "attempts": 1,
+              "duration_ms": 77.39,
+              "prompt_version": "saved-state-question-v2"
+            }
+          },
+          "session_id": "conversation_6bd9fdf6576c41c29d5f9b27234a4af5",
+          "source_kind": "learner_response",
+          "validated": true
+        },
+        "error": null
+      },
+      {
+        "stage_id": "stage_50c6e762ebd54de6aad955ca4473a167",
+        "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+        "sequence": 3,
+        "key": "preprocessing",
+        "name": "Text transformations",
+        "parent_stage_id": null,
+        "previous_stage_id": "stage_2aa119ba380c4842ac3121d163cf7b00",
+        "technique": "NFKC · regex tokens/sentences · lexical features",
+        "implementation": "packages/learner_state_core/assessment/nlp.py:analyze",
+        "input": {
+          "original_text": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together."
+        },
+        "parameters": {
+          "version": "unicode-math-spans-v3",
+          "offsets": "original Unicode code points",
+          "negation_removed": false
+        },
+        "status": "completed",
+        "attempt": 1,
+        "started_at": "2026-11-02T20:43:02.200788+00:00",
+        "completed_at": "2026-11-02T20:43:02.237286+00:00",
+        "duration_ms": 0.804,
+        "output": {
+          "raw_text": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+          "normalized_text": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+          "token_spans": [
+            {
+              "token": "Token",
+              "start": 0,
+              "end": 5
+            },
+            {
+              "token": "boundaries",
+              "start": 6,
+              "end": 16
+            },
+            {
+              "token": "preserve",
+              "start": 17,
+              "end": 25
+            },
+            {
+              "token": "distinct",
+              "start": 26,
+              "end": 34
+            },
+            {
+              "token": "pieces",
+              "start": 35,
+              "end": 41
+            },
+            {
+              "token": "of",
+              "start": 42,
+              "end": 44
+            },
+            {
+              "token": "text",
+              "start": 45,
+              "end": 49
+            },
+            {
+              "token": ".",
+              "start": 49,
+              "end": 50
+            },
+            {
+              "token": "For",
+              "start": 51,
+              "end": 54
+            },
+            {
+              "token": "example",
+              "start": 55,
+              "end": 62
+            },
+            {
+              "token": ",",
+              "start": 62,
+              "end": 63
+            },
+            {
+              "token": "separate",
+              "start": 64,
+              "end": 72
+            },
+            {
+              "token": "word",
+              "start": 73,
+              "end": 77
+            },
+            {
+              "token": "spans",
+              "start": 78,
+              "end": 83
+            },
+            {
+              "token": "allow",
+              "start": 84,
+              "end": 89
+            },
+            {
+              "token": "a",
+              "start": 90,
+              "end": 91
+            },
+            {
+              "token": "program",
+              "start": 92,
+              "end": 99
+            },
+            {
+              "token": "to",
+              "start": 100,
+              "end": 102
+            },
+            {
+              "token": "interpret",
+              "start": 103,
+              "end": 112
+            },
+            {
+              "token": "the",
+              "start": 113,
+              "end": 116
+            },
+            {
+              "token": "surrounding",
+              "start": 117,
+              "end": 128
+            },
+            {
+              "token": "context",
+              "start": 129,
+              "end": 136
+            },
+            {
+              "token": "without",
+              "start": 137,
+              "end": 144
+            },
+            {
+              "token": "merging",
+              "start": 145,
+              "end": 152
+            },
+            {
+              "token": "every",
+              "start": 153,
+              "end": 158
+            },
+            {
+              "token": "word",
+              "start": 159,
+              "end": 163
+            },
+            {
+              "token": "together",
+              "start": 164,
+              "end": 172
+            },
+            {
+              "token": ".",
+              "start": 172,
+              "end": 173
+            }
+          ],
+          "token_count": 28,
+          "sentences": [
+            {
+              "text": "Token boundaries preserve distinct pieces of text.",
+              "start": 0,
+              "end": 50
+            },
+            {
+              "text": " For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+              "start": 50,
+              "end": 173
+            }
+          ],
+          "keywords": [
+            "word",
+            "token",
+            "boundaries",
+            "preserve",
+            "distinct",
+            "pieces",
+            "text",
+            "example",
+            "separate",
+            "spans",
+            "allow",
+            "program",
+            "interpret",
+            "surrounding",
+            "context",
+            "without"
+          ],
+          "response_hash": "26e02f6df5ef20306f93e15b61228b371d4e5b7ebe8f8a604ed456605c3b0420",
+          "negation_cues": [],
+          "uncertainty_cues": [],
+          "version": "unicode-math-spans-v3"
+        },
+        "error": null
+      },
+      {
+        "stage_id": "stage_2bb5873457024c6ba6f0d4c434dd6398",
+        "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+        "sequence": 4,
+        "key": "extraction",
+        "name": "Cognitive interpretation",
+        "parent_stage_id": null,
+        "previous_stage_id": "stage_50c6e762ebd54de6aad955ca4473a167",
+        "technique": "Schema-constrained pretrained model",
+        "implementation": "packages/learner_state_core/assessment/provider.py:evaluate",
+        "input": {
+          "response_text": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+          "question_id": "question_b085864669694dc4a555916a882fa665",
+          "state_snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3"
+        },
+        "parameters": {
+          "model": "test-provider",
+          "prompt_version": "rubric-evidence-v2",
+          "confidence_calibrated": false
+        },
+        "status": "completed",
+        "attempt": 1,
+        "started_at": "2026-11-02T20:43:02.247630+00:00",
+        "completed_at": "2026-11-02T20:43:02.257630+00:00",
+        "duration_ms": 0.125,
+        "output": {
+          "concept_id": "tokens",
+          "source_quote": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+          "claim": "A candidate claim about token boundaries.",
+          "category": "understanding",
+          "confidence": 0.9,
+          "met_criteria": [
+            "reason",
+            "example"
+          ],
+          "missing_criteria": [],
+          "misconception": null,
+          "contradicts_hypothesis_ids": [],
+          "feedback": "Your example provides evidence we can check.",
+          "coaching": "Use the source distinction, then try a fresh example.",
+          "source_citations": [
+            "chunk_b62320f1c2c042da9bc3f30938bddef8"
+          ]
+        },
+        "error": null
+      },
+      {
+        "stage_id": "stage_c298ae6dd5cf4d97ba9609c3fcd7a4e8",
+        "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+        "sequence": 5,
+        "key": "validation",
+        "name": "Evidence validation",
+        "parent_stage_id": null,
+        "previous_stage_id": "stage_2bb5873457024c6ba6f0d4c434dd6398",
+        "technique": "Pydantic · exact spans · rubric and reference checks",
+        "implementation": "packages/learner_state_core/assessment/service.py:validate_observation",
+        "input": {
+          "candidate": {
+            "concept_id": "tokens",
+            "source_quote": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+            "claim": "A candidate claim about token boundaries.",
+            "category": "understanding",
+            "confidence": 0.9,
+            "met_criteria": [
+              "reason",
+              "example"
+            ],
+            "missing_criteria": [],
+            "misconception": null,
+            "contradicts_hypothesis_ids": [],
+            "feedback": "Your example provides evidence we can check.",
+            "coaching": "Use the source distinction, then try a fresh example.",
+            "source_citations": [
+              "chunk_b62320f1c2c042da9bc3f30938bddef8"
+            ]
+          }
+        },
+        "parameters": {
+          "schema": "ExtractedObservation",
+          "checks": [
+            "schema",
+            "quote",
+            "rubric_partition",
+            "citations",
+            "contradiction_ids"
+          ]
+        },
+        "status": "completed",
+        "attempt": 1,
+        "started_at": "2026-11-02T20:43:02.265629+00:00",
+        "completed_at": "2026-11-02T20:43:02.274629+00:00",
+        "duration_ms": 0.461,
+        "output": {
+          "schema_valid": true,
+          "quote_verified": true,
+          "confidence_calibrated": false,
+          "abstained": false
+        },
+        "error": null
+      },
+      {
+        "stage_id": "stage_a3db8a8022d7471a93b64ec31793100a",
+        "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+        "sequence": 6,
+        "key": "grounding",
+        "name": "Concept grounding",
+        "parent_stage_id": null,
+        "previous_stage_id": "stage_c298ae6dd5cf4d97ba9609c3fcd7a4e8",
+        "technique": "Assigned-concept identity constraint",
+        "implementation": "packages/learner_state_core/assessment/service.py:ground_observation",
+        "input": {
+          "concept_id": "tokens",
+          "question_concept_id": "tokens"
+        },
+        "parameters": {},
+        "status": "completed",
+        "attempt": 1,
+        "started_at": "2026-11-02T20:43:02.282047+00:00",
+        "completed_at": "2026-11-02T20:43:02.290047+00:00",
+        "duration_ms": 0.102,
+        "output": {
+          "accepted_concept": {
+            "concept_id": "tokens",
+            "name": "Tokenization",
+            "description": "Split text into tokens while preserving boundaries.",
+            "prerequisites": []
+          },
+          "candidate_concept_ids": [
+            "tokens"
+          ],
+          "method": "assigned_concept_constraint",
+          "source_quote": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+          "similarity_score": null,
+          "taxonomy_provenance": "model_authored_topic_map_unverified"
+        },
+        "error": null
+      },
+      {
+        "stage_id": "stage_3f5a3df1e08141c4850aa8fd9dc4b6e3",
+        "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+        "sequence": 7,
+        "key": "evidence",
+        "name": "Cognitive Evidence",
+        "parent_stage_id": null,
+        "previous_stage_id": "stage_a3db8a8022d7471a93b64ec31793100a",
+        "technique": "Validated structured evidence assembly",
+        "implementation": "packages/learner_state_core/assessment/service.py:answer",
+        "input": {
+          "source_kind": "learner_response",
+          "source_quote": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together."
+        },
+        "parameters": {},
+        "status": "completed",
+        "attempt": 1,
+        "started_at": "2026-11-02T20:43:02.299049+00:00",
+        "completed_at": "2026-11-02T20:43:02.309059+00:00",
+        "duration_ms": 0.119,
+        "output": {
+          "concept_id": "tokens",
+          "source_quote": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+          "claim": "A candidate claim about token boundaries.",
+          "category": "understanding",
+          "confidence": 0.9,
+          "met_criteria": [
+            "reason",
+            "example"
+          ],
+          "missing_criteria": [],
+          "misconception": null,
+          "contradicts_hypothesis_ids": [],
+          "feedback": "Your example provides evidence we can check.",
+          "coaching": "Use the source distinction, then try a fresh example.",
+          "source_citations": [
+            "chunk_b62320f1c2c042da9bc3f30938bddef8"
+          ],
+          "evidence_id": "evidence_17aa4346bd194a0b85306a5bd15ace87",
+          "question_id": "question_b085864669694dc4a555916a882fa665",
+          "timestamp": "2026-11-02T20:43:02.299049+00:00",
+          "source_start": 0,
+          "source_end": 173,
+          "extractor_model": "test-provider",
+          "confidence_calibrated": false,
+          "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+          "source_interaction_id": "turn_d485539400684fd7a10550f0e4a29d4d",
+          "session_id": "conversation_6bd9fdf6576c41c29d5f9b27234a4af5",
+          "validation_status": "passed"
+        },
+        "error": null
+      },
+      {
+        "stage_id": "stage_c88a1cc05b75432bab5cb1cfd359f8e4",
+        "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+        "sequence": 8,
+        "key": "state_update",
+        "name": "Learner-state computation",
+        "parent_stage_id": null,
+        "previous_stage_id": "stage_3f5a3df1e08141c4850aa8fd9dc4b6e3",
+        "technique": "Criterion-weighted Beta update",
+        "implementation": "packages/learner_state_core/assessment/state.py:integrate",
+        "input": {
+          "state_before": {
+            "snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+            "timestamp": "2026-11-02T20:43:01.522813+00:00",
+            "policy_version": "criterion-weighted-state-v1",
+            "concepts": {
+              "tokens": {
+                "concept_id": "tokens",
+                "name": "Tokenization",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              },
+              "context": {
+                "concept_id": "context",
+                "name": "Context",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              }
+            }
+          },
+          "evidence_id": "evidence_17aa4346bd194a0b85306a5bd15ace87"
+        },
+        "parameters": {
+          "policy": "criterion-weighted-state-v1"
+        },
+        "status": "completed",
+        "attempt": 1,
+        "started_at": "2026-11-02T20:43:02.396057+00:00",
+        "completed_at": "2026-11-02T20:43:02.432589+00:00",
+        "duration_ms": 0.555,
+        "output": {
+          "state_before": {
+            "snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+            "timestamp": "2026-11-02T20:43:01.522813+00:00",
+            "policy_version": "criterion-weighted-state-v1",
+            "concepts": {
+              "tokens": {
+                "concept_id": "tokens",
+                "name": "Tokenization",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              },
+              "context": {
+                "concept_id": "context",
+                "name": "Context",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              }
+            }
+          },
+          "state_after": {
+            "snapshot_id": "state_ee4e0b24ab644c12aec1ceebd71e97cc",
+            "timestamp": "2026-11-02T20:43:02.431589+00:00",
+            "policy_version": "criterion-weighted-state-v1",
+            "concepts": {
+              "tokens": {
+                "concept_id": "tokens",
+                "name": "Tokenization",
+                "alpha": 1.9,
+                "beta": 1.0,
+                "estimate": 0.65517,
+                "uncertainty": 0.24068,
+                "observation_count": 1,
+                "informative_count": 1,
+                "evidence_ids": [
+                  "evidence_17aa4346bd194a0b85306a5bd15ace87"
+                ],
+                "response_hashes": [
+                  "26e02f6df5ef20306f93e15b61228b371d4e5b7ebe8f8a604ed456605c3b0420"
+                ],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": "understanding"
+              },
+              "context": {
+                "concept_id": "context",
+                "name": "Context",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              }
+            }
+          },
+          "changes": {
+            "concept_id": "tokens",
+            "rule": "weighted_criterion_update",
+            "confidence": 0.9,
+            "coverage": 1.0,
+            "novelty_factor": 1.0,
+            "informativeness": 1.0,
+            "duplicate_response": false,
+            "weight": 0.9,
+            "delta_alpha": 0.9,
+            "delta_beta": 0.0,
+            "before_alpha": 1.0,
+            "before_beta": 1.0,
+            "after_alpha": 1.9,
+            "after_beta": 1.0,
+            "before_estimate": 0.5,
+            "after_estimate": 0.65517,
+            "delta_estimate": 0.15517,
+            "before_uncertainty": 0.28868,
+            "after_uncertainty": 0.24068,
+            "hypothesis_changes": [],
+            "resolved_criteria": [],
+            "formula": "w=confidence×novelty×min(tokens/16,1); α′=α+w×rubric_coverage; β′=β+w×(1−coverage)×slip_factor; estimate=α′/(α′+β′)",
+            "limitation": "Heuristic evidence estimate, not a calibrated measurement of understanding. Tutor coaching never updates these parameters."
+          },
+          "persisted": false
+        },
+        "error": null
+      },
+      {
+        "stage_id": "stage_6d19e26d464e43518f3a4b1fb24ed7c3",
+        "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+        "sequence": 9,
+        "key": "persistence",
+        "name": "Atomic persistence",
+        "parent_stage_id": null,
+        "previous_stage_id": "stage_c88a1cc05b75432bab5cb1cfd359f8e4",
+        "technique": "SQLite WAL transaction · optimistic version check",
+        "implementation": "packages/learner_state_core/assessment/service.py",
+        "input": {
+          "turn_id": "turn_d485539400684fd7a10550f0e4a29d4d",
+          "evidence_id": "evidence_17aa4346bd194a0b85306a5bd15ace87",
+          "expected_snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3"
+        },
+        "parameters": {},
+        "status": "completed",
+        "attempt": 1,
+        "started_at": "2026-11-02T20:43:02.456675+00:00",
+        "completed_at": "2026-11-02T20:43:02.509396+00:00",
+        "duration_ms": 34.706,
+        "output": {
+          "turn_id": "turn_d485539400684fd7a10550f0e4a29d4d",
+          "evidence_id": "evidence_17aa4346bd194a0b85306a5bd15ace87",
+          "snapshot_id": "state_ee4e0b24ab644c12aec1ceebd71e97cc",
+          "revision": 1,
+          "committed": true
+        },
+        "error": null
+      }
+    ],
+    "telemetry_status": "complete",
+    "incomplete_warning": null
+  },
+  "linked_executions": [
+    {
+      "ordinal": 4,
+      "trace_id": "nlp_a80ee2bcf2344a21845c718377b8938b",
+      "learner_id": "verification_synthetic_learner",
+      "conversation_id": "conversation_6bd9fdf6576c41c29d5f9b27234a4af5",
+      "question_id": "question_c4d25e7ca0224aa5aa0a0653caecfe7c",
+      "operation": "generation",
+      "status": "completed",
+      "started_at": "2026-11-02T20:43:02.531593+00:00",
+      "completed_at": "2026-11-02T20:43:02.746036+00:00",
+      "duration_ms": 213.0,
+      "metadata": {
+        "parent_trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+        "confidence_calibrated": false,
+        "http_request_id": "08b3c131c5b04b57b5c093c653771412",
+        "telemetry_write_failures": 0,
+        "expected_stage_count": 6
+      },
+      "execution_id": "nlp_a80ee2bcf2344a21845c718377b8938b",
+      "stages": [
+        {
+          "stage_id": "stage_9708a12eb5b14a23ad2c3bbc6c6235a3",
+          "trace_id": "nlp_a80ee2bcf2344a21845c718377b8938b",
+          "sequence": 1,
+          "key": "planning",
+          "name": "Diagnostic question planning",
+          "parent_stage_id": null,
+          "previous_stage_id": null,
+          "technique": "Deterministic criterion/prerequisite policy",
+          "implementation": "packages/learner_state_core/assessment/state.py:plan_next",
+          "input": {
+            "state_snapshot_id": "state_ee4e0b24ab644c12aec1ceebd71e97cc",
+            "prior_turn_ids": [
+              "turn_d485539400684fd7a10550f0e4a29d4d"
+            ]
+          },
+          "parameters": {},
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:02.558916+00:00",
+          "completed_at": "2026-11-02T20:43:02.570796+00:00",
+          "duration_ms": 0.097,
+          "output": {
+            "concept_id": "context",
+            "kind": "explain",
+            "intent": "diagnose",
+            "reason": "Collect an initial explanation; there is no evidence for this concept yet.",
+            "difficulty": "foundational",
+            "missing_criteria": [],
+            "required_criteria": [],
+            "hypotheses": [],
+            "evidence_ids": [],
+            "state_snapshot_id": "state_ee4e0b24ab644c12aec1ceebd71e97cc",
+            "policy_version": "focused-adaptive-planner-v2"
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_acfb95131ce64d7b8eb954257fb61c60",
+          "trace_id": "nlp_a80ee2bcf2344a21845c718377b8938b",
+          "sequence": 2,
+          "key": "retrieval",
+          "name": "Scoped source retrieval",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_9708a12eb5b14a23ad2c3bbc6c6235a3",
+          "technique": "SQLite FTS5 · Porter/unicode61 · BM25",
+          "implementation": "packages/learner_state_core/assessment/storage.py:retrieve",
+          "input": {
+            "concept_id": "context",
+            "snapshot_id": "state_ee4e0b24ab644c12aec1ceebd71e97cc"
+          },
+          "parameters": {
+            "limit": 5,
+            "ranking": "bm25",
+            "fallback": "scoped_recent"
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:02.583550+00:00",
+          "completed_at": "2026-11-02T20:43:02.619290+00:00",
+          "duration_ms": 1.196,
+          "output": {
+            "query": "Context Interpret tokens in their surrounding context. ",
+            "scope": {
+              "learner_id": "verification_synthetic_learner",
+              "topic_key": "5c848bc470d3f4bc75d886777d3e34deaf42d5ef"
+            },
+            "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+            "materials": [
+              {
+                "chunk_id": "chunk_b62320f1c2c042da9bc3f30938bddef8",
+                "source_id": "source_5b2101cbf979463ead8bb55b71042947",
+                "kind": "study_notes",
+                "content": "Tokenization divides text into tokens while preserving boundaries. A token need not be a whole word. Context affects interpretation of a token in a sentence.",
+                "metadata": {
+                  "start": 0,
+                  "end": 157,
+                  "title": "Tokenization · supplied notes"
+                },
+                "rank": -3.853296981077568e-06,
+                "retrieval_method": "fts5_bm25"
+              }
+            ],
+            "evidence": [
+              {
+                "chunk_id": "chunk_c95c5792a67643ec87762b048c8032b3",
+                "source_id": "evidence_17aa4346bd194a0b85306a5bd15ace87",
+                "kind": "learner_evidence",
+                "content": "tokens Tokenization Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together. A candidate claim about token boundaries.",
+                "metadata": {
+                  "evidence_id": "evidence_17aa4346bd194a0b85306a5bd15ace87",
+                  "concept_id": "tokens",
+                  "category": "understanding",
+                  "source_quote": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+                  "conversation_id": "conversation_6bd9fdf6576c41c29d5f9b27234a4af5",
+                  "turn_id": "turn_d485539400684fd7a10550f0e4a29d4d"
+                },
+                "rank": -4.492612352208607e-06,
+                "retrieval_method": "fts5_bm25"
+              }
+            ]
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_dfa682bf6fbf453fa510605ff3dd1acf",
+          "trace_id": "nlp_a80ee2bcf2344a21845c718377b8938b",
+          "sequence": 3,
+          "key": "validation",
+          "name": "Evidence validation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_acfb95131ce64d7b8eb954257fb61c60",
+          "technique": "Pydantic · exact spans · rubric and reference checks",
+          "implementation": "packages/learner_state_core/assessment/service.py:validate_observation",
+          "input": {
+            "material_count": 1
+          },
+          "parameters": {
+            "checks": [
+              "minimum_source_material"
+            ]
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:02.632993+00:00",
+          "completed_at": "2026-11-02T20:43:02.642787+00:00",
+          "duration_ms": 0.111,
+          "output": {
+            "material_available": true
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_1cb8bc4da9b145f48612deddf41570f8",
+          "trace_id": "nlp_a80ee2bcf2344a21845c718377b8938b",
+          "sequence": 4,
+          "key": "generation",
+          "name": "Question formulation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_dfa682bf6fbf453fa510605ff3dd1acf",
+          "technique": "Schema-constrained pretrained model",
+          "implementation": "packages/learner_state_core/assessment/provider.py:generate_question",
+          "input": {
+            "plan": {
+              "concept_id": "context",
+              "kind": "explain",
+              "intent": "diagnose",
+              "reason": "Collect an initial explanation; there is no evidence for this concept yet.",
+              "difficulty": "foundational",
+              "missing_criteria": [],
+              "required_criteria": [],
+              "hypotheses": [],
+              "evidence_ids": [],
+              "state_snapshot_id": "state_ee4e0b24ab644c12aec1ceebd71e97cc",
+              "policy_version": "focused-adaptive-planner-v2"
+            },
+            "retrieval": {
+              "query": "Context Interpret tokens in their surrounding context. ",
+              "scope": {
+                "learner_id": "verification_synthetic_learner",
+                "topic_key": "5c848bc470d3f4bc75d886777d3e34deaf42d5ef"
+              },
+              "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+              "materials": [
+                {
+                  "chunk_id": "chunk_b62320f1c2c042da9bc3f30938bddef8",
+                  "source_id": "source_5b2101cbf979463ead8bb55b71042947",
+                  "kind": "study_notes",
+                  "content": "Tokenization divides text into tokens while preserving boundaries. A token need not be a whole word. Context affects interpretation of a token in a sentence.",
+                  "metadata": {
+                    "start": 0,
+                    "end": 157,
+                    "title": "Tokenization · supplied notes"
+                  },
+                  "rank": -3.853296981077568e-06,
+                  "retrieval_method": "fts5_bm25"
+                }
+              ],
+              "evidence": [
+                {
+                  "chunk_id": "chunk_c95c5792a67643ec87762b048c8032b3",
+                  "source_id": "evidence_17aa4346bd194a0b85306a5bd15ace87",
+                  "kind": "learner_evidence",
+                  "content": "tokens Tokenization Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together. A candidate claim about token boundaries.",
+                  "metadata": {
+                    "evidence_id": "evidence_17aa4346bd194a0b85306a5bd15ace87",
+                    "concept_id": "tokens",
+                    "category": "understanding",
+                    "source_quote": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+                    "conversation_id": "conversation_6bd9fdf6576c41c29d5f9b27234a4af5",
+                    "turn_id": "turn_d485539400684fd7a10550f0e4a29d4d"
+                  },
+                  "rank": -4.492612352208607e-06,
+                  "retrieval_method": "fts5_bm25"
+                }
+              ]
+            },
+            "state_snapshot_id": "state_ee4e0b24ab644c12aec1ceebd71e97cc"
+          },
+          "parameters": {
+            "model": "test-provider",
+            "prompt_version": "saved-state-question-v2"
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:02.654063+00:00",
+          "completed_at": "2026-11-02T20:43:02.667611+00:00",
+          "duration_ms": 0.355,
+          "output": {
+            "concept_id": "context",
+            "kind": "explain",
+            "prompt": "A program merges all adjacent words into one unit. Analyze its mistake using the source distinction. Assessment case 2.",
+            "expected_focus": "Give a reason and connect it to the concept.",
+            "learning_support": "",
+            "source_citations": [
+              "chunk_b62320f1c2c042da9bc3f30938bddef8"
+            ],
+            "usage": null
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_0ea285d3a3ca4ac99cfd09a18981bff2",
+          "trace_id": "nlp_a80ee2bcf2344a21845c718377b8938b",
+          "sequence": 5,
+          "key": "validation",
+          "name": "Evidence validation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_1cb8bc4da9b145f48612deddf41570f8",
+          "technique": "Pydantic · exact spans · rubric and reference checks",
+          "implementation": "packages/learner_state_core/assessment/service.py:validate_observation",
+          "input": {
+            "candidate_question": {
+              "concept_id": "context",
+              "kind": "explain",
+              "prompt": "A program merges all adjacent words into one unit. Analyze its mistake using the source distinction. Assessment case 2.",
+              "expected_focus": "Give a reason and connect it to the concept.",
+              "learning_support": "",
+              "source_citations": [
+                "chunk_b62320f1c2c042da9bc3f30938bddef8"
+              ]
+            }
+          },
+          "parameters": {
+            "checks": [
+              "target",
+              "citations",
+              "rubric_ids",
+              "required_criteria",
+              "novelty"
+            ]
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:02.684646+00:00",
+          "completed_at": "2026-11-02T20:43:02.695655+00:00",
+          "duration_ms": 0.695,
+          "output": {
+            "validated": true
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_d9a6b793d6794587952bcc4ab6523406",
+          "trace_id": "nlp_a80ee2bcf2344a21845c718377b8938b",
+          "sequence": 6,
+          "key": "persistence",
+          "name": "Atomic persistence",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_0ea285d3a3ca4ac99cfd09a18981bff2",
+          "technique": "SQLite WAL transaction · optimistic version check",
+          "implementation": "packages/learner_state_core/assessment/service.py",
+          "input": {
+            "kind": "question",
+            "snapshot_id": "state_ee4e0b24ab644c12aec1ceebd71e97cc"
+          },
+          "parameters": {},
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:02.705237+00:00",
+          "completed_at": "2026-11-02T20:43:02.724116+00:00",
+          "duration_ms": 12.457,
+          "output": {
+            "question_id": "question_c4d25e7ca0224aa5aa0a0653caecfe7c",
+            "committed": true,
+            "generation_failure": null
+          },
+          "error": null
+        }
+      ],
+      "telemetry_status": "complete",
+      "incomplete_warning": null
+    },
+    {
+      "ordinal": 3,
+      "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+      "learner_id": "verification_synthetic_learner",
+      "conversation_id": "conversation_6bd9fdf6576c41c29d5f9b27234a4af5",
+      "question_id": "question_b085864669694dc4a555916a882fa665",
+      "operation": "answer",
+      "status": "completed",
+      "started_at": "2026-11-02T20:43:01.992286+00:00",
+      "completed_at": "2026-11-02T20:43:02.776816+00:00",
+      "duration_ms": 759.721,
+      "metadata": {
+        "parent_trace_id": null,
+        "confidence_calibrated": false,
+        "http_request_id": "08b3c131c5b04b57b5c093c653771412",
+        "telemetry_write_failures": 0,
+        "request_id": "574b8ab1-c9cb-4b55-ab12-92f66c0f42ef",
+        "turn_id": "turn_d485539400684fd7a10550f0e4a29d4d",
+        "evidence_id": "evidence_17aa4346bd194a0b85306a5bd15ace87",
+        "snapshot_before_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+        "snapshot_after_id": "state_ee4e0b24ab644c12aec1ceebd71e97cc",
+        "expected_stage_count": 9
+      },
+      "execution_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+      "stages": [
+        {
+          "stage_id": "stage_e75d79701af64be08f39105bb4d6b4cd",
+          "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+          "sequence": 1,
+          "key": "retrieval",
+          "name": "Scoped source retrieval",
+          "parent_stage_id": null,
+          "previous_stage_id": null,
+          "technique": "SQLite FTS5 · Porter/unicode61 · BM25",
+          "implementation": "packages/learner_state_core/assessment/storage.py:retrieve",
+          "input": {
+            "concept_id": "tokens",
+            "snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3"
+          },
+          "parameters": {
+            "limit": 5,
+            "ranking": "bm25",
+            "fallback": "scoped_recent"
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:02.010157+00:00",
+          "completed_at": "2026-11-02T20:43:02.017311+00:00",
+          "duration_ms": 1.308,
+          "output": {
+            "query": "Tokenization Split text into tokens while preserving boundaries. ",
+            "scope": {
+              "learner_id": "verification_synthetic_learner",
+              "topic_key": "5c848bc470d3f4bc75d886777d3e34deaf42d5ef"
+            },
+            "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+            "materials": [
+              {
+                "chunk_id": "chunk_b62320f1c2c042da9bc3f30938bddef8",
+                "source_id": "source_5b2101cbf979463ead8bb55b71042947",
+                "kind": "study_notes",
+                "content": "Tokenization divides text into tokens while preserving boundaries. A token need not be a whole word. Context affects interpretation of a token in a sentence.",
+                "metadata": {
+                  "start": 0,
+                  "end": 157,
+                  "title": "Tokenization · supplied notes"
+                },
+                "rank": -8.384615384615385e-06,
+                "retrieval_method": "fts5_bm25"
+              }
+            ],
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_2aa119ba380c4842ac3121d163cf7b00",
+          "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+          "sequence": 2,
+          "key": "input",
+          "name": "Input validation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_e75d79701af64be08f39105bb4d6b4cd",
+          "technique": "Pydantic request contract",
+          "implementation": "packages/learner_state_core/assessment/models.py",
+          "input": {
+            "question_id": "question_b085864669694dc4a555916a882fa665",
+            "request_id": "574b8ab1-c9cb-4b55-ab12-92f66c0f42ef"
+          },
+          "parameters": {},
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:02.032145+00:00",
+          "completed_at": "2026-11-02T20:43:02.039808+00:00",
+          "duration_ms": 0.362,
+          "output": {
+            "response_text": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+            "question": {
+              "concept_id": "tokens",
+              "kind": "explain",
+              "prompt": "Explain how token boundaries affect the interpretation of a sentence. Assessment case 1.",
+              "expected_focus": "Give a reason and connect it to the concept.",
+              "learning_support": "",
+              "source_citations": [
+                "chunk_b62320f1c2c042da9bc3f30938bddef8"
+              ],
+              "usage": null,
+              "question_id": "question_b085864669694dc4a555916a882fa665",
+              "created_at": "2026-11-02T20:43:01.690124+00:00",
+              "generation_trace": {
+                "trace_id": "nlp_a1b241df07d04b0bb2396a74da205a37",
+                "state_snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+                "context_sha256": "8d3442ff620e837a4cb7150ecef392929600bdee518f76ac9ca85981bfb5eea1",
+                "context": {
+                  "topic": {
+                    "title": "Tokenization",
+                    "overview": "Tokens are spans of text; context changes meaning.",
+                    "concepts": [
+                      {
+                        "concept_id": "tokens",
+                        "name": "Tokenization",
+                        "description": "Split text into tokens while preserving boundaries.",
+                        "prerequisites": []
+                      },
+                      {
+                        "concept_id": "context",
+                        "name": "Context",
+                        "description": "Interpret tokens in their surrounding context.",
+                        "prerequisites": [
+                          "tokens"
+                        ]
+                      }
+                    ]
+                  },
+                  "state": {
+                    "snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+                    "timestamp": "2026-11-02T20:43:01.522813+00:00",
+                    "policy_version": "criterion-weighted-state-v1",
+                    "concepts": {
+                      "tokens": {
+                        "concept_id": "tokens",
+                        "name": "Tokenization",
+                        "alpha": 1.0,
+                        "beta": 1.0,
+                        "estimate": 0.5,
+                        "uncertainty": 0.28868,
+                        "observation_count": 0,
+                        "informative_count": 0,
+                        "evidence_ids": [],
+                        "response_hashes": [],
+                        "hypotheses": {},
+                        "criterion_gaps": {},
+                        "missing_criteria": [],
+                        "last_category": null
+                      },
+                      "context": {
+                        "concept_id": "context",
+                        "name": "Context",
+                        "alpha": 1.0,
+                        "beta": 1.0,
+                        "estimate": 0.5,
+                        "uncertainty": 0.28868,
+                        "observation_count": 0,
+                        "informative_count": 0,
+                        "evidence_ids": [],
+                        "response_hashes": [],
+                        "hypotheses": {},
+                        "criterion_gaps": {},
+                        "missing_criteria": [],
+                        "last_category": null
+                      }
+                    }
+                  },
+                  "plan": {
+                    "concept_id": "tokens",
+                    "kind": "explain",
+                    "intent": "diagnose",
+                    "reason": "Collect an initial explanation; there is no evidence for this concept yet.",
+                    "difficulty": "foundational",
+                    "missing_criteria": [],
+                    "required_criteria": [],
+                    "hypotheses": [],
+                    "evidence_ids": [],
+                    "state_snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+                    "policy_version": "focused-adaptive-planner-v2"
+                  },
+                  "retrieval": {
+                    "query": "Tokenization Split text into tokens while preserving boundaries. ",
+                    "scope": {
+                      "learner_id": "verification_synthetic_learner",
+                      "topic_key": "5c848bc470d3f4bc75d886777d3e34deaf42d5ef"
+                    },
+                    "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+                    "materials": [
+                      {
+                        "chunk_id": "chunk_b62320f1c2c042da9bc3f30938bddef8",
+                        "source_id": "source_5b2101cbf979463ead8bb55b71042947",
+                        "kind": "study_notes",
+                        "content": "Tokenization divides text into tokens while preserving boundaries. A token need not be a whole word. Context affects interpretation of a token in a sentence.",
+                        "metadata": {
+                          "start": 0,
+                          "end": 157,
+                          "title": "Tokenization · supplied notes"
+                        },
+                        "rank": -8.384615384615385e-06,
+                        "retrieval_method": "fts5_bm25"
+                      }
+                    ],
+                    "evidence": []
+                  },
+                  "allowed_source_citations": [
+                    "chunk_b62320f1c2c042da9bc3f30938bddef8"
+                  ],
+                  "previous_questions": [],
+                  "contract_version": "saved-state-question-v2"
+                },
+                "plan": {
+                  "concept_id": "tokens",
+                  "kind": "explain",
+                  "intent": "diagnose",
+                  "reason": "Collect an initial explanation; there is no evidence for this concept yet.",
+                  "difficulty": "foundational",
+                  "missing_criteria": [],
+                  "required_criteria": [],
+                  "hypotheses": [],
+                  "evidence_ids": [],
+                  "state_snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+                  "policy_version": "focused-adaptive-planner-v2"
+                },
+                "source_citations": [
+                  "chunk_b62320f1c2c042da9bc3f30938bddef8"
+                ],
+                "model": "test-provider",
+                "attempts": 1,
+                "duration_ms": 77.39,
+                "prompt_version": "saved-state-question-v2"
+              }
+            },
+            "session_id": "conversation_6bd9fdf6576c41c29d5f9b27234a4af5",
+            "source_kind": "learner_response",
+            "validated": true
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_50c6e762ebd54de6aad955ca4473a167",
+          "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+          "sequence": 3,
+          "key": "preprocessing",
+          "name": "Text transformations",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_2aa119ba380c4842ac3121d163cf7b00",
+          "technique": "NFKC · regex tokens/sentences · lexical features",
+          "implementation": "packages/learner_state_core/assessment/nlp.py:analyze",
+          "input": {
+            "original_text": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together."
+          },
+          "parameters": {
+            "version": "unicode-math-spans-v3",
+            "offsets": "original Unicode code points",
+            "negation_removed": false
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:02.200788+00:00",
+          "completed_at": "2026-11-02T20:43:02.237286+00:00",
+          "duration_ms": 0.804,
+          "output": {
+            "raw_text": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+            "normalized_text": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+            "token_spans": [
+              {
+                "token": "Token",
+                "start": 0,
+                "end": 5
+              },
+              {
+                "token": "boundaries",
+                "start": 6,
+                "end": 16
+              },
+              {
+                "token": "preserve",
+                "start": 17,
+                "end": 25
+              },
+              {
+                "token": "distinct",
+                "start": 26,
+                "end": 34
+              },
+              {
+                "token": "pieces",
+                "start": 35,
+                "end": 41
+              },
+              {
+                "token": "of",
+                "start": 42,
+                "end": 44
+              },
+              {
+                "token": "text",
+                "start": 45,
+                "end": 49
+              },
+              {
+                "token": ".",
+                "start": 49,
+                "end": 50
+              },
+              {
+                "token": "For",
+                "start": 51,
+                "end": 54
+              },
+              {
+                "token": "example",
+                "start": 55,
+                "end": 62
+              },
+              {
+                "token": ",",
+                "start": 62,
+                "end": 63
+              },
+              {
+                "token": "separate",
+                "start": 64,
+                "end": 72
+              },
+              {
+                "token": "word",
+                "start": 73,
+                "end": 77
+              },
+              {
+                "token": "spans",
+                "start": 78,
+                "end": 83
+              },
+              {
+                "token": "allow",
+                "start": 84,
+                "end": 89
+              },
+              {
+                "token": "a",
+                "start": 90,
+                "end": 91
+              },
+              {
+                "token": "program",
+                "start": 92,
+                "end": 99
+              },
+              {
+                "token": "to",
+                "start": 100,
+                "end": 102
+              },
+              {
+                "token": "interpret",
+                "start": 103,
+                "end": 112
+              },
+              {
+                "token": "the",
+                "start": 113,
+                "end": 116
+              },
+              {
+                "token": "surrounding",
+                "start": 117,
+                "end": 128
+              },
+              {
+                "token": "context",
+                "start": 129,
+                "end": 136
+              },
+              {
+                "token": "without",
+                "start": 137,
+                "end": 144
+              },
+              {
+                "token": "merging",
+                "start": 145,
+                "end": 152
+              },
+              {
+                "token": "every",
+                "start": 153,
+                "end": 158
+              },
+              {
+                "token": "word",
+                "start": 159,
+                "end": 163
+              },
+              {
+                "token": "together",
+                "start": 164,
+                "end": 172
+              },
+              {
+                "token": ".",
+                "start": 172,
+                "end": 173
+              }
+            ],
+            "token_count": 28,
+            "sentences": [
+              {
+                "text": "Token boundaries preserve distinct pieces of text.",
+                "start": 0,
+                "end": 50
+              },
+              {
+                "text": " For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+                "start": 50,
+                "end": 173
+              }
+            ],
+            "keywords": [
+              "word",
+              "token",
+              "boundaries",
+              "preserve",
+              "distinct",
+              "pieces",
+              "text",
+              "example",
+              "separate",
+              "spans",
+              "allow",
+              "program",
+              "interpret",
+              "surrounding",
+              "context",
+              "without"
+            ],
+            "response_hash": "26e02f6df5ef20306f93e15b61228b371d4e5b7ebe8f8a604ed456605c3b0420",
+            "negation_cues": [],
+            "uncertainty_cues": [],
+            "version": "unicode-math-spans-v3"
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_2bb5873457024c6ba6f0d4c434dd6398",
+          "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+          "sequence": 4,
+          "key": "extraction",
+          "name": "Cognitive interpretation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_50c6e762ebd54de6aad955ca4473a167",
+          "technique": "Schema-constrained pretrained model",
+          "implementation": "packages/learner_state_core/assessment/provider.py:evaluate",
+          "input": {
+            "response_text": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+            "question_id": "question_b085864669694dc4a555916a882fa665",
+            "state_snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3"
+          },
+          "parameters": {
+            "model": "test-provider",
+            "prompt_version": "rubric-evidence-v2",
+            "confidence_calibrated": false
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:02.247630+00:00",
+          "completed_at": "2026-11-02T20:43:02.257630+00:00",
+          "duration_ms": 0.125,
+          "output": {
+            "concept_id": "tokens",
+            "source_quote": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+            "claim": "A candidate claim about token boundaries.",
+            "category": "understanding",
+            "confidence": 0.9,
+            "met_criteria": [
+              "reason",
+              "example"
+            ],
+            "missing_criteria": [],
+            "misconception": null,
+            "contradicts_hypothesis_ids": [],
+            "feedback": "Your example provides evidence we can check.",
+            "coaching": "Use the source distinction, then try a fresh example.",
+            "source_citations": [
+              "chunk_b62320f1c2c042da9bc3f30938bddef8"
+            ]
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_c298ae6dd5cf4d97ba9609c3fcd7a4e8",
+          "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+          "sequence": 5,
+          "key": "validation",
+          "name": "Evidence validation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_2bb5873457024c6ba6f0d4c434dd6398",
+          "technique": "Pydantic · exact spans · rubric and reference checks",
+          "implementation": "packages/learner_state_core/assessment/service.py:validate_observation",
+          "input": {
+            "candidate": {
+              "concept_id": "tokens",
+              "source_quote": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+              "claim": "A candidate claim about token boundaries.",
+              "category": "understanding",
+              "confidence": 0.9,
+              "met_criteria": [
+                "reason",
+                "example"
+              ],
+              "missing_criteria": [],
+              "misconception": null,
+              "contradicts_hypothesis_ids": [],
+              "feedback": "Your example provides evidence we can check.",
+              "coaching": "Use the source distinction, then try a fresh example.",
+              "source_citations": [
+                "chunk_b62320f1c2c042da9bc3f30938bddef8"
+              ]
+            }
+          },
+          "parameters": {
+            "schema": "ExtractedObservation",
+            "checks": [
+              "schema",
+              "quote",
+              "rubric_partition",
+              "citations",
+              "contradiction_ids"
+            ]
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:02.265629+00:00",
+          "completed_at": "2026-11-02T20:43:02.274629+00:00",
+          "duration_ms": 0.461,
+          "output": {
+            "schema_valid": true,
+            "quote_verified": true,
+            "confidence_calibrated": false,
+            "abstained": false
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_a3db8a8022d7471a93b64ec31793100a",
+          "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+          "sequence": 6,
+          "key": "grounding",
+          "name": "Concept grounding",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_c298ae6dd5cf4d97ba9609c3fcd7a4e8",
+          "technique": "Assigned-concept identity constraint",
+          "implementation": "packages/learner_state_core/assessment/service.py:ground_observation",
+          "input": {
+            "concept_id": "tokens",
+            "question_concept_id": "tokens"
+          },
+          "parameters": {},
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:02.282047+00:00",
+          "completed_at": "2026-11-02T20:43:02.290047+00:00",
+          "duration_ms": 0.102,
+          "output": {
+            "accepted_concept": {
+              "concept_id": "tokens",
+              "name": "Tokenization",
+              "description": "Split text into tokens while preserving boundaries.",
+              "prerequisites": []
+            },
+            "candidate_concept_ids": [
+              "tokens"
+            ],
+            "method": "assigned_concept_constraint",
+            "source_quote": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+            "similarity_score": null,
+            "taxonomy_provenance": "model_authored_topic_map_unverified"
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_3f5a3df1e08141c4850aa8fd9dc4b6e3",
+          "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+          "sequence": 7,
+          "key": "evidence",
+          "name": "Cognitive Evidence",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_a3db8a8022d7471a93b64ec31793100a",
+          "technique": "Validated structured evidence assembly",
+          "implementation": "packages/learner_state_core/assessment/service.py:answer",
+          "input": {
+            "source_kind": "learner_response",
+            "source_quote": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together."
+          },
+          "parameters": {},
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:02.299049+00:00",
+          "completed_at": "2026-11-02T20:43:02.309059+00:00",
+          "duration_ms": 0.119,
+          "output": {
+            "concept_id": "tokens",
+            "source_quote": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+            "claim": "A candidate claim about token boundaries.",
+            "category": "understanding",
+            "confidence": 0.9,
+            "met_criteria": [
+              "reason",
+              "example"
+            ],
+            "missing_criteria": [],
+            "misconception": null,
+            "contradicts_hypothesis_ids": [],
+            "feedback": "Your example provides evidence we can check.",
+            "coaching": "Use the source distinction, then try a fresh example.",
+            "source_citations": [
+              "chunk_b62320f1c2c042da9bc3f30938bddef8"
+            ],
+            "evidence_id": "evidence_17aa4346bd194a0b85306a5bd15ace87",
+            "question_id": "question_b085864669694dc4a555916a882fa665",
+            "timestamp": "2026-11-02T20:43:02.299049+00:00",
+            "source_start": 0,
+            "source_end": 173,
+            "extractor_model": "test-provider",
+            "confidence_calibrated": false,
+            "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+            "source_interaction_id": "turn_d485539400684fd7a10550f0e4a29d4d",
+            "session_id": "conversation_6bd9fdf6576c41c29d5f9b27234a4af5",
+            "validation_status": "passed"
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_c88a1cc05b75432bab5cb1cfd359f8e4",
+          "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+          "sequence": 8,
+          "key": "state_update",
+          "name": "Learner-state computation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_3f5a3df1e08141c4850aa8fd9dc4b6e3",
+          "technique": "Criterion-weighted Beta update",
+          "implementation": "packages/learner_state_core/assessment/state.py:integrate",
+          "input": {
+            "state_before": {
+              "snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+              "timestamp": "2026-11-02T20:43:01.522813+00:00",
+              "policy_version": "criterion-weighted-state-v1",
+              "concepts": {
+                "tokens": {
+                  "concept_id": "tokens",
+                  "name": "Tokenization",
+                  "alpha": 1.0,
+                  "beta": 1.0,
+                  "estimate": 0.5,
+                  "uncertainty": 0.28868,
+                  "observation_count": 0,
+                  "informative_count": 0,
+                  "evidence_ids": [],
+                  "response_hashes": [],
+                  "hypotheses": {},
+                  "criterion_gaps": {},
+                  "missing_criteria": [],
+                  "last_category": null
+                },
+                "context": {
+                  "concept_id": "context",
+                  "name": "Context",
+                  "alpha": 1.0,
+                  "beta": 1.0,
+                  "estimate": 0.5,
+                  "uncertainty": 0.28868,
+                  "observation_count": 0,
+                  "informative_count": 0,
+                  "evidence_ids": [],
+                  "response_hashes": [],
+                  "hypotheses": {},
+                  "criterion_gaps": {},
+                  "missing_criteria": [],
+                  "last_category": null
+                }
+              }
+            },
+            "evidence_id": "evidence_17aa4346bd194a0b85306a5bd15ace87"
+          },
+          "parameters": {
+            "policy": "criterion-weighted-state-v1"
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:02.396057+00:00",
+          "completed_at": "2026-11-02T20:43:02.432589+00:00",
+          "duration_ms": 0.555,
+          "output": {
+            "state_before": {
+              "snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+              "timestamp": "2026-11-02T20:43:01.522813+00:00",
+              "policy_version": "criterion-weighted-state-v1",
+              "concepts": {
+                "tokens": {
+                  "concept_id": "tokens",
+                  "name": "Tokenization",
+                  "alpha": 1.0,
+                  "beta": 1.0,
+                  "estimate": 0.5,
+                  "uncertainty": 0.28868,
+                  "observation_count": 0,
+                  "informative_count": 0,
+                  "evidence_ids": [],
+                  "response_hashes": [],
+                  "hypotheses": {},
+                  "criterion_gaps": {},
+                  "missing_criteria": [],
+                  "last_category": null
+                },
+                "context": {
+                  "concept_id": "context",
+                  "name": "Context",
+                  "alpha": 1.0,
+                  "beta": 1.0,
+                  "estimate": 0.5,
+                  "uncertainty": 0.28868,
+                  "observation_count": 0,
+                  "informative_count": 0,
+                  "evidence_ids": [],
+                  "response_hashes": [],
+                  "hypotheses": {},
+                  "criterion_gaps": {},
+                  "missing_criteria": [],
+                  "last_category": null
+                }
+              }
+            },
+            "state_after": {
+              "snapshot_id": "state_ee4e0b24ab644c12aec1ceebd71e97cc",
+              "timestamp": "2026-11-02T20:43:02.431589+00:00",
+              "policy_version": "criterion-weighted-state-v1",
+              "concepts": {
+                "tokens": {
+                  "concept_id": "tokens",
+                  "name": "Tokenization",
+                  "alpha": 1.9,
+                  "beta": 1.0,
+                  "estimate": 0.65517,
+                  "uncertainty": 0.24068,
+                  "observation_count": 1,
+                  "informative_count": 1,
+                  "evidence_ids": [
+                    "evidence_17aa4346bd194a0b85306a5bd15ace87"
+                  ],
+                  "response_hashes": [
+                    "26e02f6df5ef20306f93e15b61228b371d4e5b7ebe8f8a604ed456605c3b0420"
+                  ],
+                  "hypotheses": {},
+                  "criterion_gaps": {},
+                  "missing_criteria": [],
+                  "last_category": "understanding"
+                },
+                "context": {
+                  "concept_id": "context",
+                  "name": "Context",
+                  "alpha": 1.0,
+                  "beta": 1.0,
+                  "estimate": 0.5,
+                  "uncertainty": 0.28868,
+                  "observation_count": 0,
+                  "informative_count": 0,
+                  "evidence_ids": [],
+                  "response_hashes": [],
+                  "hypotheses": {},
+                  "criterion_gaps": {},
+                  "missing_criteria": [],
+                  "last_category": null
+                }
+              }
+            },
+            "changes": {
+              "concept_id": "tokens",
+              "rule": "weighted_criterion_update",
+              "confidence": 0.9,
+              "coverage": 1.0,
+              "novelty_factor": 1.0,
+              "informativeness": 1.0,
+              "duplicate_response": false,
+              "weight": 0.9,
+              "delta_alpha": 0.9,
+              "delta_beta": 0.0,
+              "before_alpha": 1.0,
+              "before_beta": 1.0,
+              "after_alpha": 1.9,
+              "after_beta": 1.0,
+              "before_estimate": 0.5,
+              "after_estimate": 0.65517,
+              "delta_estimate": 0.15517,
+              "before_uncertainty": 0.28868,
+              "after_uncertainty": 0.24068,
+              "hypothesis_changes": [],
+              "resolved_criteria": [],
+              "formula": "w=confidence×novelty×min(tokens/16,1); α′=α+w×rubric_coverage; β′=β+w×(1−coverage)×slip_factor; estimate=α′/(α′+β′)",
+              "limitation": "Heuristic evidence estimate, not a calibrated measurement of understanding. Tutor coaching never updates these parameters."
+            },
+            "persisted": false
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_6d19e26d464e43518f3a4b1fb24ed7c3",
+          "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+          "sequence": 9,
+          "key": "persistence",
+          "name": "Atomic persistence",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_c88a1cc05b75432bab5cb1cfd359f8e4",
+          "technique": "SQLite WAL transaction · optimistic version check",
+          "implementation": "packages/learner_state_core/assessment/service.py",
+          "input": {
+            "turn_id": "turn_d485539400684fd7a10550f0e4a29d4d",
+            "evidence_id": "evidence_17aa4346bd194a0b85306a5bd15ace87",
+            "expected_snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3"
+          },
+          "parameters": {},
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:02.456675+00:00",
+          "completed_at": "2026-11-02T20:43:02.509396+00:00",
+          "duration_ms": 34.706,
+          "output": {
+            "turn_id": "turn_d485539400684fd7a10550f0e4a29d4d",
+            "evidence_id": "evidence_17aa4346bd194a0b85306a5bd15ace87",
+            "snapshot_id": "state_ee4e0b24ab644c12aec1ceebd71e97cc",
+            "revision": 1,
+            "committed": true
+          },
+          "error": null
+        }
+      ],
+      "telemetry_status": "complete",
+      "incomplete_warning": null
+    },
+    {
+      "ordinal": 2,
+      "trace_id": "nlp_a1b241df07d04b0bb2396a74da205a37",
+      "learner_id": "verification_synthetic_learner",
+      "conversation_id": "conversation_6bd9fdf6576c41c29d5f9b27234a4af5",
+      "question_id": "question_b085864669694dc4a555916a882fa665",
+      "operation": "generation",
+      "status": "completed",
+      "started_at": "2026-11-02T20:43:01.545968+00:00",
+      "completed_at": "2026-11-02T20:43:01.713143+00:00",
+      "duration_ms": 164.975,
+      "metadata": {
+        "parent_trace_id": "nlp_cfeebfe7d6bf4c718860f12a0045167d",
+        "confidence_calibrated": false,
+        "http_request_id": "0e96d47cb4e6424ca9b8c393a367274d",
+        "telemetry_write_failures": 0,
+        "expected_stage_count": 6
+      },
+      "execution_id": "nlp_a1b241df07d04b0bb2396a74da205a37",
+      "stages": [
+        {
+          "stage_id": "stage_7b7ab07966d245ef86479d22067e901e",
+          "trace_id": "nlp_a1b241df07d04b0bb2396a74da205a37",
+          "sequence": 1,
+          "key": "planning",
+          "name": "Diagnostic question planning",
+          "parent_stage_id": null,
+          "previous_stage_id": null,
+          "technique": "Deterministic criterion/prerequisite policy",
+          "implementation": "packages/learner_state_core/assessment/state.py:plan_next",
+          "input": {
+            "state_snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+            "prior_turn_ids": []
+          },
+          "parameters": {},
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:01.561993+00:00",
+          "completed_at": "2026-11-02T20:43:01.568435+00:00",
+          "duration_ms": 0.121,
+          "output": {
+            "concept_id": "tokens",
+            "kind": "explain",
+            "intent": "diagnose",
+            "reason": "Collect an initial explanation; there is no evidence for this concept yet.",
+            "difficulty": "foundational",
+            "missing_criteria": [],
+            "required_criteria": [],
+            "hypotheses": [],
+            "evidence_ids": [],
+            "state_snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+            "policy_version": "focused-adaptive-planner-v2"
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_37def8cc259f409d9d55002e4125b3aa",
+          "trace_id": "nlp_a1b241df07d04b0bb2396a74da205a37",
+          "sequence": 2,
+          "key": "retrieval",
+          "name": "Scoped source retrieval",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_7b7ab07966d245ef86479d22067e901e",
+          "technique": "SQLite FTS5 · Porter/unicode61 · BM25",
+          "implementation": "packages/learner_state_core/assessment/storage.py:retrieve",
+          "input": {
+            "concept_id": "tokens",
+            "snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3"
+          },
+          "parameters": {
+            "limit": 5,
+            "ranking": "bm25",
+            "fallback": "scoped_recent"
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:01.580786+00:00",
+          "completed_at": "2026-11-02T20:43:01.595841+00:00",
+          "duration_ms": 3.214,
+          "output": {
+            "query": "Tokenization Split text into tokens while preserving boundaries. ",
+            "scope": {
+              "learner_id": "verification_synthetic_learner",
+              "topic_key": "5c848bc470d3f4bc75d886777d3e34deaf42d5ef"
+            },
+            "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+            "materials": [
+              {
+                "chunk_id": "chunk_b62320f1c2c042da9bc3f30938bddef8",
+                "source_id": "source_5b2101cbf979463ead8bb55b71042947",
+                "kind": "study_notes",
+                "content": "Tokenization divides text into tokens while preserving boundaries. A token need not be a whole word. Context affects interpretation of a token in a sentence.",
+                "metadata": {
+                  "start": 0,
+                  "end": 157,
+                  "title": "Tokenization · supplied notes"
+                },
+                "rank": -8.384615384615385e-06,
+                "retrieval_method": "fts5_bm25"
+              }
+            ],
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_de765b22cac140689fb61c8028c626b7",
+          "trace_id": "nlp_a1b241df07d04b0bb2396a74da205a37",
+          "sequence": 3,
+          "key": "validation",
+          "name": "Evidence validation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_37def8cc259f409d9d55002e4125b3aa",
+          "technique": "Pydantic · exact spans · rubric and reference checks",
+          "implementation": "packages/learner_state_core/assessment/service.py:validate_observation",
+          "input": {
+            "material_count": 1
+          },
+          "parameters": {
+            "checks": [
+              "minimum_source_material"
+            ]
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:01.612605+00:00",
+          "completed_at": "2026-11-02T20:43:01.620960+00:00",
+          "duration_ms": 0.092,
+          "output": {
+            "material_available": true
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_0f5e9e0460d145d79936ee4dd0d2ad81",
+          "trace_id": "nlp_a1b241df07d04b0bb2396a74da205a37",
+          "sequence": 4,
+          "key": "generation",
+          "name": "Question formulation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_de765b22cac140689fb61c8028c626b7",
+          "technique": "Schema-constrained pretrained model",
+          "implementation": "packages/learner_state_core/assessment/provider.py:generate_question",
+          "input": {
+            "plan": {
+              "concept_id": "tokens",
+              "kind": "explain",
+              "intent": "diagnose",
+              "reason": "Collect an initial explanation; there is no evidence for this concept yet.",
+              "difficulty": "foundational",
+              "missing_criteria": [],
+              "required_criteria": [],
+              "hypotheses": [],
+              "evidence_ids": [],
+              "state_snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+              "policy_version": "focused-adaptive-planner-v2"
+            },
+            "retrieval": {
+              "query": "Tokenization Split text into tokens while preserving boundaries. ",
+              "scope": {
+                "learner_id": "verification_synthetic_learner",
+                "topic_key": "5c848bc470d3f4bc75d886777d3e34deaf42d5ef"
+              },
+              "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+              "materials": [
+                {
+                  "chunk_id": "chunk_b62320f1c2c042da9bc3f30938bddef8",
+                  "source_id": "source_5b2101cbf979463ead8bb55b71042947",
+                  "kind": "study_notes",
+                  "content": "Tokenization divides text into tokens while preserving boundaries. A token need not be a whole word. Context affects interpretation of a token in a sentence.",
+                  "metadata": {
+                    "start": 0,
+                    "end": 157,
+                    "title": "Tokenization · supplied notes"
+                  },
+                  "rank": -8.384615384615385e-06,
+                  "retrieval_method": "fts5_bm25"
+                }
+              ],
+              "evidence": []
+            },
+            "state_snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3"
+          },
+          "parameters": {
+            "model": "test-provider",
+            "prompt_version": "saved-state-question-v2"
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:01.630106+00:00",
+          "completed_at": "2026-11-02T20:43:01.642203+00:00",
+          "duration_ms": 0.551,
+          "output": {
+            "concept_id": "tokens",
+            "kind": "explain",
+            "prompt": "Explain how token boundaries affect the interpretation of a sentence. Assessment case 1.",
+            "expected_focus": "Give a reason and connect it to the concept.",
+            "learning_support": "",
+            "source_citations": [
+              "chunk_b62320f1c2c042da9bc3f30938bddef8"
+            ],
+            "usage": null
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_b7aa96fc4bdc44ddbfa8098dd430c684",
+          "trace_id": "nlp_a1b241df07d04b0bb2396a74da205a37",
+          "sequence": 5,
+          "key": "validation",
+          "name": "Evidence validation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_0f5e9e0460d145d79936ee4dd0d2ad81",
+          "technique": "Pydantic · exact spans · rubric and reference checks",
+          "implementation": "packages/learner_state_core/assessment/service.py:validate_observation",
+          "input": {
+            "candidate_question": {
+              "concept_id": "tokens",
+              "kind": "explain",
+              "prompt": "Explain how token boundaries affect the interpretation of a sentence. Assessment case 1.",
+              "expected_focus": "Give a reason and connect it to the concept.",
+              "learning_support": "",
+              "source_citations": [
+                "chunk_b62320f1c2c042da9bc3f30938bddef8"
+              ]
+            }
+          },
+          "parameters": {
+            "checks": [
+              "target",
+              "citations",
+              "rubric_ids",
+              "required_criteria",
+              "novelty"
+            ]
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:01.650553+00:00",
+          "completed_at": "2026-11-02T20:43:01.661247+00:00",
+          "duration_ms": 0.102,
+          "output": {
+            "validated": true
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_f083ac9ebbe44746b5a7fb0aae6da8d6",
+          "trace_id": "nlp_a1b241df07d04b0bb2396a74da205a37",
+          "sequence": 6,
+          "key": "persistence",
+          "name": "Atomic persistence",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_b7aa96fc4bdc44ddbfa8098dd430c684",
+          "technique": "SQLite WAL transaction · optimistic version check",
+          "implementation": "packages/learner_state_core/assessment/service.py",
+          "input": {
+            "kind": "question",
+            "snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3"
+          },
+          "parameters": {},
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:01.670247+00:00",
+          "completed_at": "2026-11-02T20:43:01.697668+00:00",
+          "duration_ms": 10.749,
+          "output": {
+            "question_id": "question_b085864669694dc4a555916a882fa665",
+            "committed": true,
+            "generation_failure": null
+          },
+          "error": null
+        }
+      ],
+      "telemetry_status": "complete",
+      "incomplete_warning": null
+    },
+    {
+      "ordinal": 1,
+      "trace_id": "nlp_cfeebfe7d6bf4c718860f12a0045167d",
+      "learner_id": "verification_synthetic_learner",
+      "conversation_id": "conversation_6bd9fdf6576c41c29d5f9b27234a4af5",
+      "question_id": null,
+      "operation": "create",
+      "status": "completed",
+      "started_at": "2026-11-02T20:43:01.459266+00:00",
+      "completed_at": "2026-11-02T20:43:01.722860+00:00",
+      "duration_ms": 261.063,
+      "metadata": {
+        "parent_trace_id": null,
+        "confidence_calibrated": false,
+        "http_request_id": "0e96d47cb4e6424ca9b8c393a367274d",
+        "telemetry_write_failures": 0,
+        "request_id": "af81a5db-c7bb-4442-9305-bb9f76dc7974",
+        "expected_stage_count": 2
+      },
+      "execution_id": "nlp_cfeebfe7d6bf4c718860f12a0045167d",
+      "stages": [
+        {
+          "stage_id": "stage_0ba02aebaf8e407ca4b97689307a6edf",
+          "trace_id": "nlp_cfeebfe7d6bf4c718860f12a0045167d",
+          "sequence": 1,
+          "key": "topic",
+          "name": "Concept map construction",
+          "parent_stage_id": null,
+          "previous_stage_id": null,
+          "technique": "Model-assisted structured extraction",
+          "implementation": "packages/learner_state_core/assessment/provider.py:build_topic",
+          "input": {
+            "topic": "Tokenization",
+            "notes_character_count": 157
+          },
+          "parameters": {
+            "model": "test-provider",
+            "contract": "TopicDefinition"
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:01.487806+00:00",
+          "completed_at": "2026-11-02T20:43:01.498553+00:00",
+          "duration_ms": 0.423,
+          "output": {
+            "title": "Tokenization",
+            "overview": "Tokens are spans of text; context changes meaning.",
+            "concepts": [
+              {
+                "concept_id": "tokens",
+                "name": "Tokenization",
+                "description": "Split text into tokens while preserving boundaries.",
+                "prerequisites": []
+              },
+              {
+                "concept_id": "context",
+                "name": "Context",
+                "description": "Interpret tokens in their surrounding context.",
+                "prerequisites": [
+                  "tokens"
+                ]
+              }
+            ]
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_a96713ff633e47179ecc6ff9dd7a311d",
+          "trace_id": "nlp_cfeebfe7d6bf4c718860f12a0045167d",
+          "sequence": 2,
+          "key": "persistence",
+          "name": "Atomic persistence",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_0ba02aebaf8e407ca4b97689307a6edf",
+          "technique": "SQLite WAL transaction · optimistic version check",
+          "implementation": "packages/learner_state_core/assessment/service.py",
+          "input": {
+            "kind": "topic_and_conversation"
+          },
+          "parameters": {},
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-02T20:43:01.508636+00:00",
+          "completed_at": "2026-11-02T20:43:01.537821+00:00",
+          "duration_ms": 17.896,
+          "output": {
+            "conversation_id": "conversation_6bd9fdf6576c41c29d5f9b27234a4af5",
+            "topic_key": "5c848bc470d3f4bc75d886777d3e34deaf42d5ef",
+            "committed": true
+          },
+          "error": null
+        }
+      ],
+      "telemetry_status": "complete",
+      "incomplete_warning": null
+    }
+  ],
+  "saved_database_record": {
+    "turn_id": "turn_d485539400684fd7a10550f0e4a29d4d",
+    "timestamp": "2026-11-02T20:43:02.456675+00:00",
+    "question": {
+      "concept_id": "tokens",
+      "kind": "explain",
+      "prompt": "Explain how token boundaries affect the interpretation of a sentence. Assessment case 1.",
+      "expected_focus": "Give a reason and connect it to the concept.",
+      "learning_support": "",
+      "criteria": [
+        {
+          "criterion_id": "reason",
+          "description": "Explains why token boundaries matter."
+        },
+        {
+          "criterion_id": "example",
+          "description": "Connects a concrete example to token boundaries."
+        }
+      ],
+      "reference_answer": "Explain boundaries and contextual interpretation with an example.",
+      "source_citations": [
+        "chunk_b62320f1c2c042da9bc3f30938bddef8"
+      ],
+      "usage": null,
+      "question_id": "question_b085864669694dc4a555916a882fa665",
+      "created_at": "2026-11-02T20:43:01.690124+00:00",
+      "generation_trace": {
+        "trace_id": "nlp_a1b241df07d04b0bb2396a74da205a37",
+        "state_snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+        "context_sha256": "8d3442ff620e837a4cb7150ecef392929600bdee518f76ac9ca85981bfb5eea1",
+        "context": {
+          "topic": {
+            "title": "Tokenization",
+            "overview": "Tokens are spans of text; context changes meaning.",
+            "concepts": [
+              {
+                "concept_id": "tokens",
+                "name": "Tokenization",
+                "description": "Split text into tokens while preserving boundaries.",
+                "prerequisites": []
+              },
+              {
+                "concept_id": "context",
+                "name": "Context",
+                "description": "Interpret tokens in their surrounding context.",
+                "prerequisites": [
+                  "tokens"
+                ]
+              }
+            ]
+          },
+          "state": {
+            "snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+            "timestamp": "2026-11-02T20:43:01.522813+00:00",
+            "policy_version": "criterion-weighted-state-v1",
+            "concepts": {
+              "tokens": {
+                "concept_id": "tokens",
+                "name": "Tokenization",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              },
+              "context": {
+                "concept_id": "context",
+                "name": "Context",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              }
+            }
+          },
+          "plan": {
+            "concept_id": "tokens",
+            "kind": "explain",
+            "intent": "diagnose",
+            "reason": "Collect an initial explanation; there is no evidence for this concept yet.",
+            "difficulty": "foundational",
+            "missing_criteria": [],
+            "required_criteria": [],
+            "hypotheses": [],
+            "evidence_ids": [],
+            "state_snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+            "policy_version": "focused-adaptive-planner-v2"
+          },
+          "retrieval": {
+            "query": "Tokenization Split text into tokens while preserving boundaries. ",
+            "scope": {
+              "learner_id": "verification_synthetic_learner",
+              "topic_key": "5c848bc470d3f4bc75d886777d3e34deaf42d5ef"
+            },
+            "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+            "materials": [
+              {
+                "chunk_id": "chunk_b62320f1c2c042da9bc3f30938bddef8",
+                "source_id": "source_5b2101cbf979463ead8bb55b71042947",
+                "kind": "study_notes",
+                "content": "Tokenization divides text into tokens while preserving boundaries. A token need not be a whole word. Context affects interpretation of a token in a sentence.",
+                "metadata": {
+                  "start": 0,
+                  "end": 157,
+                  "title": "Tokenization · supplied notes"
+                },
+                "rank": -8.384615384615385e-06,
+                "retrieval_method": "fts5_bm25"
+              }
+            ],
+            "evidence": []
+          },
+          "allowed_source_citations": [
+            "chunk_b62320f1c2c042da9bc3f30938bddef8"
+          ],
+          "previous_questions": [],
+          "contract_version": "saved-state-question-v2"
+        },
+        "plan": {
+          "concept_id": "tokens",
+          "kind": "explain",
+          "intent": "diagnose",
+          "reason": "Collect an initial explanation; there is no evidence for this concept yet.",
+          "difficulty": "foundational",
+          "missing_criteria": [],
+          "required_criteria": [],
+          "hypotheses": [],
+          "evidence_ids": [],
+          "state_snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+          "policy_version": "focused-adaptive-planner-v2"
+        },
+        "source_citations": [
+          "chunk_b62320f1c2c042da9bc3f30938bddef8"
+        ],
+        "model": "test-provider",
+        "attempts": 1,
+        "duration_ms": 77.39,
+        "prompt_version": "saved-state-question-v2"
+      }
+    },
+    "response_text": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+    "nlp": {
+      "raw_text": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+      "normalized_text": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+      "token_spans": [
+        {
+          "token": "Token",
+          "start": 0,
+          "end": 5
+        },
+        {
+          "token": "boundaries",
+          "start": 6,
+          "end": 16
+        },
+        {
+          "token": "preserve",
+          "start": 17,
+          "end": 25
+        },
+        {
+          "token": "distinct",
+          "start": 26,
+          "end": 34
+        },
+        {
+          "token": "pieces",
+          "start": 35,
+          "end": 41
+        },
+        {
+          "token": "of",
+          "start": 42,
+          "end": 44
+        },
+        {
+          "token": "text",
+          "start": 45,
+          "end": 49
+        },
+        {
+          "token": ".",
+          "start": 49,
+          "end": 50
+        },
+        {
+          "token": "For",
+          "start": 51,
+          "end": 54
+        },
+        {
+          "token": "example",
+          "start": 55,
+          "end": 62
+        },
+        {
+          "token": ",",
+          "start": 62,
+          "end": 63
+        },
+        {
+          "token": "separate",
+          "start": 64,
+          "end": 72
+        },
+        {
+          "token": "word",
+          "start": 73,
+          "end": 77
+        },
+        {
+          "token": "spans",
+          "start": 78,
+          "end": 83
+        },
+        {
+          "token": "allow",
+          "start": 84,
+          "end": 89
+        },
+        {
+          "token": "a",
+          "start": 90,
+          "end": 91
+        },
+        {
+          "token": "program",
+          "start": 92,
+          "end": 99
+        },
+        {
+          "token": "to",
+          "start": 100,
+          "end": 102
+        },
+        {
+          "token": "interpret",
+          "start": 103,
+          "end": 112
+        },
+        {
+          "token": "the",
+          "start": 113,
+          "end": 116
+        },
+        {
+          "token": "surrounding",
+          "start": 117,
+          "end": 128
+        },
+        {
+          "token": "context",
+          "start": 129,
+          "end": 136
+        },
+        {
+          "token": "without",
+          "start": 137,
+          "end": 144
+        },
+        {
+          "token": "merging",
+          "start": 145,
+          "end": 152
+        },
+        {
+          "token": "every",
+          "start": 153,
+          "end": 158
+        },
+        {
+          "token": "word",
+          "start": 159,
+          "end": 163
+        },
+        {
+          "token": "together",
+          "start": 164,
+          "end": 172
+        },
+        {
+          "token": ".",
+          "start": 172,
+          "end": 173
+        }
+      ],
+      "token_count": 28,
+      "sentences": [
+        {
+          "text": "Token boundaries preserve distinct pieces of text.",
+          "start": 0,
+          "end": 50
+        },
+        {
+          "text": " For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+          "start": 50,
+          "end": 173
+        }
+      ],
+      "keywords": [
+        "word",
+        "token",
+        "boundaries",
+        "preserve",
+        "distinct",
+        "pieces",
+        "text",
+        "example",
+        "separate",
+        "spans",
+        "allow",
+        "program",
+        "interpret",
+        "surrounding",
+        "context",
+        "without"
+      ],
+      "response_hash": "26e02f6df5ef20306f93e15b61228b371d4e5b7ebe8f8a604ed456605c3b0420",
+      "negation_cues": [],
+      "uncertainty_cues": [],
+      "version": "unicode-math-spans-v3"
+    },
+    "evidence": {
+      "concept_id": "tokens",
+      "source_quote": "Token boundaries preserve distinct pieces of text. For example, separate word spans allow a program to interpret the surrounding context without merging every word together.",
+      "claim": "A candidate claim about token boundaries.",
+      "category": "understanding",
+      "confidence": 0.9,
+      "met_criteria": [
+        "reason",
+        "example"
+      ],
+      "missing_criteria": [],
+      "misconception": null,
+      "contradicts_hypothesis_ids": [],
+      "feedback": "Your example provides evidence we can check.",
+      "coaching": "Use the source distinction, then try a fresh example.",
+      "source_citations": [
+        "chunk_b62320f1c2c042da9bc3f30938bddef8"
+      ],
+      "evidence_id": "evidence_17aa4346bd194a0b85306a5bd15ace87",
+      "question_id": "question_b085864669694dc4a555916a882fa665",
+      "timestamp": "2026-11-02T20:43:02.299049+00:00",
+      "source_start": 0,
+      "source_end": 173,
+      "extractor_model": "test-provider",
+      "confidence_calibrated": false,
+      "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+      "source_interaction_id": "turn_d485539400684fd7a10550f0e4a29d4d",
+      "session_id": "conversation_6bd9fdf6576c41c29d5f9b27234a4af5",
+      "validation_status": "passed"
+    },
+    "state_before": {
+      "snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+      "timestamp": "2026-11-02T20:43:01.522813+00:00",
+      "policy_version": "criterion-weighted-state-v1",
+      "concepts": {
+        "tokens": {
+          "concept_id": "tokens",
+          "name": "Tokenization",
+          "alpha": 1.0,
+          "beta": 1.0,
+          "estimate": 0.5,
+          "uncertainty": 0.28868,
+          "observation_count": 0,
+          "informative_count": 0,
+          "evidence_ids": [],
+          "response_hashes": [],
+          "hypotheses": {},
+          "criterion_gaps": {},
+          "missing_criteria": [],
+          "last_category": null
+        },
+        "context": {
+          "concept_id": "context",
+          "name": "Context",
+          "alpha": 1.0,
+          "beta": 1.0,
+          "estimate": 0.5,
+          "uncertainty": 0.28868,
+          "observation_count": 0,
+          "informative_count": 0,
+          "evidence_ids": [],
+          "response_hashes": [],
+          "hypotheses": {},
+          "criterion_gaps": {},
+          "missing_criteria": [],
+          "last_category": null
+        }
+      }
+    },
+    "state_after": {
+      "snapshot_id": "state_ee4e0b24ab644c12aec1ceebd71e97cc",
+      "timestamp": "2026-11-02T20:43:02.431589+00:00",
+      "policy_version": "criterion-weighted-state-v1",
+      "concepts": {
+        "tokens": {
+          "concept_id": "tokens",
+          "name": "Tokenization",
+          "alpha": 1.9,
+          "beta": 1.0,
+          "estimate": 0.65517,
+          "uncertainty": 0.24068,
+          "observation_count": 1,
+          "informative_count": 1,
+          "evidence_ids": [
+            "evidence_17aa4346bd194a0b85306a5bd15ace87"
+          ],
+          "response_hashes": [
+            "26e02f6df5ef20306f93e15b61228b371d4e5b7ebe8f8a604ed456605c3b0420"
+          ],
+          "hypotheses": {},
+          "criterion_gaps": {},
+          "missing_criteria": [],
+          "last_category": "understanding"
+        },
+        "context": {
+          "concept_id": "context",
+          "name": "Context",
+          "alpha": 1.0,
+          "beta": 1.0,
+          "estimate": 0.5,
+          "uncertainty": 0.28868,
+          "observation_count": 0,
+          "informative_count": 0,
+          "evidence_ids": [],
+          "response_hashes": [],
+          "hypotheses": {},
+          "criterion_gaps": {},
+          "missing_criteria": [],
+          "last_category": null
+        }
+      }
+    },
+    "state_changes": {
+      "concept_id": "tokens",
+      "rule": "weighted_criterion_update",
+      "confidence": 0.9,
+      "coverage": 1.0,
+      "novelty_factor": 1.0,
+      "informativeness": 1.0,
+      "duplicate_response": false,
+      "weight": 0.9,
+      "delta_alpha": 0.9,
+      "delta_beta": 0.0,
+      "before_alpha": 1.0,
+      "before_beta": 1.0,
+      "after_alpha": 1.9,
+      "after_beta": 1.0,
+      "before_estimate": 0.5,
+      "after_estimate": 0.65517,
+      "delta_estimate": 0.15517,
+      "before_uncertainty": 0.28868,
+      "after_uncertainty": 0.24068,
+      "hypothesis_changes": [],
+      "resolved_criteria": [],
+      "formula": "w=confidence×novelty×min(tokens/16,1); α′=α+w×rubric_coverage; β′=β+w×(1−coverage)×slip_factor; estimate=α′/(α′+β′)",
+      "limitation": "Heuristic evidence estimate, not a calibrated measurement of understanding. Tutor coaching never updates these parameters."
+    },
+    "extraction_trace": {
+      "trace_id": "nlp_3291acabc5e440e09484e8a390ac9cd5",
+      "context_sha256": "0ab1f8651d7bb08a5c04390609c368fc354f6c960bbed1451c837f0457a6bac5",
+      "state_snapshot_id": "state_fcb74e6a68c84a9bacc7c48f05bc92e3",
+      "model": "test-provider",
+      "retrieval": {
+        "query": "Tokenization Split text into tokens while preserving boundaries. ",
+        "scope": {
+          "learner_id": "verification_synthetic_learner",
+          "topic_key": "5c848bc470d3f4bc75d886777d3e34deaf42d5ef"
+        },
+        "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+        "materials": [
+          {
+            "chunk_id": "chunk_b62320f1c2c042da9bc3f30938bddef8",
+            "source_id": "source_5b2101cbf979463ead8bb55b71042947",
+            "kind": "study_notes",
+            "content": "Tokenization divides text into tokens while preserving boundaries. A token need not be a whole word. Context affects interpretation of a token in a sentence.",
+            "metadata": {
+              "start": 0,
+              "end": 157,
+              "title": "Tokenization · supplied notes"
+            },
+            "rank": -8.384615384615385e-06,
+            "retrieval_method": "fts5_bm25"
+          }
+        ],
+        "evidence": []
+      },
+      "validation_attempts": [],
+      "prompt_version": "rubric-evidence-v2",
+      "quote_validated": true,
+      "duration_ms": 449.54,
+      "usage": null
+    }
+  }
+}

@@ -30,6 +30,11 @@ export function NlpObservability({
   const [operation, setOperation] = useState("");
   const [status, setStatus] = useState("");
   const [question, setQuestion] = useState("");
+  const [lookup, setLookup] = useState("");
+  const [stageFilter, setStageFilter] = useState("");
+  const [errorOnly, setErrorOnly] = useState(false);
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
   const [before, setBefore] = useState<number | undefined>();
   const [cursorStack, setCursorStack] = useState<(number | undefined)[]>([]);
   const [page, setPage] = useState<api.ExecutionPage | null>(null);
@@ -85,6 +90,11 @@ export function NlpObservability({
             operation,
             status,
             question_id: question.trim(),
+            search: lookup.trim(),
+            stage: stageFilter,
+            error_only: errorOnly ? "true" : undefined,
+            started_after: from ? `${from}T00:00:00Z` : undefined,
+            started_before: to ? `${to}T23:59:59.999Z` : undefined,
             before,
             limit: 20,
           },
@@ -127,6 +137,7 @@ export function NlpObservability({
     operation,
     status,
     question,
+    lookup, stageFilter, errorOnly, from, to,
     before,
     selected,
     live,
@@ -149,6 +160,7 @@ export function NlpObservability({
       setOperation("answer");
       setStatus("");
       setQuestion("");
+      setLookup(""); setStageFilter(""); setErrorOnly(false); setFrom(""); setTo("");
     });
   }
 
@@ -164,8 +176,7 @@ export function NlpObservability({
         <div>
           <h1>NLP Observability</h1>
           <p>
-            Follow learner language from the original response to evidence and
-            saved state.
+            Inspect responses, validation, and committed learner state.
           </p>
         </div>
         <div className="nlp-heading-actions">
@@ -229,7 +240,7 @@ export function NlpObservability({
               <strong>{summary?.failed ?? "—"}</strong> failed
             </span>
             <span>
-              <strong>{summary?.running ?? "—"}</strong> running
+              <strong>{summary?.running ?? "—"}</strong> unfinished
             </span>
             <span>
               <strong>
@@ -237,10 +248,25 @@ export function NlpObservability({
                   ? "—"
                   : `${Math.round(summary.average_ms).toLocaleString()} ms`}
               </strong>{" "}
-              mean duration
+              completed mean
             </span>
+            <span><strong>{summary?.success_rate == null ? "—" : `${summary.success_rate}%`}</strong> success rate</span>
           </div>
+          <details className="nlp-performance">
+            <summary>Performance & reliability</summary>
+            <dl>
+              <div><dt>AI call mean</dt><dd>{duration(summary?.provider_ms)}</dd></div>
+              <div><dt>Retrieval mean</dt><dd>{duration(summary?.retrieval_ms)}</dd></div>
+              <div><dt>Commit mean</dt><dd>{duration(summary?.persistence_ms)}</dd></div>
+              <div><dt>Failure rate</dt><dd>{summary?.failure_rate == null ? "—" : `${summary.failure_rate}%`}</dd></div>
+              <div><dt>Provider retries</dt><dd>{summary?.retry_count ?? "—"}</dd></div>
+              <div><dt>Persistence failures</dt><dd>{summary?.persistence_failures ?? "—"}</dd></div>
+              <div><dt>Incomplete telemetry</dt><dd>{summary?.incomplete_telemetry ?? "—"}</dd></div>
+            </dl>
+            <p className="nlp-caption">Rates use finished executions. Latency uses completed, timed stages; missing measurements are excluded. Incomplete telemetry includes running executions and known gaps. Older traces may have unknown completeness.</p>
+          </details>
           <div className="nlp-filters">
+            <label>Execution lookup<input type="search" value={lookup} placeholder="Execution, question or conversation ID" onChange={e => changeFilter(() => setLookup(e.target.value))} /></label>
             <label>
               Conversation
               <select
@@ -283,16 +309,6 @@ export function NlpObservability({
                 ))}
               </select>
             </label>
-            <label>
-              Question ID
-              <input
-                value={question}
-                placeholder="Filter by saved question"
-                onChange={(e) =>
-                  changeFilter(() => setQuestion(e.target.value))
-                }
-              />
-            </label>
             <label className="nlp-live">
               <input
                 type="checkbox"
@@ -302,12 +318,21 @@ export function NlpObservability({
               Live updates
             </label>
           </div>
+          <details className="nlp-advanced-filters">
+            <summary>Stage, error & date filters{(stageFilter || errorOnly || from || to) ? " · active" : ""}</summary>
+            <div className="nlp-filters">
+              <label>Pipeline stage<select value={stageFilter} onChange={e => changeFilter(() => setStageFilter(e.target.value))}><option value="">All stages</option>{techniques.map(t => <option key={t.key} value={t.key}>{t.name}</option>)}</select></label>
+              <label>From (UTC)<input type="date" value={from} max={to || undefined} onChange={e => changeFilter(() => setFrom(e.target.value))} /></label>
+              <label>Through (UTC)<input type="date" value={to} min={from || undefined} onChange={e => changeFilter(() => setTo(e.target.value))} /></label>
+              <label className="nlp-live"><input type="checkbox" checked={errorOnly} onChange={e => changeFilter(() => setErrorOnly(e.target.checked))} />Errors and recovered retries</label>
+              <button className="text-button" onClick={() => changeFilter(() => {setLookup(""); setConversation(""); setOperation(""); setStatus(""); setQuestion(""); setStageFilter(""); setFrom(""); setTo(""); setErrorOnly(false);})}>Clear filters</button>
+            </div>
+          </details>
           <p className="nlp-caption" role="status">
             {lastUpdated
               ? `${live ? "Following every 1.5 seconds" : "Updates paused"} · last received ${lastUpdated}`
               : "Loading recorded executions…"}{" "}
-            · Totals cover the selected conversation. Duration includes model
-            calls and nested work.
+            · Totals follow all filters. Duration includes nested work.
           </p>
           {page && !page.items.length ? (
             <div className="empty-state">
@@ -416,6 +441,7 @@ export function NlpObservability({
                     <div className="nlp-execution-meta">
                       <Status value={execution.status} />
                       <span>{execution.stages.length} recorded stages</span>
+                      <span>Telemetry {execution.telemetry_status}</span>
                       {execution.question_id && (
                         <code title={execution.question_id}>
                           Question {execution.question_id.slice(-12)}
@@ -718,6 +744,9 @@ export function NlpObservability({
 
 function metric(value: number | null) {
   return value === null ? "—" : value.toFixed(4);
+}
+function duration(value: number | null | undefined) {
+  return value == null ? "—" : `${Math.round(value).toLocaleString()} ms`;
 }
 function Status({ value }: { value: string }) {
   return <span className={`nlp-status ${value}`}>{value}</span>;

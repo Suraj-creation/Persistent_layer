@@ -16,6 +16,8 @@ def install_schema(conn):
         "CREATE TABLE IF NOT EXISTS assessment_conversations (conversation_id TEXT PRIMARY KEY, learner_id TEXT NOT NULL, topic_key TEXT NOT NULL, request_id TEXT NOT NULL, request_hash TEXT NOT NULL, payload_json TEXT NOT NULL, UNIQUE(learner_id, request_id))",
         "CREATE TABLE IF NOT EXISTS assessment_questions (question_id TEXT PRIMARY KEY, conversation_id TEXT NOT NULL REFERENCES assessment_conversations(conversation_id), payload_json TEXT NOT NULL)",
         "CREATE TABLE IF NOT EXISTS assessment_answers (turn_id TEXT PRIMARY KEY, conversation_id TEXT NOT NULL REFERENCES assessment_conversations(conversation_id), request_id TEXT NOT NULL, request_hash TEXT NOT NULL, payload_json TEXT NOT NULL, UNIQUE(conversation_id, request_id))",
+        "CREATE TABLE IF NOT EXISTS assessment_submissions (trace_id TEXT PRIMARY KEY, conversation_id TEXT NOT NULL REFERENCES assessment_conversations(conversation_id), question_id TEXT NOT NULL REFERENCES assessment_questions(question_id), request_id TEXT NOT NULL, response_text TEXT NOT NULL, status TEXT NOT NULL CHECK(status IN ('received','completed','failed')), error_code TEXT, turn_id TEXT REFERENCES assessment_answers(turn_id), created_at TEXT NOT NULL, updated_at TEXT NOT NULL)",
+        "CREATE INDEX IF NOT EXISTS assessment_submission_question ON assessment_submissions(conversation_id,question_id,created_at)",
         "CREATE TABLE IF NOT EXISTS assessment_state_history (snapshot_id TEXT PRIMARY KEY, learner_id TEXT NOT NULL, topic_key TEXT NOT NULL, payload_json TEXT NOT NULL)",
         "CREATE TABLE IF NOT EXISTS assessment_documents (document_id TEXT PRIMARY KEY, learner_id TEXT NOT NULL, topic_key TEXT NOT NULL, kind TEXT NOT NULL, title TEXT NOT NULL, raw_text TEXT NOT NULL, text_hash TEXT NOT NULL, UNIQUE(learner_id, topic_key, kind, text_hash))",
         "CREATE TABLE IF NOT EXISTS assessment_chunks (chunk_id TEXT PRIMARY KEY, learner_id TEXT NOT NULL, topic_key TEXT NOT NULL, kind TEXT NOT NULL, source_id TEXT NOT NULL, content TEXT NOT NULL, metadata_json TEXT NOT NULL)",
@@ -96,6 +98,26 @@ class AssessmentStore:
     def answers(self, conversation_id):
         with self.db.connection() as conn:
             return [json.loads(row[0]) for row in conn.execute("SELECT payload_json FROM assessment_answers WHERE conversation_id=? ORDER BY rowid", (conversation_id,))]
+
+    def receive_submission(self, cid, req, trace_id):
+        # A receipt is not accepted evidence. Commit before calling the provider.
+        with self.db.connection() as conn:
+            conn.execute("INSERT INTO assessment_submissions VALUES(?,?,?,?,?,'received',NULL,NULL,?,?)",
+                         (trace_id, cid, req.question_id, req.request_id, req.response_text, now(), now()))
+
+    def complete_submission(self, trace_id, turn_id):
+        # Called inside the same transaction as accepted evidence and state.
+        with self.db.connection() as conn:
+            conn.execute("UPDATE assessment_submissions SET status='completed',turn_id=?,updated_at=? WHERE trace_id=?", (turn_id, now(), trace_id))
+
+    def fail_submission(self, trace_id, error_code):
+        with self.db.connection() as conn:
+            conn.execute("UPDATE assessment_submissions SET status='failed',error_code=?,updated_at=? WHERE trace_id=? AND status='received'", (error_code, now(), trace_id))
+
+    def pending_submission(self, cid, question_id):
+        with self.db.connection() as conn:
+            row = conn.execute("SELECT trace_id,question_id,response_text,status,created_at FROM assessment_submissions WHERE conversation_id=? AND question_id=? AND status!='completed' ORDER BY rowid DESC LIMIT 1", (cid, question_id)).fetchone()
+            return dict(row) if row else None
 
     def add_chunk(self, learner_id, topic_key, kind, source_id, content, metadata):
         cid = new_id("chunk")

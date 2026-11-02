@@ -225,8 +225,10 @@ def test_answer_bundle_rolls_back_on_storage_failure(flow, monkeypatch):
         raise RuntimeError("simulated storage failure")
 
     monkeypatch.setattr(AssessmentStore, "add_chunk", fail)
-    with pytest.raises(RuntimeError, match="simulated storage failure"):
-        answer(client, session)
+    failed = answer(client, session)
+    assert failed.status_code == 500
+    assert failed.json()['request_id'] == failed.headers['x-request-id']
+    assert 'simulated storage failure' not in failed.text
     saved = client.get(f"/api/v2/conversations/{session['conversation']['conversation_id']}", params={"learner_id": "real-user"}).json()
     assert saved["turns"] == []
     assert saved["state"] == session["state"]

@@ -188,6 +188,7 @@ export interface SourceDocument {
   character_count: number;
 }
 export interface AssessmentSession {
+  pending_submission?: { trace_id: string; question_id: string; response_text: string; status: string; created_at: string } | null;
   conversation: Conversation;
   definition: {
     title: string;

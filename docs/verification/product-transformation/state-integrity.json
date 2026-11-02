@@ -1,0 +1,261 @@
+{
+  "mode": "fixture",
+  "synthetic": true,
+  "integrity": "ok",
+  "foreign_key_violations": 0,
+  "verified_turns": [
+    "turn_54f84db5f9974ca4a5760973f40bbd86",
+    "turn_543617f2db754dcea557a6faabecbaf9",
+    "turn_eede8882e668490fa2074d6b495f0102",
+    "turn_b3807bfd2bc244a7b3c9a50e28bb8599",
+    "turn_f1c9c8c6a7d74e05945b1349343ed59d"
+  ],
+  "counts": {
+    "assessment_conversations": 3,
+    "assessment_questions": 8,
+    "assessment_answers": 5,
+    "assessment_state_history": 8,
+    "assessment_submissions": 5,
+    "assessment_documents": 3,
+    "assessment_chunks": 8,
+    "nlp_executions": 17,
+    "nlp_stages": 99
+  },
+  "scenarios": {
+    "duplicate": {
+      "idempotent_replay_added_answers": 0,
+      "first": {
+        "conversation_id": "conversation_75984754f29547578087b03c0de97d63",
+        "turn_id": "turn_54f84db5f9974ca4a5760973f40bbd86",
+        "evidence_id": "evidence_3f382a4663df463786fe80ea90ce8e16",
+        "trace_id": "nlp_94bf5b3a3b5848d684003cfe5c8e7427",
+        "snapshot_before": "state_3609fcfa0e764a78820533d42b58abb4",
+        "snapshot_after": "state_117e504ed1d845c58dbaa03e8cabb768",
+        "state_changes": {
+          "concept_id": "tokens",
+          "rule": "weighted_criterion_update",
+          "confidence": 0.9,
+          "coverage": 0.0,
+          "novelty_factor": 1.0,
+          "informativeness": 1.0,
+          "duplicate_response": false,
+          "weight": 0.9,
+          "delta_alpha": 0.0,
+          "delta_beta": 0.9,
+          "before_alpha": 1.0,
+          "before_beta": 1.0,
+          "after_alpha": 1.0,
+          "after_beta": 1.9,
+          "before_estimate": 0.5,
+          "after_estimate": 0.34483,
+          "delta_estimate": -0.15517,
+          "before_uncertainty": 0.28868,
+          "after_uncertainty": 0.24068,
+          "hypothesis_changes": [
+            {
+              "hypothesis_id": "hyp_89f42f8d0110e015d130",
+              "before": 0.1,
+              "after": 0.505,
+              "reason": "supporting quoted evidence"
+            }
+          ],
+          "resolved_criteria": [],
+          "formula": "w=confidence\u00d7novelty\u00d7min(tokens/16,1); \u03b1\u2032=\u03b1+w\u00d7rubric_coverage; \u03b2\u2032=\u03b2+w\u00d7(1\u2212coverage)\u00d7slip_factor; estimate=\u03b1\u2032/(\u03b1\u2032+\u03b2\u2032)",
+          "limitation": "Heuristic evidence estimate, not a calibrated measurement of understanding. Tutor coaching never updates these parameters."
+        }
+      },
+      "repeated_on_next_question": {
+        "conversation_id": "conversation_75984754f29547578087b03c0de97d63",
+        "turn_id": "turn_543617f2db754dcea557a6faabecbaf9",
+        "evidence_id": "evidence_9778af147cfa4a0f95f0d60b681cc723",
+        "trace_id": "nlp_6c11eaf0404a4eb18f3f2c15f5bf52f5",
+        "snapshot_before": "state_117e504ed1d845c58dbaa03e8cabb768",
+        "snapshot_after": "state_9bedb53c89f84163b469ba577e568ecc",
+        "state_changes": {
+          "concept_id": "tokens",
+          "rule": "weighted_criterion_update",
+          "confidence": 0.9,
+          "coverage": 0.0,
+          "novelty_factor": 0.15,
+          "informativeness": 1.0,
+          "duplicate_response": true,
+          "weight": 0.135,
+          "delta_alpha": 0.0,
+          "delta_beta": 0.135,
+          "before_alpha": 1.0,
+          "before_beta": 1.9,
+          "after_alpha": 1.0,
+          "after_beta": 2.035,
+          "before_estimate": 0.34483,
+          "after_estimate": 0.32949,
+          "delta_estimate": -0.01534,
+          "before_uncertainty": 0.24068,
+          "after_uncertainty": 0.23399,
+          "hypothesis_changes": [
+            {
+              "hypothesis_id": "hyp_89f42f8d0110e015d130",
+              "before": 0.505,
+              "after": 0.53841,
+              "reason": "supporting quoted evidence"
+            }
+          ],
+          "resolved_criteria": [],
+          "formula": "w=confidence\u00d7novelty\u00d7min(tokens/16,1); \u03b1\u2032=\u03b1+w\u00d7rubric_coverage; \u03b2\u2032=\u03b2+w\u00d7(1\u2212coverage)\u00d7slip_factor; estimate=\u03b1\u2032/(\u03b1\u2032+\u03b2\u2032)",
+          "limitation": "Heuristic evidence estimate, not a calibrated measurement of understanding. Tutor coaching never updates these parameters."
+        }
+      }
+    },
+    "abstention": {
+      "before": {
+        "tokens": {
+          "alpha": 1.0,
+          "beta": 1.0
+        },
+        "context": {
+          "alpha": 1.0,
+          "beta": 1.0
+        }
+      },
+      "after": {
+        "tokens": {
+          "alpha": 1.0,
+          "beta": 1.0
+        },
+        "context": {
+          "alpha": 1.0,
+          "beta": 1.0
+        }
+      },
+      "conversation_id": "conversation_4519fdcdbcfb49f1b23185625b8ef92f",
+      "turn_id": "turn_eede8882e668490fa2074d6b495f0102",
+      "evidence_id": "evidence_0c85e6da8efe4997b518ce9933f23c47",
+      "trace_id": "nlp_4a8e4396ba2f4523a812e82f2c58f2b4",
+      "snapshot_before": "state_0f2d5945764e49e0b31bc7d00d942ee5",
+      "snapshot_after": "state_e7be2f68c5b44a8c9eaa66470ae9ca84",
+      "state_changes": {
+        "concept_id": "tokens",
+        "rule": "evidence_hold",
+        "confidence": 0.9,
+        "coverage": 0.0,
+        "novelty_factor": 1.0,
+        "informativeness": 0.625,
+        "duplicate_response": false,
+        "weight": 0.0,
+        "delta_alpha": 0.0,
+        "delta_beta": 0.0,
+        "before_alpha": 1.0,
+        "before_beta": 1.0,
+        "after_alpha": 1.0,
+        "after_beta": 1.0,
+        "before_estimate": 0.5,
+        "after_estimate": 0.5,
+        "delta_estimate": 0.0,
+        "before_uncertainty": 0.28868,
+        "after_uncertainty": 0.28868,
+        "hypothesis_changes": [],
+        "resolved_criteria": [],
+        "formula": "w=confidence\u00d7novelty\u00d7min(tokens/16,1); \u03b1\u2032=\u03b1+w\u00d7rubric_coverage; \u03b2\u2032=\u03b2+w\u00d7(1\u2212coverage)\u00d7slip_factor; estimate=\u03b1\u2032/(\u03b1\u2032+\u03b2\u2032)",
+        "limitation": "Heuristic evidence estimate, not a calibrated measurement of understanding. Tutor coaching never updates these parameters."
+      }
+    },
+    "contradiction": {
+      "before": {
+        "conversation_id": "conversation_aede80ea103b41b3a733b61b7e3348df",
+        "turn_id": "turn_b3807bfd2bc244a7b3c9a50e28bb8599",
+        "evidence_id": "evidence_86ce07abddea4a44837d0833d1c4092f",
+        "trace_id": "nlp_97ee19bb8278434baacecb014141f62e",
+        "snapshot_before": "state_6c045bc3af9c427e99640d1728680503",
+        "snapshot_after": "state_de9db760061e4c4ea314083b6fbb80af",
+        "state_changes": {
+          "concept_id": "tokens",
+          "rule": "weighted_criterion_update",
+          "confidence": 0.9,
+          "coverage": 0.0,
+          "novelty_factor": 1.0,
+          "informativeness": 1.0,
+          "duplicate_response": false,
+          "weight": 0.9,
+          "delta_alpha": 0.0,
+          "delta_beta": 0.9,
+          "before_alpha": 1.0,
+          "before_beta": 1.0,
+          "after_alpha": 1.0,
+          "after_beta": 1.9,
+          "before_estimate": 0.5,
+          "after_estimate": 0.34483,
+          "delta_estimate": -0.15517,
+          "before_uncertainty": 0.28868,
+          "after_uncertainty": 0.24068,
+          "hypothesis_changes": [
+            {
+              "hypothesis_id": "hyp_89f42f8d0110e015d130",
+              "before": 0.1,
+              "after": 0.505,
+              "reason": "supporting quoted evidence"
+            }
+          ],
+          "resolved_criteria": [],
+          "formula": "w=confidence\u00d7novelty\u00d7min(tokens/16,1); \u03b1\u2032=\u03b1+w\u00d7rubric_coverage; \u03b2\u2032=\u03b2+w\u00d7(1\u2212coverage)\u00d7slip_factor; estimate=\u03b1\u2032/(\u03b1\u2032+\u03b2\u2032)",
+          "limitation": "Heuristic evidence estimate, not a calibrated measurement of understanding. Tutor coaching never updates these parameters."
+        }
+      },
+      "after": {
+        "conversation_id": "conversation_aede80ea103b41b3a733b61b7e3348df",
+        "turn_id": "turn_f1c9c8c6a7d74e05945b1349343ed59d",
+        "evidence_id": "evidence_4e59649340eb471c821c9b94ec81d255",
+        "trace_id": "nlp_1b904b90e0c14511b3c4a01258860598",
+        "snapshot_before": "state_de9db760061e4c4ea314083b6fbb80af",
+        "snapshot_after": "state_b9ea382e91334250a0af28dfb3df1e7a",
+        "state_changes": {
+          "concept_id": "tokens",
+          "rule": "weighted_criterion_update",
+          "confidence": 0.9,
+          "coverage": 1.0,
+          "novelty_factor": 1.0,
+          "informativeness": 0.9375,
+          "duplicate_response": false,
+          "weight": 0.84375,
+          "delta_alpha": 0.84375,
+          "delta_beta": 0.0,
+          "before_alpha": 1.0,
+          "before_beta": 1.9,
+          "after_alpha": 1.84375,
+          "after_beta": 1.9,
+          "before_estimate": 0.34483,
+          "after_estimate": 0.49249,
+          "delta_estimate": 0.14766,
+          "before_uncertainty": 0.24068,
+          "after_uncertainty": 0.22954,
+          "hypothesis_changes": [
+            {
+              "hypothesis_id": "hyp_89f42f8d0110e015d130",
+              "before": 0.505,
+              "after": 0.20673,
+              "reason": "explicit contradictory quoted evidence"
+            }
+          ],
+          "resolved_criteria": [
+            "Explains why token boundaries matter.",
+            "Connects a concrete example to token boundaries."
+          ],
+          "formula": "w=confidence\u00d7novelty\u00d7min(tokens/16,1); \u03b1\u2032=\u03b1+w\u00d7rubric_coverage; \u03b2\u2032=\u03b2+w\u00d7(1\u2212coverage)\u00d7slip_factor; estimate=\u03b1\u2032/(\u03b1\u2032+\u03b2\u2032)",
+          "limitation": "Heuristic evidence estimate, not a calibrated measurement of understanding. Tutor coaching never updates these parameters."
+        }
+      },
+      "hypotheses": {
+        "hyp_89f42f8d0110e015d130": {
+          "hypothesis_id": "hyp_89f42f8d0110e015d130",
+          "description": "Tokens always equal words",
+          "score": 0.20673,
+          "status": "weakened",
+          "supporting_evidence_ids": [
+            "evidence_86ce07abddea4a44837d0833d1c4092f"
+          ],
+          "contradicting_evidence_ids": [
+            "evidence_4e59649340eb471c821c9b94ec81d255"
+          ]
+        }
+      }
+    }
+  }
+}
