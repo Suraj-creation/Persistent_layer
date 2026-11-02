@@ -39,7 +39,7 @@ class CognitiveEvidence(BaseModel):
     Core Cognitive Evidence contract.
     Decouples raw learner observation from system interpretation and state inference.
     """
-    evidence_id: str = Field(default_factory=lambda: f"E_{uuid.uuid4().hex[:8]}", description="Unique identifier")
+    evidence_id: str = Field(default_factory=lambda: f"E_{uuid.uuid4().hex}", description="Unique identifier")
     interaction_id: str = Field(..., description="Source interaction reference")
     learner_id: str = Field(..., description="Pseudonymous learner identifier")
     timestamp: datetime = Field(default_factory=utc_now)
@@ -91,7 +91,7 @@ class CognitiveEvidence(BaseModel):
 
 class Interaction(BaseModel):
     """Raw student interaction record."""
-    interaction_id: str = Field(default_factory=lambda: f"I_{uuid.uuid4().hex[:8]}")
+    interaction_id: str = Field(default_factory=lambda: f"I_{uuid.uuid4().hex}")
     learner_id: str
     item_id: str
     item_text: str

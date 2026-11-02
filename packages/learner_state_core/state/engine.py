@@ -18,12 +18,12 @@ def compute_beta_stats(alpha: float, beta: float) -> Tuple[float, float]:
 
 class BayesianLearnerStateEngine:
     """
-    Deterministic Beta-Binomial Bayesian State Engine.
+    Deterministic weighted Beta evidence updater.
     Updates learner conceptual beliefs based on structured Cognitive Evidence.
     
     Guarantees:
-    - Pure functional deterministic updates (same inputs -> identical state output).
-    - Mathematically rigorous Beta-Binomial updating: E[L] = alpha / (alpha + beta).
+    - Repeatable numerical projections; snapshot/event IDs are separately generated.
+    - Heuristically weighted Beta updates: E[L] = alpha / (alpha + beta).
     - Differentiates slips from systematic misconceptions (Student A vs. Student B).
     - Resolves contradictory evidence without discarding history.
     - Preserves complete provenance and generates human-auditable StateChangeEvents with full mathematical traces.
@@ -71,7 +71,7 @@ class BayesianLearnerStateEngine:
         producing a new LearnerStateSnapshot and corresponding StateChangeEvents with mathematical traces.
         """
         new_snapshot = copy.deepcopy(prior_snapshot)
-        new_snapshot.snapshot_id = f"S_{uuid.uuid4().hex[:8]}"
+        new_snapshot.snapshot_id = f"S_{uuid.uuid4().hex}"
         new_snapshot.as_of_interaction_id = evidence.interaction_id
         new_snapshot.timestamp = evidence.timestamp
         events: List[StateChangeEvent] = []
@@ -109,19 +109,20 @@ class BayesianLearnerStateEngine:
             cstate.interaction_count += 1
             cstate.last_interaction_timestamp = evidence.timestamp
 
-            # Evaluate evidence sufficiency
-            if cstate.interaction_count >= 5:
+            # Only informative observations contribute to evidence sufficiency.
+            if interp.category not in ("ambiguous", "guessing"):
+                cstate.informative_evidence_count += 1
+            if cstate.informative_evidence_count >= 5:
                 cstate.evidence_sufficiency = "sufficient"
-            elif cstate.interaction_count >= 3:
+            elif cstate.informative_evidence_count >= 3:
                 cstate.evidence_sufficiency = "moderate"
-            else:
+            elif cstate.informative_evidence_count:
                 cstate.evidence_sufficiency = "sparse"
 
             delta_alpha = 0.0
             delta_beta = 0.0
             rule_applied = ""
             summary = ""
-            likelihood_ratio = None
             prior_m_prob = None
             new_m_prob = None
 
@@ -193,7 +194,6 @@ class BayesianLearnerStateEngine:
 
                 hyp_id = interp.hypothesis_id
                 hyp_name = interp.description
-                likelihood_ratio = 1.0 + 8.0 * interp.hypothesis_confidence * link.confidence
 
                 if hyp_id not in cstate.candidate_misconceptions:
                     # New candidate misconception
@@ -237,10 +237,10 @@ class BayesianLearnerStateEngine:
                     "posterior_mean_mastery": round(new_mastery, 4),
                     "prior_uncertainty_sd": round(prior_uncertainty, 4),
                     "posterior_uncertainty_sd": round(new_uncertainty, 4),
-                    "misconception_likelihood_ratio": round(likelihood_ratio, 4),
+                    "reinforcement_weight": round(0.55 * interp.hypothesis_confidence, 4),
                     "prior_misconception_prob": round(prior_m_prob, 4),
                     "new_misconception_prob": round(new_m_prob, 4),
-                    "formula": "Beta(alpha, beta + delta_beta_misconception); Odds_new = Odds_old * Lambda",
+                    "formula": "Beta(alpha, beta + 1.25*grounding*confidence); new hypothesis p=0.55*confidence; repeated p=min(0.98,p+(1-p)*0.55*confidence); heuristic update",
                 }
 
                 event = StateChangeEvent(
@@ -264,6 +264,8 @@ class BayesianLearnerStateEngine:
             # Case 3: Mastery / Contradiction of Previous Misconception
             # ----------------------------------------------------
             elif interp.category == "mastery" or evidence.polarity == "supports":
+                if cid in new_snapshot.active_prerequisite_gaps:
+                    new_snapshot.active_prerequisite_gaps.remove(cid)
                 delta_alpha = 2.0 * link.confidence * interp.hypothesis_confidence
                 new_alpha = prior_alpha + delta_alpha
                 new_beta = prior_beta
@@ -276,12 +278,13 @@ class BayesianLearnerStateEngine:
 
                 # If student previously had suspected misconceptions on this concept, contradict them
                 for m_id, m_belief in list(cstate.candidate_misconceptions.items()):
-                    if evidence.polarity == "contradicts" or evidence.extracted_claim:
+                    if evidence.polarity == "contradicts" or (interp.category == "mastery" and evidence.is_verbatim_quote):
                         prior_prob = m_belief.posterior_probability
                         discount = 0.75 * link.confidence
                         new_prob = max(0.05, prior_prob * (1.0 - discount))
                         m_belief.posterior_probability = new_prob
                         m_belief.contradicting_evidence_ids.append(evidence.evidence_id)
+                        m_belief.last_updated = evidence.timestamp
                         if new_prob <= 0.25:
                             m_belief.status = "resolved"
 
@@ -344,8 +347,8 @@ class BayesianLearnerStateEngine:
             # Case 4: Prerequisite Gap
             # ----------------------------------------------------
             elif interp.category == "prerequisite_gap":
-                if "fraction_basics" not in new_snapshot.active_prerequisite_gaps:
-                    new_snapshot.active_prerequisite_gaps.append("fraction_basics")
+                if cid not in new_snapshot.active_prerequisite_gaps:
+                    new_snapshot.active_prerequisite_gaps.append(cid)
 
                 math_trace = {
                     "distribution": "Beta-Binomial Conjugate",
@@ -412,26 +415,6 @@ class BayesianLearnerStateEngine:
                 events.append(event)
 
         return new_snapshot, events
-
-    def replay_trajectory(
-        self,
-        learner_id: str,
-        concept_ids: List[str],
-        evidence_ledger: List[CognitiveEvidence],
-    ) -> List[Tuple[LearnerStateSnapshot, List[StateChangeEvent]]]:
-        """
-        Replays the entire sequence of evidence records from scratch,
-        proving that learner state is a pure, deterministic projection over the evidence ledger.
-        """
-        current_state = self.initialize_learner_state(learner_id, concept_ids)
-        trajectory = []
-
-        for evidence in evidence_ledger:
-            next_state, events = self.update_state(current_state, evidence)
-            trajectory.append((next_state, events))
-            current_state = next_state
-
-        return trajectory
 
     def replay_trajectory(
         self,

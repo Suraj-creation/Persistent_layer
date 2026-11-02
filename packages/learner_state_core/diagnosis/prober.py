@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import math
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 from pydantic import BaseModel, Field
 from ..state.models import ConceptState, LearnerStateSnapshot
 
@@ -133,7 +133,7 @@ class ActiveDiagnosisProber:
 
         # Prior distribution over states: P(Mastery) vs. P(Misconception_i) vs. P(Other)
         p_mastery = concept_state.mastery_estimate
-        active_misconceptions = list(concept_state.candidate_misconceptions.values())
+        active_misconceptions = [m for m in concept_state.candidate_misconceptions.values() if m.status in ("suspected", "confirmed")]
 
         if active_misconceptions:
             p_misc = sum(m.posterior_probability for m in active_misconceptions) / len(active_misconceptions)
