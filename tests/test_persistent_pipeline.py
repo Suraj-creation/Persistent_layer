@@ -9,7 +9,7 @@ CID = "fraction_addition_unlike_denominators"
 
 
 def chat(client, **kwargs):
-    return client.post("/api/v1/chat", json={
+    return client.post("/api/workspace/v1/chat", json={
         "learner_id": "alice", "message": "I added the top and bottom numbers.", **kwargs,
     })
 
@@ -60,7 +60,7 @@ def test_invalid_input_and_canonical_grading():
     client = TestClient(main.app)
     assert chat(client, message="   ").status_code == 422
     assert chat(client, selected_option="Z").status_code == 422
-    result = client.post("/api/v1/interactions/process", json={
+    result = client.post("/api/workspace/v1/interactions/process", json={
         "learner_id": "alice", "item_id": "ITEM_FRAC_01", "item_text": "invented", 
         "item_concepts": [CID], "selected_option": "2/5", "correctness": 1,
         "response_text": "Not sure",
@@ -91,7 +91,7 @@ def test_atomic_rollback(monkeypatch):
     def fail(*args, **kwargs):
         raise RuntimeError("simulated disk failure")
 
-    monkeypatch.setattr(main.db_manager, "save_turn", fail)
+    monkeypatch.setattr(main.db_manager, "save_learning_turn", fail)
     failed = chat(client)
     assert failed.status_code == 500
     assert failed.json()['request_id'] == failed.headers['x-request-id']
@@ -102,7 +102,7 @@ def test_atomic_rollback(monkeypatch):
 
 def test_concurrent_updates_are_serialized():
     def submit(index):
-        return TestClient(main.app).post("/api/v1/interactions/process", json={
+        return TestClient(main.app).post("/api/workspace/v1/interactions/process", json={
             "learner_id": "alice", "request_id": f"parallel-{index}",
             "item_id": "ITEM_FRAC_01", "item_text": "1/2 + 1/3", "item_concepts": [CID],
             "response_text": "I added the top and bottom numbers.", "selected_option": "2/5",
@@ -119,7 +119,7 @@ def test_ambiguous_turns_do_not_build_sufficiency_or_resolve_beliefs():
     first = chat(client).json()
     belief = first["new_state"]["concept_states"][CID]["candidate_misconceptions"]
     for index in range(6):
-        result = client.post("/api/v1/interactions/process", json={
+        result = client.post("/api/workspace/v1/interactions/process", json={
             "learner_id": "alice", "item_id": "ITEM_FRAC_01", "item_text": "1/2 + 1/3",
             "response_text": "I am guessing the common denominator is 6.", "selected_option": "5/6",
         }).json()
@@ -172,7 +172,7 @@ def test_complete_evidence_and_events_are_preserved_after_reopen():
     ("DIAG_EQUIV_01", "I add both parts of the fraction.", "ambiguous"),
 ])
 def test_offline_fallback_is_valid_for_every_curated_concept(item_id, text, expected):
-    result = TestClient(main.app).post("/api/v1/interactions/process", json={
+    result = TestClient(main.app).post("/api/workspace/v1/interactions/process", json={
         "learner_id": "alice", "item_id": item_id, "item_text": "server canonical question",
         "response_text": text,
     })
@@ -211,7 +211,7 @@ def test_ledger_replay_uses_commit_order_instead_of_observation_timestamps():
 def test_negated_explanations_do_not_count_as_positive_or_negative_rule_evidence(message):
     client = TestClient(main.app)
     first = chat(client).json()
-    turn = client.post("/api/v1/interactions/process", json={
+    turn = client.post("/api/workspace/v1/interactions/process", json={
         "learner_id": "alice", "item_id": "ITEM_FRAC_01", "item_text": "1/2 + 1/3", "response_text": message,
     }).json()
     assert turn["evidence"]["candidate_interpretation"]["category"] == "ambiguous"
@@ -240,7 +240,7 @@ def test_legacy_concept_migration_keeps_evidence_sufficiency():
     ("ITEM_FRAC_01", "I did not make a calculation mistake."),
 ])
 def test_negated_foundation_and_slip_claims_are_held(item_id, message):
-    result = TestClient(main.app).post("/api/v1/interactions/process", json={
+    result = TestClient(main.app).post("/api/workspace/v1/interactions/process", json={
         "learner_id": "alice", "item_id": item_id, "item_text": "canonical", "response_text": message,
     }).json()
     assert result["evidence"]["candidate_interpretation"]["category"] == "ambiguous"
@@ -265,10 +265,10 @@ def test_misconception_must_belong_to_every_linked_concept(monkeypatch):
 def test_answer_only_is_preserved_without_inventing_conceptual_mastery():
     client = TestClient(main.app)
     payload = {"learner_id": "alice", "item_id": "ITEM_FRAC_01", "item_text": "canonical", "selected_option": "5/6"}
-    result = client.post("/api/v1/interactions/process", json=payload)
+    result = client.post("/api/workspace/v1/interactions/process", json=payload)
     assert result.status_code == 200
     turn = result.json()
     assert turn["interaction"]["correctness"] == 1
     assert turn["evidence"]["candidate_interpretation"]["category"] == "ambiguous"
     assert turn["new_state"]["concept_states"][CID]["mastery_estimate"] == .5
-    assert client.post("/api/v1/interactions/process", json={**payload, "selected_option": None}).status_code == 422
+    assert client.post("/api/workspace/v1/interactions/process", json={**payload, "selected_option": None}).status_code == 422

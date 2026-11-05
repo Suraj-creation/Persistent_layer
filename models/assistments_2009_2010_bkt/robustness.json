@@ -1,0 +1,227 @@
+{
+  "dataset": "ASSISTments 2009-2010 corrected skill-builder release",
+  "task": "predict first-attempt correctness from a held-out student's observed history",
+  "source_page": "https://sites.google.com/site/assistmentsdata/home/2009-2010-assistment-data/skill-builder-data-2009-2010",
+  "split_design": "repeated student-level holdouts; all model parameters fit on training learners only",
+  "seeds": [
+    42,
+    7
+  ],
+  "test_ratio": 0.2,
+  "skill_regex": "fraction|percent",
+  "skill_support": {
+    "min_rows": 100,
+    "min_students": 20
+  },
+  "skill_prevalence_prior_strength": 20.0,
+  "bkt": {
+    "num_fits": 1,
+    "forgetting_enabled": false,
+    "parallel": false
+  },
+  "summary": {
+    "bkt": {
+      "auc": {
+        "mean_across_splits": 0.6638595166343833,
+        "sd_across_splits": 0.004821220635250584
+      },
+      "accuracy_at_0_5": {
+        "mean_across_splits": 0.7449085526037258,
+        "sd_across_splits": 0.003048047924765199
+      },
+      "brier_score": {
+        "mean_across_splits": 0.1798495993791509,
+        "sd_across_splits": 0.0009107898446560925
+      },
+      "ece_10_bins_uncalibrated": {
+        "mean_across_splits": 0.008795928064610938,
+        "sd_across_splits": 4.870302229729895e-05
+      }
+    },
+    "constant_train_prevalence": {
+      "auc": {
+        "mean_across_splits": 0.5,
+        "sd_across_splits": 0.0
+      },
+      "accuracy_at_0_5": {
+        "mean_across_splits": 0.7396421724334201,
+        "sd_across_splits": 0.004456058135089994
+      },
+      "brier_score": {
+        "mean_across_splits": 0.1926320313446155,
+        "sd_across_splits": 0.002218499726856914
+      },
+      "ece_10_bins_uncalibrated": {
+        "mean_across_splits": 0.007393170608728961,
+        "sd_across_splits": 0.0055984656159542585
+      }
+    },
+    "skill_plus_opportunity_logistic": {
+      "auc": {
+        "mean_across_splits": 0.565273012003134,
+        "sd_across_splits": 0.0015754463975003801
+      },
+      "accuracy_at_0_5": {
+        "mean_across_splits": 0.7396869031168551,
+        "sd_across_splits": 0.004090810593365314
+      },
+      "brier_score": {
+        "mean_across_splits": 0.19038561089332645,
+        "sd_across_splits": 0.0021635770350064212
+      },
+      "ece_10_bins_uncalibrated": {
+        "mean_across_splits": 0.009120730557691975,
+        "sd_across_splits": 0.0037665179258816323
+      }
+    },
+    "smoothed_skill_prevalence": {
+      "auc": {
+        "mean_across_splits": 0.5531327241945205,
+        "sd_across_splits": 0.006526222413580803
+      },
+      "accuracy_at_0_5": {
+        "mean_across_splits": 0.7396869031168551,
+        "sd_across_splits": 0.004090810593365314
+      },
+      "brier_score": {
+        "mean_across_splits": 0.19105822945638645,
+        "sd_across_splits": 0.0017020503183183483
+      },
+      "ece_10_bins_uncalibrated": {
+        "mean_across_splits": 0.01218916723467982,
+        "sd_across_splits": 0.0006706276822236556
+      }
+    }
+  },
+  "paired_bkt_minus_baseline_mean": {
+    "constant_train_prevalence": {
+      "auc": 0.1638595166343833,
+      "brier_score": -0.012782431965464594
+    },
+    "smoothed_skill_prevalence": {
+      "auc": 0.11072679243986278,
+      "brier_score": -0.011208630077235535
+    },
+    "skill_plus_opportunity_logistic": {
+      "auc": 0.0985865046312494,
+      "brier_score": -0.010536011514175533
+    }
+  },
+  "seed_results": [
+    {
+      "seed": 42,
+      "bkt_model_source": "existing seed-42 artifact with matching dataset checksum",
+      "bkt_artifacts": {
+        "model": "models/assistments_2009_2010_bkt/model.pkl",
+        "parameters": "models/assistments_2009_2010_bkt/parameters.csv",
+        "model_sha256": "08df64629a05b8ef8d1b984f2228080aa2463443a8fe431c53b25f6e42038274",
+        "parameter_sha256": "6709a5b644d0c317a9d8e584f8d1aafffc325c662f650dd7f0d413159b78990a"
+      },
+      "split_counts": {
+        "train_rows": 39757,
+        "test_rows": 9901,
+        "test_rows_evaluated": 9901,
+        "unseen_skill_rows_excluded": 0,
+        "train_students": 1762,
+        "test_students": 441
+      },
+      "models": {
+        "bkt": {
+          "rows": 9901,
+          "auc": 0.6672686344391655,
+          "accuracy_at_0_5": 0.7427532572467428,
+          "brier_score": 0.18049362505454308,
+          "ece_10_bins_uncalibrated": 0.008761489827280238
+        },
+        "constant_train_prevalence": {
+          "rows": 9901,
+          "auc": 0.5,
+          "accuracy_at_0_5": 0.7364912635087365,
+          "brier_score": 0.19420074754553654,
+          "ece_10_bins_uncalibrated": 0.011351883610009939
+        },
+        "smoothed_skill_prevalence": {
+          "rows": 9901,
+          "auc": 0.5577474603186952,
+          "accuracy_at_0_5": 0.7367942632057368,
+          "brier_score": 0.19226176077839008,
+          "ece_10_bins_uncalibrated": 0.012663372616431584
+        },
+        "skill_plus_opportunity_logistic": {
+          "rows": 9901,
+          "auc": 0.5641590031720655,
+          "accuracy_at_0_5": 0.7367942632057368,
+          "brier_score": 0.19191549088639898,
+          "ece_10_bins_uncalibrated": 0.011784060924543567
+        }
+      }
+    },
+    {
+      "seed": 7,
+      "bkt_model_source": "fit on this seed's training learners",
+      "bkt_artifacts": {
+        "model": "models/assistments_2009_2010_bkt/model_seed_7.pkl",
+        "parameters": "models/assistments_2009_2010_bkt/parameters_seed_7.csv",
+        "model_sha256": "0175219f412a4339e61c992fe431d96b0489ed5fe03a80c44821905b6b1285bb",
+        "parameter_sha256": "a2a4f258fd0777b2a90e5bb9d35091471c0d6421ed8117779bff4ffe4c9aa0c8"
+      },
+      "split_counts": {
+        "train_rows": 40292,
+        "test_rows": 9366,
+        "test_rows_evaluated": 9366,
+        "unseen_skill_rows_excluded": 0,
+        "train_students": 1762,
+        "test_students": 441
+      },
+      "models": {
+        "bkt": {
+          "rows": 9366,
+          "auc": 0.6604503988296011,
+          "accuracy_at_0_5": 0.7470638479607089,
+          "brier_score": 0.17920557370375875,
+          "ece_10_bins_uncalibrated": 0.008830366301941638
+        },
+        "constant_train_prevalence": {
+          "rows": 9366,
+          "auc": 0.5,
+          "accuracy_at_0_5": 0.7427930813581037,
+          "brier_score": 0.19106331514369448,
+          "ece_10_bins_uncalibrated": 0.0034344576074479827
+        },
+        "smoothed_skill_prevalence": {
+          "rows": 9366,
+          "auc": 0.5485179880703459,
+          "accuracy_at_0_5": 0.7425795430279736,
+          "brier_score": 0.18985469813438283,
+          "ece_10_bins_uncalibrated": 0.011714961852928056
+        },
+        "skill_plus_opportunity_logistic": {
+          "rows": 9366,
+          "auc": 0.5663870208342023,
+          "accuracy_at_0_5": 0.7425795430279736,
+          "brier_score": 0.18885573090025393,
+          "ece_10_bins_uncalibrated": 0.006457400190840383
+        }
+      }
+    }
+  ],
+  "interpretation_limits": [
+    "Across-seed standard deviations describe split sensitivity; they are not confidence intervals.",
+    "The opportunity model uses only skill identity and within-learner skill opportunity count.",
+    "All baselines are correctness predictors, not misconception or reasoning classifiers.",
+    "This historical source does not establish transfer to the app's learners or learning impact.",
+    "No learner-level predictions or raw dataset rows are written to the report."
+  ],
+  "provenance": {
+    "dataset_file_sha256": "162ef8d2d28bcbfea6591a282994062bd8d5eaa00636544292a0d268dca6e5da",
+    "dataset_file_name": "assistments_2009_2010_corrected.csv",
+    "evaluated_at_utc": "2026-11-05T06:57:53.024210+00:00",
+    "versions": {
+      "python": "3.12.3",
+      "pyBKT": "1.4.3",
+      "numpy": "1.26.4",
+      "pandas": "2.3.3",
+      "scikit-learn": "1.7.2"
+    }
+  }
+}

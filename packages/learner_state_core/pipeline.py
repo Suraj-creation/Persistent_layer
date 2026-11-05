@@ -71,7 +71,7 @@ def run_turn(req, db, engine, extractor, rule_extractor, conversational=False):
                 raise HTTPException(409, "This request ID was already used for different input.")
             return cached[0]
         context_state = ensure_snapshot(db, engine, learner_id)
-        turns = db.get_turns(learner_id)
+        turns = db.get_learning_turns(learner_id)
         pending = turns[-1]["recommended_diagnostic_probe"] if turns else None
 
     if conversational:
@@ -143,7 +143,7 @@ def run_turn(req, db, engine, extractor, rule_extractor, conversational=False):
             if cached[1] != request_hash:
                 raise HTTPException(409, "This request ID was already used for different input.")
             return cached[0]
-        current_turns = db.get_turns(learner_id)
+        current_turns = db.get_learning_turns(learner_id)
         if conversational and len(current_turns) != len(turns):
             raise HTTPException(409, "Another response changed this session. Reload before answering.")
         prior = ensure_snapshot(db, engine, learner_id)
@@ -182,7 +182,7 @@ def run_turn(req, db, engine, extractor, rule_extractor, conversational=False):
                   "events": [e.model_dump(mode="json") for e in events],
                   "recommended_diagnostic_probe": question.model_dump(), "diagnostic_rationale": rationale,
                   "trace": trace}
-        db.save_turn(learner_id, request_id, request_hash, result)
+        db.save_learning_turn(learner_id, request_id, request_hash, result)
     logger.info(json.dumps({"event": "learning_turn_committed", "trace_id": trace["trace_id"], "request_id": request_id,
                            "extractor": trace["extractor_model"], "fallback_reason": fallback_reason,
                            "duration_ms": trace["timings_ms"]["total_before_commit"]}))

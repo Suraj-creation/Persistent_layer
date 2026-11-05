@@ -1,0 +1,10 @@
+........................................................................ [ 34%]
+........................................................................ [ 68%]
+..................................................................       [100%]
+=============================== warnings summary ===============================
+tests/test_taxonomy_and_baselines.py: 32 warnings
+  /home/vsu/Desktop/nlp/Persistent_layer/.venv/lib/python3.12/site-packages/pyBKT/fit/EM_fit.py:43: DeprecationWarning: Conversion of an array with ndim > 0 to a scalar is deprecated, and will error in future. Ensure you extract a single element from your array before performing this operation. (Deprecated NumPy 1.25.)
+    log_likelihoods[i][0] = result['total_loglike']
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+210 passed, 32 warnings in 98.25s (0:01:38)

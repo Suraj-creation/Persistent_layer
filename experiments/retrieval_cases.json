@@ -1,0 +1,14 @@
+[
+  {"query":"Why can't I add the bottom numbers when adding fractions?", "relevant":["curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"]},
+  {"query":"I added the top and bottom numbers independently", "relevant":["curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"]},
+  {"query":"How do I find a common denominator for unlike fractions?", "relevant":["curriculum:fraction_addition_unlike_denominators"]},
+  {"query":"What is the denominator and numerator of a fraction?", "relevant":["curriculum:fraction_basics","curriculum:fraction_basics:numerator_denominator_inversion"]},
+  {"query":"Does adding one to both parts create equivalent fractions?", "relevant":["curriculum:fraction_equivalence:additive_equivalence"]},
+  {"query":"Multiply numerator and denominator by the same factor", "relevant":["curriculum:fraction_equivalence"]},
+  {"query":"When adding fractions with the same denominator should I keep the denominator?", "relevant":["curriculum:fraction_addition_like_denominators"]},
+  {"query":"I understand common denominators but made an arithmetic calculation slip", "relevant":["curriculum:fraction_addition_unlike_denominators:calculation_slip"]},
+  {"query":"I confuse cross multiplication with fraction addition", "relevant":["curriculum:fraction_addition_unlike_denominators:cross_multiplication_addition_confusion"]},
+  {"query":"Equal slices parts of a whole denominator unit size", "relevant":["curriculum:fraction_basics"]},
+  {"query":"quantum quasar astrophysics", "relevant":[]},
+  {"query":"banana orchard horticulture", "relevant":[]}
+]

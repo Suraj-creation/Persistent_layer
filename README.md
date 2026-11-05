@@ -12,7 +12,7 @@ Python 3.10+ and Node.js/npm are required.
 
 ```powershell
 python -m pip install -e .
-python -m uvicorn apps.api.app.main:app --reload --host 127.0.0.1 --port 8000
+python -m uvicorn apps.api.app.main:app --reload --host 127.0.0.1 --port 8002
 ```
 
 In another terminal:
@@ -23,13 +23,13 @@ npm ci
 npm run dev
 ```
 
-Open [the learning workspace](http://localhost:5173). The browser proxies API requests to port 8000. [API documentation](http://127.0.0.1:8000/docs) includes the conversation endpoints under `/api/v2`.
+Open [the learning workspace](http://localhost:5173). The browser proxies API requests to port 8002. [API documentation](http://127.0.0.1:8002/docs) includes the conversation endpoints under `/api/v2`.
 
-The application starts empty: no seeded learner profiles, sample conversations, prefilled answers or fixed question bank. Your browser creates a local learner identifier; the sidebar shows only conversations created for that identifier. Previous research data stays on disk and is not inserted into this new workflow.
+The assessment workspace starts empty: no seeded assessments, sample conversations, prefilled answers or fixed question bank. Your browser creates a local learner identifier; the sidebar shows only conversations created for that identifier. Previous research data stays on disk and is not inserted into this new workflow.
 
 ## Model configuration
 
-Preserve an existing `.env`, or use `.env.example` to configure Azure OpenAI. The existing deployment remains supported. `LEARNER_EXTRACTOR=auto` enables the model; `rules` disables cloud calls and keeps saved conversations/reports readable, but cannot generate new assessments. `LEARNER_DB_PATH` optionally overrides the local database path; otherwise it is `data/learner_state.db` resolved from the repository.
+Preserve an existing `.env`, or use `.env.example` to configure Azure OpenAI. The existing deployment remains supported. `LEARNER_EXTRACTOR=auto` enables the model; `rules` disables cloud calls and keeps saved conversations/reports readable, but cannot generate new assessments. `LEARNER_DB_PATH` optionally overrides the local database path (`LEARNER_STATE_DB_PATH` is also supported and takes precedence); otherwise it is `data/learner_state.db` resolved from the repository.
 
 New assessments require a configured model. A failed model call never inserts a canned question or invented evidence. If evidence extraction fails validation, the explanation stays in the editor and learner memory is unchanged. If next-question generation fails after a valid answer has been saved, the answer remains saved and the UI retries only generation.
 
@@ -65,6 +65,21 @@ Reports contain concept estimates, evidence of addressed gaps, unresolved criter
 
 **Submit & next question** saves the explanation and continues with a fresh question; there is no three-answer limit. Repairs focus on a remaining criterion and vary the question format after the first guided check. **Submit & finish** saves and assesses the current explanation, then completes the conversation without generating an unused next question. **Finish & view report** completes immediately using submitted evidence only. Unsent drafts stay on this browser, associated with their original question, and can be resumed later. If newer topic memory requires a different question, earlier drafts remain available to view and copy rather than being attached to that new question. The inspector includes a glossary explaining the scores and their uncalibrated settings. Mathematical notation in generated questions and feedback is rendered locally.
 
+## Training and retrieval tools
+
+On `final`, the **improve** assessment workspace is the default. Open **Training & retrieval** in the sidebar, or [the research view](http://localhost:5173/#training), for the retained **training** tools:
+
+- Aggregate ASSISTments BKT metrics, repeated holdout comparisons, fitted parameters and artifact checksums.
+- Fraction tutor and lab: quoted evidence, atomic state updates, issued diagnostics, saved conversations and deterministic replay.
+- Researcher evidence ledgers, trajectories, dataset audits and synthetic benchmarks.
+- Retrieval Explorer: local/global/hybrid/mix/naive modes, source citations, relationship traces and explicit abstention. Eedi research indexing is optional and remains separate from learner evidence.
+
+The research tools have scoped, locally compiled CSS and load on demand. Their demo learner profiles and curated fraction questions belong to the sandbox; they are not inserted into assessment conversations. Both systems share SQLite infrastructure with separate tables and retrieval scopes. Existing databases from either branch migrate to a current snapshot plus preserved snapshot history.
+
+BKT checkpoints remain **offline baselines**, not live assessment models. The MAP classifier remains **untrained** pending authorized data. No new model was trained as part of this merge. See [training results](TRAINING_EXPERIMENT_REPORT.md), [retrieval verification](RAG_AND_REGRESSION_REPORT.md), and [final integration notes](docs/FINAL_BRANCH_INTEGRATION.md).
+
+The sandbox defaults to offline extraction and deterministic tutor replies. Optional Azure inference is controlled separately with `EVIDENCE_EXTRACTOR_MODE=azure` and `TUTOR_RESPONSE_MODE=azure`. The assessment workspace requires its configured model to generate new questions.
+
 ## Verify
 
 ### NLP Observability
@@ -96,9 +111,11 @@ npm test
 npm run build
 ```
 
-Tests use temporary databases and fixture model responses, never the real learner database or cloud inference. Separate synthetic live-provider and browser checks verify the integrated flow. Existing v1 research APIs and baseline experiments remain for compatibility; the frontend uses only v2 and contains no demo assessment content.
+Tests use temporary databases and fixture model responses, never the real learner database or cloud inference. Separate synthetic live-provider and browser checks verify the integrated flow. The primary assessment frontend uses v2 and contains no demo assessment content. The separate training sandbox uses v1 research APIs. The older improve fraction conversation protocol is available under `/api/workspace/v1`; its write routes have distinct request-ID semantics from training v1. Session, traces and snapshot-history GET routes also retain their original `/api/v1` aliases.
 
 For reproducible browser verification, install the optional Playwright test dependency/browser (`python -m pip install playwright`, `python -m playwright install chromium`), build the frontend, then run `python experiments/verify_nlp_observability.py`. Add `--live` to exercise the configured model using synthetic learner text in a temporary database. Artifacts under `docs/verification/nlp-observability/` are verification evidence, not research datasets or scored learning outcomes.
+
+Run `cd apps/web && npm run test:e2e` for the training browser flows. Install Python browser tooling with `python -m pip install -e ".[verification]"` when running the separate workspace harnesses.
 
 Run `python experiments/verify_product_transformation.py` for responsive layouts, server-side rejected-answer recovery, filtering, keyboard focus, report cancellation and unavailable bundle recovery. Run `python experiments/verify_state_integrity.py` for SQL-backed duplicate, abstention and contradiction evidence with snapshot IDs. Both use disposable databases and fixture inference. See the [product transformation report](docs/PRODUCT_TRANSFORMATION_REPORT.md) for current results, screenshots, database checks and readiness limits.
 
@@ -108,6 +125,6 @@ The observability browser check also requires a distinct visible next question, 
 
 This is a local, single-user research prototype. A browser identifier is not authentication; keep the API bound to loopback. The existing baseline experiments and sample datasets do not validate this adaptive assessment implementation.
 
-Confidence, update weights and misconception scores are uncalibrated heuristics. Quote validation proves provenance, not semantic correctness. The model can misinterpret a valid quote or generate imperfect educational material. Local retrieval is lexical, so it may fall back to recent passages when terminology differs; every fallback is recorded.
+Confidence, update weights and misconception scores are uncalibrated heuristics. Quote validation proves provenance, not semantic correctness. The model can misinterpret a valid quote or generate imperfect educational material. Assessment retrieval is lexical, so it may fall back to recent passages when terminology differs; every fallback is recorded. The research sandbox separately offers deterministic graph, lexical and hashed-vector retrieval; those hash vectors are not trained semantic embeddings.
 
 An estimate rising is not proof of learning. Reports flag evidence of progress only when an earlier missing criterion is explicitly rechecked and addressed in a distinct later question, without an identical repeated response. These are not psychometrically equated questions or measured causal learning gains. Evaluate extraction, diagnosis, calibration and longitudinal consistency against annotated data and suitable baselines before making research claims.

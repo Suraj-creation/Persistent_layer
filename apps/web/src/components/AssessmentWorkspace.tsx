@@ -31,7 +31,9 @@ import { readDrafts, saveDraft, SavedDraft } from "./assessment/drafts";
 import { SavedDrafts } from "./assessment/SavedDrafts";
 import { SourceMode } from "./assessment/SourceRecovery";
 
-type View = "practice" | "history" | "reports" | "observability";
+type View = "practice" | "history" | "reports" | "observability" | "training";
+
+const TrainingWorkbench = lazy(() => import("./TrainingWorkbench"));
 
 const ConversationReport = lazy(() => import("./assessment/ConversationReport").then(m => ({ default: m.ConversationReport })));
 const NlpObservability = lazy(() => import("./assessment/NlpObservability").then(m => ({ default: m.NlpObservability })));
@@ -47,7 +49,10 @@ function localIdentity() {
 
 export function AssessmentWorkspace() {
   const [learner] = useState(localIdentity);
-  const [view, setView] = useState<View>("practice");
+  const [view, setView] = useState<View>(() => location.hash === "#training" ? "training" : "practice");
+  useEffect(() => {
+    window.history.replaceState(null, "", view === "training" ? "#training" : location.pathname + location.search);
+  }, [view]);
   const [activeId, setActiveId] = useState<string | null>(() =>
     localStorage.getItem("learner-state:conversation:v2"),
   );
@@ -415,6 +420,7 @@ export function AssessmentWorkspace() {
               { id: "practice", label: "Learning workspace", icon: BookOpen },
               { id: "history", label: "Conversations", icon: History },
               { id: "reports", label: "Reports", icon: FileText },
+              { id: "training", label: "Training & retrieval", icon: Database },
               {
                 id: "observability",
                 label: "NLP Observability",
@@ -495,7 +501,9 @@ export function AssessmentWorkspace() {
           <div className="breadcrumb">
             Your learning <ChevronRight size={14} />
             <strong>
-              {view === "observability"
+              {view === "training"
+                ? "Training & retrieval"
+                : view === "observability"
                 ? "NLP Observability"
                 : view === "reports"
                   ? "Reports"
@@ -548,7 +556,9 @@ export function AssessmentWorkspace() {
         )}
         <RenderBoundary key={view}>
         <Suspense fallback={<div className="loading-state" role="status"><LoaderCircle className="spin" size={24} /><p>Opening {view === "observability" ? "execution records" : "your report"}…</p></div>}>
-        {view === "observability" ? (
+        {view === "training" ? (
+          <TrainingWorkbench />
+        ) : view === "observability" ? (
           <NlpObservability
             learner={learner}
             conversations={items}
@@ -901,7 +911,7 @@ export function AssessmentWorkspace() {
       </div>
       <GuidedTour
         onTarget={revealGuideTarget}
-        active={guide && !busy && !loading && view === "practice"}
+        active={guide && view === "practice" && !busy && !loading}
         hasSession={!!session}
         onClose={() => {
           setGuide(false);

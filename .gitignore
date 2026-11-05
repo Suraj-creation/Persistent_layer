@@ -9,3 +9,12 @@ data/*.db*
 .presentation-build/
 .taste-skill/
 *.tsbuildinfo
+data/raw/
+data/backups/
+models/
+
+# Browser regression artifacts
+apps/web/test-results/
+apps/web/playwright-report/
+
+apps/web/src/research.generated.css

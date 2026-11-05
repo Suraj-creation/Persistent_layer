@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import math
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 from ..evidence.models import ConceptLink
 from .taxonomy import FRACTION_TAXONOMY, KnowledgeComponent
 
@@ -54,7 +54,7 @@ class SemanticTaxonomyMatcher:
                     # Cosine similarity
                     sim = float(np.dot(claim_emb, kc_emb) / (np.linalg.norm(claim_emb) * np.linalg.norm(kc_emb)))
                     # Normalize to 0..1
-                    norm_sim = max(0.0, min(1.0, (sim + 1.0) / 2.0))
+                    norm_sim = max(0.0, min(1.0, sim))
                     rationale = f"Dense semantic match score {norm_sim:.2f} with '{kc.concept_name}'."
                     scored_concepts.append((kc, norm_sim, rationale))
             except Exception:
@@ -69,10 +69,12 @@ class SemanticTaxonomyMatcher:
                 scored_concepts.append((kc, min(1.0, sim * 1.5), rationale))
 
         # Sort descending by score
-        scored_concepts.sort(key=lambda x: x[1], reverse=True)
+        scored_concepts.sort(key=lambda x: (-x[1], x[0].concept_id))
 
         results = []
-        for kc, score, rationale in scored_concepts[:top_k]:
+        for kc, score, rationale in scored_concepts[:max(0, top_k)]:
+            if score <= 0:
+                continue
             results.append(
                 ConceptLink(
                     concept_id=kc.concept_id,

@@ -1,11 +1,11 @@
 """
-3-Tier Benchmark Evaluation Script
+Synthetic 3-Tier Pipeline Demonstration
 Compares:
 - Tier 1: Correctness-Only Knowledge Tracing (pyBKT baseline)
 - Tier 2: Language-Aware Baseline (Direct Text Features / CIKT-style Profiler without persistent state)
-- Tier 3: Proposed Pipeline (Structured Cognitive Evidence + Persistent Bayesian State Engine)
+- Tier 3: Proposed Pipeline (Structured Cognitive Evidence + Heuristic Persistent State)
 
-Evaluated on: Eedi Diagnostic Questions Benchmark with student explanations & ground-truth misconceptions.
+Runs against the generated Eedi-style fixture by default; it is a software demonstration, not a real-data evaluation.
 """
 
 from __future__ import annotations
@@ -56,7 +56,7 @@ def compute_ece(y_true: np.ndarray, y_prob: np.ndarray, n_bins: int = 10) -> flo
 
 def run_3_tier_benchmark(seed: int = 42) -> Dict[str, Any]:
     print("=" * 80)
-    print("STARTING 3-TIER COMPARATIVE EVALUATION BENCHMARK")
+    print("STARTING SYNTHETIC 3-TIER PIPELINE DEMONSTRATION")
     print("=" * 80)
 
     # 1. Load Dataset & Audit
@@ -137,9 +137,9 @@ def run_3_tier_benchmark(seed: int = 42) -> Dict[str, Any]:
     print(f"Tier 2 Results: AUC={tier2_metrics['auc']}, ACC={tier2_metrics['accuracy']}, ECE={tier2_metrics['ece']}, Misc F1={tier2_metrics['misconception_f1']}")
 
     # -------------------------------------------------------------------------
-    # TIER 3: Proposed Pipeline (Structured Evidence + Persistent Bayesian State)
+    # TIER 3: Proposed Pipeline (Structured Evidence + Heuristic Persistent State)
     # -------------------------------------------------------------------------
-    print("\n--- Evaluating Tier 3: Proposed Structured Evidence & Persistent Bayesian State ---")
+    print("\n--- Evaluating Tier 3: Proposed Structured Evidence & Heuristic Persistent State ---")
     extractor = RuleBasedEvidenceExtractor()
     state_engine = BayesianLearnerStateEngine()
 
@@ -190,7 +190,7 @@ def run_3_tier_benchmark(seed: int = 42) -> Dict[str, Any]:
     y_test_gt_misc = np.array(y_test_gt_misc)
     y_test_pred_misc = np.array(y_test_pred_misc)
 
-    auc_t3 = float(roc_auc_score(y_test_gt, y_test_pred_prob)) if len(np.unique(y_test_gt)) > 1 else 0.75
+    auc_t3 = float(roc_auc_score(y_test_gt, y_test_pred_prob)) if len(np.unique(y_test_gt)) > 1 else 0.50
     acc_t3 = float(accuracy_score(y_test_gt, (y_test_pred_prob >= 0.5).astype(int)))
     brier_t3 = float(brier_score_loss(y_test_gt, y_test_pred_prob))
     ece_t3 = float(compute_ece(y_test_gt, y_test_pred_prob))
@@ -213,7 +213,19 @@ def run_3_tier_benchmark(seed: int = 42) -> Dict[str, Any]:
     # -------------------------------------------------------------------------
     results = {
         "dataset": audit_report.dataset_name,
+        "data_provenance": "synthetic_fixture",
+        "research_validity": "synthetic_demo_only",
+        "caveats": [
+            "The default loader generated four hand-authored fraction archetypes; these are not real student interactions.",
+            "The same response templates recur across synthetic learners, so the text classifier can memorize generator patterns.",
+            "This run is for exercising software paths only and must not be cited as an empirical benchmark.",
+            "Tier 3 is a hand-tuned state policy, not a trained model; its probabilities are not calibrated.",
+            "Tier 2 classifies the current response text, while Tiers 1 and 3 predict correctness from previous responses. These are different tasks, so deltas are descriptive fixture values only.",
+        ],
         "sample_size": len(df),
+        "state_policy_version": state_engine.policy_version,
+        "extractor_version": "rule-based-baseline-v3",
+        "seed": seed,
         "tiers": {
             "tier_1_correctness_only_pybkt": {
                 "name": "Tier 1: Correctness-Only KT (pyBKT)",
@@ -226,8 +238,8 @@ def run_3_tier_benchmark(seed: int = 42) -> Dict[str, Any]:
                 "metrics": tier2_metrics,
             },
             "tier_3_proposed_persistent_state": {
-                "name": "Tier 3: Proposed Structured Evidence + Persistent Bayesian State",
-                "description": "Language -> Structured Evidence -> KC Grounding -> Persistent Bayesian Belief State with slip/misconception tracking.",
+                "name": "Tier 3: Structured Evidence + Heuristic Persistent State",
+                "description": "Language -> Structured Evidence -> KC Grounding -> Hand-tuned mastery and misconception scores; not a trained or calibrated state model.",
                 "metrics": tier3_metrics,
             },
         },
@@ -240,7 +252,7 @@ def run_3_tier_benchmark(seed: int = 42) -> Dict[str, Any]:
     }
 
     # Save to JSON
-    output_dir = Path("experiments")
+    output_dir = PROJECT_ROOT / "experiments"
     output_dir.mkdir(exist_ok=True)
     results_path = output_dir / "benchmark_results.json"
     with open(results_path, "w", encoding="utf-8") as f:
@@ -248,7 +260,9 @@ def run_3_tier_benchmark(seed: int = 42) -> Dict[str, Any]:
     print(f"\nSaved benchmark results to {results_path}")
 
     # Generate Markdown Report
-    report_md = f"""# 3-Tier Comparative Evaluation Benchmark Report
+    report_md = f"""# Synthetic 3-Tier Pipeline Demonstration — Not a Research Benchmark
+
+> **Validity warning:** The default loader generated hand-authored archetypes. These values do not measure performance on real student data and must not be cited as research findings.
 
 ## Dataset: {audit_report.dataset_name}
 - **Total Interactions:** {len(df)}
@@ -268,14 +282,18 @@ def run_3_tier_benchmark(seed: int = 42) -> Dict[str, Any]:
 | **ECE (Calibration Error)** (lower is better) | {tier1_metrics['ece']:.4f} | {tier2_metrics['ece']:.4f} | **{tier3_metrics['ece']:.4f}** | -{tier1_metrics['ece'] - tier3_metrics['ece']:.4f} |
 | **Misconception Precision** | {tier1_metrics['misconception_precision']:.4f} | {tier2_metrics['misconception_precision']:.4f} | **{tier3_metrics['misconception_precision']:.4f}** | +{tier3_metrics['misconception_precision']:.4f} |
 | **Misconception Recall** | {tier1_metrics['misconception_recall']:.4f} | {tier2_metrics['misconception_recall']:.4f} | **{tier3_metrics['misconception_recall']:.4f}** | +{tier3_metrics['misconception_recall']:.4f} |
-| **Misconception Macro-F1** | {tier1_metrics['misconception_f1']:.4f} | {tier2_metrics['misconception_f1']:.4f} | **{tier3_metrics['misconception_f1']:.4f}** | **+{tier3_metrics['misconception_f1']:.4f}** |
+| **Binary Misconception F1** | {tier1_metrics['misconception_f1']:.4f} | {tier2_metrics['misconception_f1']:.4f} | **{tier3_metrics['misconception_f1']:.4f}** | **+{tier3_metrics['misconception_f1']:.4f}** |
 
 ---
 
 ## Key Findings
-1. **Misconception Diagnosis:** Tier 1 (pyBKT) achieves **0.0000** Misconception F1 because correctness outcomes alone cannot observe the underlying cognitive reasoning. Tier 3 achieves **{tier3_metrics['misconception_f1']:.4f}**, successfully disambiguating Student A (rule misconception) from Student B (calculation slip).
-2. **Calibration & Uncertainty:** Tier 3 reduces Expected Calibration Error (ECE) to **{tier3_metrics['ece']:.4f}**, yielding calibrated, uncertainty-aware probabilities.
-3. **Response Prediction:** The evidence-grounded Bayesian state improves next-response prediction AUC by **+{tier3_metrics['auc'] - tier1_metrics['auc']:.4f}** over conventional BKT.
+1. The tiers run against repeated, hand-authored response templates, so the split does not test generalization to new wording or real learners.
+2. Tier 3 AUC is **{tier3_metrics['auc']:.4f}** versus Tier 1's **{tier1_metrics['auc']:.4f}**; Tier 3 ECE is **{tier3_metrics['ece']:.4f}**. These fixture metrics do not show improved prediction or calibrated probabilities.
+3. Tier 1's zero misconception F1 is assigned because pyBKT emits no misconception class; it is not a measured head-to-head diagnosis result.
+4. Tier 2 uses the current explanation. Tiers 1 and 3 use previous responses. The tasks differ and their score deltas are not a fair model comparison.
+5. This run uses state policy `{state_engine.policy_version}`, rule extractor `rule-based-baseline-v3`, and seed `{seed}`.
+
+For the real-data training and evaluation plan, see `DATA_AND_TRAINING_PLAN.md`.
 """
     report_path = output_dir / "benchmark_report.md"
     with open(report_path, "w", encoding="utf-8") as f:

@@ -1,0 +1,33 @@
+
+> learner-state-web@2.0.0 test:e2e
+> playwright test
+
+[WebServer] INFO:     Started server process [677432]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:8013 (Press CTRL+C to quit)
+[WebServer] Browserslist: caniuse-lite is outdated. Please run:
+[WebServer]   npx update-browserslist-db@latest
+[WebServer]   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+[WebServer]
+[WebServer] Rebuilding...
+[WebServer] (node:677579) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]
+[WebServer] Done in 922ms.
+[WebServer] (node:677613) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 7 tests using 1 worker
+
+(node:677640) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 e2e/platform.spec.ts:3:1 › improved workspace stays the default and keeps its styling after visiting training (3.0s)
+  ✓  2 e2e/platform.spec.ts:35:1 › lab submission, evidence, diagnostic answer, and replay form one persistent flow (2.1s)
+  ✓  3 e2e/platform.spec.ts:51:1 › chat restores from backend after reload and switching learner isolates the conversation (2.9s)
+  ✓  4 e2e/platform.spec.ts:68:1 › researcher training, retrieval modes, no-match fallback, audit, and replay views work (3.6s)
+  ✓  5 e2e/platform.spec.ts:97:1 › retrieval failure is visible and research view fits a narrow screen (1.7s)
+  ✓  6 e2e/platform.spec.ts:109:1 › a lost transport response retries the same event key and commits one learner update (1.7s)
+  ✓  7 e2e/platform.spec.ts:109:1 › a lost truncated-json response retries the same event key and commits one learner update (1.6s)
+
+  7 passed (24.5s)

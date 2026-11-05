@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 from typing import Dict, List, Optional, Tuple
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 from ..state.models import ConceptState, LearnerStateSnapshot
 
 
@@ -11,8 +11,8 @@ class DiagnosticOption(BaseModel):
     option_text: str
     is_correct: bool
     targeted_misconception_id: Optional[str] = None
-    expected_probability_given_misconception: float = 0.85
-    expected_probability_given_mastery: float = 0.05
+    expected_probability_given_misconception: float = Field(0.85, ge=0, le=1)
+    expected_probability_given_mastery: float = Field(0.05, ge=0, le=1)
 
 
 class DiagnosticItem(BaseModel):
@@ -21,6 +21,21 @@ class DiagnosticItem(BaseModel):
     question_text: str
     options: List[DiagnosticOption]
     diagnostic_rationale: str
+
+    @model_validator(mode="after")
+    def validate_choices(self):
+        if not self.options:
+            # Free-response clarification prompts have no categorical likelihoods.
+            return self
+        if len(self.options) < 2:
+            raise ValueError("Multiple-choice diagnostics require at least two options")
+        if len({option.option_key for option in self.options}) != len(self.options):
+            raise ValueError("Diagnostic option keys must be unique")
+        if sum(option.is_correct for option in self.options) != 1:
+            raise ValueError("Diagnostic items require exactly one correct option")
+        if sum(option.expected_probability_given_mastery for option in self.options) <= 0 or sum(option.expected_probability_given_misconception for option in self.options) <= 0:
+            raise ValueError("Diagnostic likelihoods require positive mass")
+        return self
 
 
 # Sample curated diagnostic item bank for fractions
@@ -107,7 +122,7 @@ class ActiveDiagnosisProber:
     """
 
     def __init__(self, item_bank: Optional[List[DiagnosticItem]] = None):
-        self.item_bank = item_bank or FRACTION_DIAGNOSTIC_BANK
+        self.item_bank = item_bank if item_bank is not None else FRACTION_DIAGNOSTIC_BANK
 
     @staticmethod
     def _entropy(probs: List[float]) -> float:
@@ -122,18 +137,19 @@ class ActiveDiagnosisProber:
         self,
         concept_id: str,
         concept_state: ConceptState,
+        excluded_item_ids: Optional[List[str]] = None,
     ) -> Optional[Tuple[DiagnosticItem, float, str]]:
         """
         Finds the item in the bank with the highest Expected Information Gain for this concept.
         Returns: (DiagnosticItem, EIG_score, rationale) or None if no items exist.
         """
-        candidate_items = [item for item in self.item_bank if item.concept_id == concept_id]
+        candidate_items = sorted([item for item in self.item_bank if item.options and item.concept_id == concept_id and item.item_id not in (excluded_item_ids or [])], key=lambda item: item.item_id)
         if not candidate_items:
             return None
 
         # Prior distribution over states: P(Mastery) vs. P(Misconception_i) vs. P(Other)
         p_mastery = concept_state.mastery_estimate
-        active_misconceptions = [m for m in concept_state.candidate_misconceptions.values() if m.status in ("suspected", "confirmed")]
+        active_misconceptions = [belief for belief in concept_state.candidate_misconceptions.values() if belief.status in {"suspected", "confirmed"}]
 
         if active_misconceptions:
             p_misc = sum(m.posterior_probability for m in active_misconceptions) / len(active_misconceptions)
@@ -142,7 +158,7 @@ class ActiveDiagnosisProber:
 
         # Normalize prior
         total = p_mastery + p_misc
-        prior_dist = [p_mastery / total, p_misc / total]
+        prior_dist = [p_mastery / total, p_misc / total] if total > 0 else [0.5, 0.5]
         h_prior = self._entropy(prior_dist)
 
         best_item: Optional[DiagnosticItem] = None
@@ -156,22 +172,24 @@ class ActiveDiagnosisProber:
             # Outcome 3: Student chooses other error
             exp_post_entropy = 0.0
 
+            mastery_mass = sum(option.expected_probability_given_mastery for option in item.options)
+            misc_mass = sum(option.expected_probability_given_misconception for option in item.options)
             for opt in item.options:
+                likelihood_mastery = opt.expected_probability_given_mastery / mastery_mass
+                likelihood_misc = opt.expected_probability_given_misconception / misc_mass
                 # Probability of choosing this option: P(opt) = P(opt|mastery)*P(mastery) + P(opt|misc)*P(misc)
                 p_opt = (
-                    opt.expected_probability_given_mastery * prior_dist[0]
-                    + opt.expected_probability_given_misconception * prior_dist[1]
+                    likelihood_mastery * prior_dist[0]
+                    + likelihood_misc * prior_dist[1]
                 )
 
                 if p_opt < 1e-4:
                     continue
 
                 # Posterior P(misc | opt) via Bayes rule
-                post_misc = (opt.expected_probability_given_misconception * prior_dist[1]) / p_opt
-                post_mastery = (opt.expected_probability_given_mastery * prior_dist[0]) / p_opt
-                post_dist = [max(0.01, min(0.99, post_mastery)), max(0.01, min(0.99, post_misc))]
-                norm = sum(post_dist)
-                post_dist = [p / norm for p in post_dist]
+                post_misc = (likelihood_misc * prior_dist[1]) / p_opt
+                post_mastery = (likelihood_mastery * prior_dist[0]) / p_opt
+                post_dist = [post_mastery, post_misc]
 
                 h_post = self._entropy(post_dist)
                 exp_post_entropy += p_opt * h_post

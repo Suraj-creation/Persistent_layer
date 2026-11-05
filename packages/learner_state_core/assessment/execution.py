@@ -87,13 +87,9 @@ class ExecutionStore:
     def write(self, action):
         # Never borrow the learner transaction: failed writes must remain observable.
         try:
-            conn = self.db._get_connection()
-            try:
+            with self.db.independent_connection() as conn:
                 conn.execute('PRAGMA busy_timeout=150')
-                with conn:
-                    action(conn)
-            finally:
-                conn.close()
+                action(conn)
             return True
         except Exception as error:
             logger.warning('execution_journal_unavailable error_type=%s', type(error).__name__)

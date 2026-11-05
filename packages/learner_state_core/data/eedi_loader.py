@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone, timedelta
+
 import json
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
@@ -19,12 +21,15 @@ class EediDataLoader:
     def __init__(self, data_path: Optional[Union[str, Path]] = None):
         self.data_path = Path(data_path) if data_path else None
         self.df: Optional[pd.DataFrame] = None
+        self.source_kind = "unloaded"
 
     def load(self, df: Optional[pd.DataFrame] = None) -> pd.DataFrame:
         """Loads data from file or takes in-memory DataFrame."""
         if df is not None:
             self.df = df
+            self.source_kind = "provided_dataframe"
         elif self.data_path and self.data_path.exists():
+            self.source_kind = "file"
             if self.data_path.suffix == ".csv":
                 self.df = pd.read_csv(self.data_path)
             elif self.data_path.suffix == ".json":
@@ -35,6 +40,7 @@ class EediDataLoader:
                 raise ValueError(f"Unsupported file format: {self.data_path.suffix}")
         else:
             self.df = self.create_sample_eedi_dataset()
+            self.source_kind = "synthetic_fixture"
 
         return self.df
 
@@ -75,8 +81,13 @@ class EediDataLoader:
             else "PARTIALLY_SUITABLE_LIMITED_LANGUAGE_SIGNALS"
         )
 
+        synthetic = self.source_kind == "synthetic_fixture"
         return DatasetAuditReport(
-            dataset_name="Eedi Diagnostic Questions (Math Misconceptions)",
+            dataset_name=(
+                "Synthetic Eedi-style Fraction Fixture"
+                if synthetic
+                else "Eedi Diagnostic Questions (Math Misconceptions)"
+            ),
             total_records=total_records,
             total_students=total_students,
             total_items=total_items,
@@ -87,10 +98,17 @@ class EediDataLoader:
             concept_distribution={str(k): int(v) for k, v in list(concept_dist.items())[:10]},
             leakage_risk_flags=leakage_risks,
             suitability_verdict=verdict,
-            notes=[
-                "Preserves free-form student rationales and specific diagnostic distractor options.",
-                "Contains validated misconception IDs suitable for ground-truth diagnosis evaluation.",
-            ],
+            notes=(
+                [
+                    "Generated from hand-authored archetypes for software demonstration only; not real learner data.",
+                    "Do not interpret benchmark metrics on this fixture as empirical results.",
+                ]
+                if synthetic
+                else [
+                    "Field availability depends on the supplied file; inspect the source release and schema before research use.",
+                    "Misconception labels are only ground truth if the supplied source documents them as expert-verified.",
+                ]
+            ),
         )
 
     def to_canonical_interactions(self) -> List[Tuple[Interaction, Optional[str]]]:
@@ -114,6 +132,7 @@ class EediDataLoader:
                 selected_option=str(row["selected_option"]) if pd.notna(row.get("selected_option")) else None,
                 correctness=int(row["correct"]) if pd.notna(row.get("correct")) else 0,
                 latency_seconds=float(row.get("latency", 25.0)),
+                timestamp=datetime.fromisoformat(str(row["timestamp"])).replace(tzinfo=timezone.utc) if pd.notna(row.get("timestamp")) else datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(seconds=int(row.name)),
             )
             gt_misc = str(row.get("misconception_id", "")) if pd.notna(row.get("misconception_id")) else None
             if gt_misc in ["", "none", "nan", "null"]:
@@ -130,7 +149,7 @@ class EediDataLoader:
         Includes Student A (rule misconception), Student B (slip), Mastery, and Ambiguous samples.
         """
         rows = []
-        
+        rng = np.random.RandomState(42)
         # Archetype patterns
         archetypes = [
             # Type 1: Student A archetype (Denominator addition misconception)
@@ -193,7 +212,7 @@ class EediDataLoader:
                     "correct": corr,
                     "explanation": expl,
                     "misconception_id": misc_id if misc_id else "",
-                    "latency": float(np.random.randint(15, 60)),
+                    "latency": float(rng.randint(15, 60)),
                     "timestamp": f"2026-10-27T10:{q_idx * 5:02d}:00",
                 })
                 interaction_counter += 1
