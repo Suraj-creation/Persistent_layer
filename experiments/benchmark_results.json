@@ -1,5 +1,13 @@
 {
-  "dataset": "Eedi Diagnostic Questions (Math Misconceptions)",
+  "dataset": "Synthetic Eedi-style Fraction Fixture",
+  "data_provenance": "synthetic_fixture",
+  "research_validity": "synthetic_demo_only",
+  "caveats": [
+    "The 48 rows are generated from four hand-authored fraction archetypes; they are not real student interactions.",
+    "Generated wording and labels are coupled by construction, so the language baseline can memorize templates.",
+    "The persistent-state AUC is below the correctness-only baseline and its ECE is high; it is not calibrated.",
+    "These values are for exercising code paths only and must not be reported as empirical research findings."
+  ],
   "sample_size": 48,
   "tiers": {
     "tier_1_correctness_only_pybkt": {
@@ -29,8 +37,8 @@
       }
     },
     "tier_3_proposed_persistent_state": {
-      "name": "Tier 3: Proposed Structured Evidence + Persistent Bayesian State",
-      "description": "Language -> Structured Evidence -> KC Grounding -> Persistent Bayesian Belief State with slip/misconception tracking.",
+      "name": "Tier 3: Structured Evidence + Heuristic Persistent State",
+      "description": "Language -> Structured Evidence -> KC Grounding -> Hand-tuned mastery and misconception scores; not a trained or calibrated state model.",
       "metrics": {
         "auc": 0.4688,
         "accuracy": 0.5,

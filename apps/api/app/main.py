@@ -61,7 +61,7 @@ if AZURE_ENDPOINT and AZURE_API_KEY:
         print(f"Warning: Failed to initialize Azure OpenAI: {e}")
 
 # Persistent database manager & core domain services
-db_manager = LocalDatabaseManager()
+db_manager = LocalDatabaseManager(db_path=os.getenv("LEARNER_STATE_DB_PATH"))
 state_engine = BayesianLearnerStateEngine()
 rule_extractor = RuleBasedEvidenceExtractor()
 instructor_extractor = InstructorEvidenceExtractor(client=azure_client, model_name=AZURE_DEPLOYMENT)
@@ -431,8 +431,7 @@ def get_learner_state_events(learner_id: str):
 @app.post("/api/v1/learners/{learner_id}/replay")
 def replay_learner_trajectory(learner_id: str):
     """
-    Replays the entire sequence of evidence records from SQLite from scratch,
-    proving that state is a pure deterministic projection over the evidence ledger.
+    Recomputes the learner trajectory from the evidence records stored in SQLite.
     """
     ledger = db_manager.get_learner_evidence_ledger(learner_id)
     if not ledger:
@@ -445,7 +444,7 @@ def replay_learner_trajectory(learner_id: str):
         "learner_id": learner_id,
         "total_interactions_replayed": len(ledger),
         "final_snapshot": trajectory[-1][0],
-        "replay_status": "SUCCESS_IDENTICAL_PROJECTION",
+        "replay_status": "REPLAY_COMPLETED",
     }
 
 

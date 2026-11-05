@@ -19,12 +19,15 @@ class EediDataLoader:
     def __init__(self, data_path: Optional[Union[str, Path]] = None):
         self.data_path = Path(data_path) if data_path else None
         self.df: Optional[pd.DataFrame] = None
+        self.source_kind = "unloaded"
 
     def load(self, df: Optional[pd.DataFrame] = None) -> pd.DataFrame:
         """Loads data from file or takes in-memory DataFrame."""
         if df is not None:
             self.df = df
+            self.source_kind = "provided_dataframe"
         elif self.data_path and self.data_path.exists():
+            self.source_kind = "file"
             if self.data_path.suffix == ".csv":
                 self.df = pd.read_csv(self.data_path)
             elif self.data_path.suffix == ".json":
@@ -35,6 +38,7 @@ class EediDataLoader:
                 raise ValueError(f"Unsupported file format: {self.data_path.suffix}")
         else:
             self.df = self.create_sample_eedi_dataset()
+            self.source_kind = "synthetic_fixture"
 
         return self.df
 
@@ -75,8 +79,13 @@ class EediDataLoader:
             else "PARTIALLY_SUITABLE_LIMITED_LANGUAGE_SIGNALS"
         )
 
+        synthetic = self.source_kind == "synthetic_fixture"
         return DatasetAuditReport(
-            dataset_name="Eedi Diagnostic Questions (Math Misconceptions)",
+            dataset_name=(
+                "Synthetic Eedi-style Fraction Fixture"
+                if synthetic
+                else "Eedi Diagnostic Questions (Math Misconceptions)"
+            ),
             total_records=total_records,
             total_students=total_students,
             total_items=total_items,
@@ -87,10 +96,17 @@ class EediDataLoader:
             concept_distribution={str(k): int(v) for k, v in list(concept_dist.items())[:10]},
             leakage_risk_flags=leakage_risks,
             suitability_verdict=verdict,
-            notes=[
-                "Preserves free-form student rationales and specific diagnostic distractor options.",
-                "Contains validated misconception IDs suitable for ground-truth diagnosis evaluation.",
-            ],
+            notes=(
+                [
+                    "Generated from hand-authored archetypes for software demonstration only; not real learner data.",
+                    "Do not interpret benchmark metrics on this fixture as empirical results.",
+                ]
+                if synthetic
+                else [
+                    "Field availability depends on the supplied file; inspect the source release and schema before research use.",
+                    "Misconception labels are only ground truth if the supplied source documents them as expert-verified.",
+                ]
+            ),
         )
 
     def to_canonical_interactions(self) -> List[Tuple[Interaction, Optional[str]]]:

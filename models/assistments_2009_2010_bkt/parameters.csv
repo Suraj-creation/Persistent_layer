@@ -1,0 +1,41 @@
+skill,param,class,value
+Multiplication Fractions,prior,default,0.624139957599159
+Multiplication Fractions,learns,default,0.3018722616976431
+Multiplication Fractions,guesses,default,0.3623067289286204
+Multiplication Fractions,slips,default,0.1954793823022266
+Multiplication Fractions,forgets,default,0.0
+Addition and Subtraction Fractions,prior,default,0.645469865633168
+Addition and Subtraction Fractions,learns,default,0.23310297942074024
+Addition and Subtraction Fractions,guesses,default,0.3639036554930303
+Addition and Subtraction Fractions,slips,default,0.15244362476813728
+Addition and Subtraction Fractions,forgets,default,0.0
+Conversion of Fraction Decimals Percents,prior,default,0.6435737708200753
+Conversion of Fraction Decimals Percents,learns,default,0.007812973656806069
+Conversion of Fraction Decimals Percents,guesses,default,0.5824671849795517
+Conversion of Fraction Decimals Percents,slips,default,0.1650519457309593
+Conversion of Fraction Decimals Percents,forgets,default,0.0
+Ordering Fractions,prior,default,0.692864183795614
+Ordering Fractions,learns,default,0.06334180090580216
+Ordering Fractions,guesses,default,0.5729440641208213
+Ordering Fractions,slips,default,0.05087542421141491
+Ordering Fractions,forgets,default,0.0
+Percent Of,prior,default,0.7329054868174107
+Percent Of,learns,default,0.49223090661529506
+Percent Of,guesses,default,0.053975382942735926
+Percent Of,slips,default,0.20544398396480915
+Percent Of,forgets,default,0.0
+Division Fractions,prior,default,0.6186405968447809
+Division Fractions,learns,default,0.3002157598823859
+Division Fractions,guesses,default,0.3310357319096629
+Division Fractions,slips,default,0.14902733496458528
+Division Fractions,forgets,default,0.0
+Finding Percents,prior,default,0.4105514416386775
+Finding Percents,learns,default,0.19478035149395845
+Finding Percents,guesses,default,0.17149484013906355
+Finding Percents,slips,default,0.14273629088000464
+Finding Percents,forgets,default,0.0
+Percents,prior,default,0.34639076238627586
+Percents,learns,default,0.030787803640242983
+Percents,guesses,default,0.15347036287185475
+Percents,slips,default,0.1099866093794959
+Percents,forgets,default,0.0
