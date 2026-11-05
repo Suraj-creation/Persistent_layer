@@ -83,7 +83,7 @@ export const ResearcherStudio: React.FC = () => {
       setIsLoading(true);
       const res = await replayLearnerTrajectory(selectedLearner);
       setReplayMessage(
-        `Successfully replayed ${res.total_interactions_replayed} interactions. Produced byte-for-byte identical state projection!`
+        `Replayed ${res.total_interactions_replayed} interactions from the stored learner history.`
       );
       setTimeout(() => setReplayMessage(null), 5000);
       loadData();
@@ -103,7 +103,7 @@ export const ResearcherStudio: React.FC = () => {
             Researcher & Instructor Intelligence Console
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Audit datasets, inspect structured Cognitive Evidence ledgers, verify Bayesian state trajectories, and evaluate 3-tier benchmarks.
+            Audit datasets, inspect structured Cognitive Evidence ledgers, review learner-state trajectories, and inspect the synthetic pipeline demonstration.
           </p>
         </div>
 
@@ -146,41 +146,46 @@ export const ResearcherStudio: React.FC = () => {
         <div className="space-y-6">
           {benchmarks ? (
             <>
+              {benchmarks.research_validity === 'synthetic_demo_only' && (
+                <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs text-amber-950">
+                  <strong>Demonstration data only.</strong> These rows are generated from hand-authored fraction templates, not real learners. The displayed scores are not research results, and the state probabilities have not been calibrated.
+                </div>
+              )}
               {/* Summary Metrics Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                   <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    Tier 3 Misconception F1
+                    Tier 3 Misconception F1 (Demo)
                   </div>
                   <div className="text-3xl font-extrabold text-indigo-600 mt-1">
                     {(benchmarks.tiers.tier_3_proposed_persistent_state.metrics.misconception_f1 * 100).toFixed(1)}%
                   </div>
                   <div className="text-[11px] text-emerald-600 font-semibold mt-1">
-                    +{benchmarks.comparison_delta_tier3_vs_tier1.misconception_f1_gain * 100}% over pyBKT (0.0%)
+                    Fixture comparison only
                   </div>
                 </div>
 
                 <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                   <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    Tier 3 ECE (Calibration Error)
+                    Tier 3 ECE (Uncalibrated Demo)
                   </div>
                   <div className="text-3xl font-extrabold text-slate-900 mt-1">
                     {benchmarks.tiers.tier_3_proposed_persistent_state.metrics.ece.toFixed(4)}
                   </div>
                   <div className="text-[11px] text-slate-500 font-semibold mt-1">
-                    Calibrated Bayesian uncertainty
+                    Heuristic state values; not calibrated
                   </div>
                 </div>
 
                 <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                   <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    Tier 3 Prediction Accuracy
+                    Tier 3 Accuracy (Demo)
                   </div>
                   <div className="text-3xl font-extrabold text-emerald-600 mt-1">
                     {(benchmarks.tiers.tier_3_proposed_persistent_state.metrics.accuracy * 100).toFixed(1)}%
                   </div>
                   <div className="text-[11px] text-slate-500 font-semibold mt-1">
-                    On held-out test students
+                    Generated template split; not real learners
                   </div>
                 </div>
 
@@ -201,13 +206,13 @@ export const ResearcherStudio: React.FC = () => {
               <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div className="p-6 border-b border-slate-100 flex items-center justify-between">
                   <div>
-                    <h3 className="font-bold text-slate-900 text-base">3-Tier Benchmark Evaluation Matrix</h3>
+                    <h3 className="font-bold text-slate-900 text-base">3-Tier Synthetic Demonstration Matrix</h3>
                     <p className="text-xs text-slate-500 mt-0.5">
                       Comparing conventional correctness Knowledge Tracing, language text features, and the proposed structured evidence state.
                     </p>
                   </div>
                   <span className="text-xs bg-slate-100 text-slate-700 px-3 py-1 rounded-full font-mono font-semibold">
-                    Leakage-Safe Student Split
+                    Synthetic fixture split only
                   </span>
                 </div>
 
@@ -232,7 +237,7 @@ export const ResearcherStudio: React.FC = () => {
                         <td className="py-3.5 px-6 bg-indigo-50/30 font-mono font-bold text-indigo-600">
                           {benchmarks.tiers.tier_3_proposed_persistent_state.metrics.auc.toFixed(4)}
                         </td>
-                        <td className="py-3.5 px-6 font-mono text-emerald-600 font-semibold">
+                        <td className={`py-3.5 px-6 font-mono font-semibold ${benchmarks.comparison_delta_tier3_vs_tier1.auc_delta >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                           {benchmarks.comparison_delta_tier3_vs_tier1.auc_delta >= 0 ? '+' : ''}
                           {benchmarks.comparison_delta_tier3_vs_tier1.auc_delta.toFixed(4)}
                         </td>
@@ -244,7 +249,7 @@ export const ResearcherStudio: React.FC = () => {
                         <td className="py-3.5 px-6 bg-indigo-50/30 font-mono font-bold text-indigo-600">
                           {benchmarks.tiers.tier_3_proposed_persistent_state.metrics.accuracy.toFixed(4)}
                         </td>
-                        <td className="py-3.5 px-6 font-mono text-emerald-600 font-semibold">
+                        <td className={`py-3.5 px-6 font-mono font-semibold ${benchmarks.comparison_delta_tier3_vs_tier1.accuracy_delta >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                           {benchmarks.comparison_delta_tier3_vs_tier1.accuracy_delta >= 0 ? '+' : ''}
                           {benchmarks.comparison_delta_tier3_vs_tier1.accuracy_delta.toFixed(4)}
                         </td>
@@ -257,18 +262,19 @@ export const ResearcherStudio: React.FC = () => {
                           {benchmarks.tiers.tier_3_proposed_persistent_state.metrics.ece.toFixed(4)}
                         </td>
                         <td className="py-3.5 px-6 font-mono text-slate-500">
-                          Calibrated posterior
+                          ECE change: {benchmarks.comparison_delta_tier3_vs_tier1.ece_reduction >= 0 ? '+' : ''}
+                          {benchmarks.comparison_delta_tier3_vs_tier1.ece_reduction.toFixed(4)}
                         </td>
                       </tr>
                       <tr className="bg-amber-50/20">
                         <td className="py-3.5 px-6 font-bold text-amber-950">Misconception Macro-F1</td>
-                        <td className="py-3.5 px-6 font-mono text-slate-400">0.0000 (Cannot observe)</td>
+                        <td className="py-3.5 px-6 font-mono text-slate-400">Not measured (stored as 0.0000)</td>
                         <td className="py-3.5 px-6 font-mono">{benchmarks.tiers.tier_2_language_aware_baseline.metrics.misconception_f1.toFixed(4)}</td>
                         <td className="py-3.5 px-6 bg-indigo-50/50 font-mono font-extrabold text-indigo-700">
                           {benchmarks.tiers.tier_3_proposed_persistent_state.metrics.misconception_f1.toFixed(4)}
                         </td>
-                        <td className="py-3.5 px-6 font-mono font-bold text-emerald-600">
-                          +{benchmarks.comparison_delta_tier3_vs_tier1.misconception_f1_gain.toFixed(4)}
+                        <td className="py-3.5 px-6 font-mono font-bold text-slate-600">
+                          Numeric difference: +{benchmarks.comparison_delta_tier3_vs_tier1.misconception_f1_gain.toFixed(4)}
                         </td>
                       </tr>
                     </tbody>
@@ -278,7 +284,7 @@ export const ResearcherStudio: React.FC = () => {
                 <div className="p-4 bg-slate-50 border-t border-slate-200 text-xs text-slate-600 flex items-start space-x-2">
                   <Info className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
                   <p>
-                    <strong>Core PRD Result Validated:</strong> Conventional KT (Tier 1) produces 0.0 Misconception F1 because correctness outcomes alone cannot observe the cognitive why. Tier 3 extracts structured Cognitive Evidence, maintains persistent Bayesian state updates, and achieves robust misconception diagnosis.
+                    <strong>Fixture warning:</strong> Tier 1 is assigned zero misconception F1 because pyBKT has no misconception output. Tier 2 and Tier 3 scores reflect generated templates and do not validate the proposed learner-state method.
                   </p>
                 </div>
               </div>

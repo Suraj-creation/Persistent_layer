@@ -18,12 +18,15 @@ class FoundationalAssistLoader:
     def __init__(self, data_path: Optional[Union[str, Path]] = None):
         self.data_path = Path(data_path) if data_path else None
         self.df: Optional[pd.DataFrame] = None
+        self.source_kind = "unloaded"
 
     def load(self, df: Optional[pd.DataFrame] = None) -> pd.DataFrame:
         """Loads data from file or returns synthetic benchmark dataframe."""
         if df is not None:
             self.df = df
+            self.source_kind = "provided_dataframe"
         elif self.data_path and self.data_path.exists():
+            self.source_kind = "file"
             if self.data_path.suffix == ".csv":
                 self.df = pd.read_csv(self.data_path)
             elif self.data_path.suffix == ".parquet":
@@ -32,6 +35,7 @@ class FoundationalAssistLoader:
                 self.df = pd.read_json(self.data_path)
         else:
             self.df = self.create_sample_foundational_assist_dataset()
+            self.source_kind = "synthetic_fixture"
 
         return self.df
 
@@ -73,8 +77,13 @@ class FoundationalAssistLoader:
             else "SUITABLE_PRIMARILY_FOR_CORRECTNESS_KT_AND_OPTION_ANALYSIS"
         )
 
+        synthetic = self.source_kind == "synthetic_fixture"
         return DatasetAuditReport(
-            dataset_name="FoundationalASSIST (ASSISTments 2026)",
+            dataset_name=(
+                "Synthetic FoundationalASSIST-style Fixture"
+                if synthetic
+                else "FoundationalASSIST (ASSISTments 2026)"
+            ),
             total_records=total_records,
             total_students=total_students,
             total_items=total_items,
@@ -85,10 +94,17 @@ class FoundationalAssistLoader:
             concept_distribution={str(k): int(v) for k, v in list(concept_dist.items())[:10]},
             leakage_risk_flags=leakage_flags,
             suitability_verdict=verdict,
-            notes=[
-                "Preserves exact problem stems, answer choices, and student-entered text.",
-                "Notice: Does not supply explicit misconception tags; annotation or distractor mapping needed.",
-            ],
+            notes=(
+                [
+                    "Generated demonstration rows only; not the FoundationalASSIST release or real student data.",
+                    "Do not interpret this fixture's text rate or response patterns as dataset audit results.",
+                ]
+                if synthetic
+                else [
+                    "Audit whether answer strings are explanations or short/numeric responses before language-modeling claims.",
+                    "The release does not supply verified misconception tags; annotation or distractor mapping is needed.",
+                ]
+            ),
         )
 
     def to_canonical_interactions(self) -> List[Interaction]:

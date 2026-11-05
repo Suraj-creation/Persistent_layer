@@ -147,6 +147,9 @@ export interface DatasetAuditReport {
 export interface BenchmarkResults {
   dataset: string;
   sample_size: number;
+  data_provenance?: string;
+  research_validity?: string;
+  caveats?: string[];
   tiers: {
     tier_1_correctness_only_pybkt: {
       name: string;

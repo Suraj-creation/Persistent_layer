@@ -420,8 +420,8 @@ class BayesianLearnerStateEngine:
         evidence_ledger: List[CognitiveEvidence],
     ) -> List[Tuple[LearnerStateSnapshot, List[StateChangeEvent]]]:
         """
-        Replays the entire sequence of evidence records from scratch,
-        proving that learner state is a pure, deterministic projection over the evidence ledger.
+        Recomputes state snapshots in evidence order using the current update policy.
+        Snapshot IDs are generated anew during replay.
         """
         current_state = self.initialize_learner_state(learner_id, concept_ids)
         trajectory = []
@@ -440,8 +440,8 @@ class BayesianLearnerStateEngine:
         evidence_ledger: List[CognitiveEvidence],
     ) -> List[Tuple[LearnerStateSnapshot, List[StateChangeEvent]]]:
         """
-        Replays the entire sequence of evidence records from scratch,
-        proving that learner state is a pure, deterministic projection over the evidence ledger.
+        Recomputes state snapshots in evidence order using the current update policy.
+        Snapshot IDs are generated anew during replay.
         """
         current_state = self.initialize_learner_state(learner_id, concept_ids)
         trajectory = []

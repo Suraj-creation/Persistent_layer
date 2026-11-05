@@ -1,0 +1,146 @@
+{
+  "dataset": "ASSISTments 2009-2010 corrected skill-builder release",
+  "target": "correct on first attempt, limited to original problems with first_action == 0",
+  "split": "student-level holdout; responses within each held-out student's sequence remain chronological",
+  "seed": 42,
+  "test_ratio": 0.2,
+  "num_fits": 1,
+  "forgetting_enabled": false,
+  "fit_mode": "serial; parallel=False to avoid pyBKT's per-iteration process-pool overhead",
+  "skill_regex": "fraction|percent",
+  "included_skills": [
+    "Addition and Subtraction Fractions",
+    "Conversion of Fraction Decimals Percents",
+    "Division Fractions",
+    "Finding Percents",
+    "Multiplication Fractions",
+    "Ordering Fractions",
+    "Percent Of",
+    "Percents"
+  ],
+  "audit": {
+    "raw_rows": 346860,
+    "original_problem_rows": 275458,
+    "attempt_first_rows": 249799,
+    "model_rows": 228250,
+    "dropped_after_task_filters": 118610,
+    "duplicate_event_rows": 0,
+    "skill_regex": "fraction|percent",
+    "rows_after_regex_filter": 49715,
+    "skills_after_regex_filter": 10,
+    "min_skill_rows": 100,
+    "min_skill_students": 20,
+    "rows_after_support_filter": 49658,
+    "skills_after_support_filter": 8,
+    "rows_dropped_for_low_skill_support": 57
+  },
+  "split_counts": {
+    "train_rows": 39757,
+    "test_rows_before_unseen_skill_filter": 9901,
+    "test_rows_evaluated": 9901,
+    "test_rows_skipped_unseen_skill": 0,
+    "train_students": 1762,
+    "test_students": 441,
+    "train_skills": 8,
+    "test_skills": 8,
+    "test_skill_coverage": 1.0
+  },
+  "heldout_metrics": {
+    "rows": 9901,
+    "auc": 0.6672686344391655,
+    "accuracy_at_0_5": 0.7427532572467428,
+    "brier_score": 0.18049362505454308,
+    "ece_10_bins_uncalibrated": 0.008761489827280238
+  },
+  "heldout_metrics_by_skill": {
+    "Addition and Subtraction Fractions": {
+      "rows": 1984,
+      "auc": 0.6565549315549315,
+      "accuracy_at_0_5": 0.7762096774193549,
+      "brier_score": 0.16534856751695987,
+      "ece_10_bins_uncalibrated": 0.015926917139867613
+    },
+    "Conversion of Fraction Decimals Percents": {
+      "rows": 3042,
+      "auc": 0.6063573617999531,
+      "accuracy_at_0_5": 0.7166337935568705,
+      "brier_score": 0.1974050705736226,
+      "ece_10_bins_uncalibrated": 0.013902299687447542
+    },
+    "Division Fractions": {
+      "rows": 773,
+      "auc": 0.6433546686746987,
+      "accuracy_at_0_5": 0.7516170763260026,
+      "brier_score": 0.17674114707604524,
+      "ece_10_bins_uncalibrated": 0.007697443843069049
+    },
+    "Finding Percents": {
+      "rows": 974,
+      "auc": 0.7610358977829119,
+      "accuracy_at_0_5": 0.7361396303901437,
+      "brier_score": 0.1761165650182254,
+      "ece_10_bins_uncalibrated": 0.013960851696166496
+    },
+    "Multiplication Fractions": {
+      "rows": 1199,
+      "auc": 0.6011213592233009,
+      "accuracy_at_0_5": 0.6872393661384487,
+      "brier_score": 0.21113428082359967,
+      "ece_10_bins_uncalibrated": 0.04736554826445549
+    },
+    "Ordering Fractions": {
+      "rows": 1175,
+      "auc": 0.7291325119436762,
+      "accuracy_at_0_5": 0.825531914893617,
+      "brier_score": 0.12983086723713386,
+      "ece_10_bins_uncalibrated": 0.01072894257398121
+    },
+    "Percent Of": {
+      "rows": 733,
+      "auc": 0.6314179915624252,
+      "accuracy_at_0_5": 0.7189631650750341,
+      "brier_score": 0.19082262129428681,
+      "ece_10_bins_uncalibrated": 0.007257891228473111
+    },
+    "Percents": {
+      "rows": 21,
+      "auc": 0.5879629629629629,
+      "accuracy_at_0_5": 0.7142857142857143,
+      "brier_score": 0.22747166138322134,
+      "ece_10_bins_uncalibrated": 0.2161456493374808
+    }
+  },
+  "constant_train_prevalence_baseline": {
+    "rows": 9901,
+    "auc": 0.5,
+    "accuracy_at_0_5": 0.7364912635087365,
+    "brier_score": 0.19420074754553654,
+    "ece_10_bins_uncalibrated": 0.011351883610009939
+  },
+  "calibration_note": "Brier and ECE are reported without post-hoc calibration; ECE is bin-dependent.",
+  "scope_limitations": [
+    "This is correctness-only knowledge tracing, not misconception classification.",
+    "The 2009-2010 skill labels are not mapped to this repository's fraction taxonomy.",
+    "Held-out users come from the same historical source and do not establish transfer to the app's learners.",
+    "Only original problems and attempt-first rows were retained; scaffolding and hint-first events were excluded."
+  ],
+  "parameter_diagnostics": {
+    "finite_parameter_count": 40,
+    "total_parameter_count": 40,
+    "estimated_parameter_boundary_count_excluding_fixed_forgetting": 0,
+    "fixed_forgetting_parameters_at_zero": 8
+  },
+  "provenance": {
+    "source_page": "https://sites.google.com/site/assistmentsdata/home/2009-2010-assistment-data/skill-builder-data-2009-2010",
+    "corrected_source_file": "https://drive.google.com/file/d/1NNXHFRxcArrU0ZJSb9BIL56vmUt5FhlE/view",
+    "data_file_sha256": "162ef8d2d28bcbfea6591a282994062bd8d5eaa00636544292a0d268dca6e5da",
+    "data_file_name": "assistments_2009_2010_corrected.csv",
+    "trained_at_utc": "2026-11-05T06:12:27.337276+00:00",
+    "versions": {
+      "pyBKT": "1.4.3",
+      "numpy": "1.26.4",
+      "pandas": "2.3.3",
+      "scikit-learn": "1.7.2"
+    }
+  }
+}

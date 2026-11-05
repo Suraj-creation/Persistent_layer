@@ -2,12 +2,18 @@ from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
-from apps.api.app.main import app
+from packages.learner_state_core.db import LocalDatabaseManager
 
 
 @pytest.fixture
-def client():
-    return TestClient(app)
+def client(tmp_path, monkeypatch):
+    # Keep API tests isolated from the developer's persistent learner database.
+    db_path = tmp_path / "learner_state.db"
+    monkeypatch.setenv("LEARNER_STATE_DB_PATH", str(db_path))
+    from apps.api.app import main as api_main
+
+    monkeypatch.setattr(api_main, "db_manager", LocalDatabaseManager(str(db_path)))
+    return TestClient(api_main.app)
 
 
 def test_api_health(client):
@@ -65,5 +71,5 @@ def test_api_process_student_a_and_diagnostic_probe(client):
     replay_res = client.post("/api/v1/learners/api_student_A/replay")
     assert replay_res.status_code == 200
     replay_data = replay_res.json()
-    assert replay_data["replay_status"] == "SUCCESS_IDENTICAL_PROJECTION"
+    assert replay_data["replay_status"] == "REPLAY_COMPLETED"
     assert replay_data["total_interactions_replayed"] == 1

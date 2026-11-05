@@ -189,7 +189,7 @@ def test_contradiction_handling_and_reversal():
 
 def test_deterministic_replay():
     """
-    Test that replaying a list of evidence records from scratch produces identical state snapshots.
+    Test that replaying a list of evidence records reproduces the learner state values.
     """
     extractor = RuleBasedEvidenceExtractor()
     state_engine = BayesianLearnerStateEngine()
