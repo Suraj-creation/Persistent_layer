@@ -163,6 +163,7 @@ MAP is also unsuitable for training the persistent state updater: the competitio
 - Added the MAP trainer and the ASSISTments BKT trainer, with provenance and local artifact outputs.
 - Added a two-split ASSISTments robustness evaluator with constant, skill-prevalence, and opportunity-count baselines; saved the seed-7 BKT checkpoint and parameter table.
 - Added a pinned Eedi graph downloader and structural audit with local raw-data handling, CC BY attribution, checksums, and aggregate-only tracked output.
+- Integrated the research record into Researcher Studio through `/api/v1/training-report`. The page presents the ASSISTments task and filtering, repeated split metrics and baselines, per-skill results, fitted skill parameters, dataset/model checksums, Eedi graph audit, and MAP's prepared-but-untrained status. It keeps the synthetic fixture in its separate benchmark tab and states that none of these artifacts feed the live state updater. The API returns aggregate values and parameter tables; it does not deserialize checkpoints or return raw learner rows or predictions.
 - Made state transitions and audit event IDs reproducible for identical state/evidence inputs; stopped repeat discounts to inactive beliefs and removed a duplicate replay implementation. Candidate-specific counterevidence targeting remains open because the evidence contract is concept-level.
 - Updated state math traces to identify evidence-weighted Beta masses and misconception scores as heuristics rather than calibrated Bayesian posteriors.
 - Added focused tests for MAP schema/deduplication/ranking and ASSISTments event filters, duplicate rejection, student splits, skill selection, and support thresholds.
@@ -174,8 +175,8 @@ MAP is also unsuitable for training the persistent state updater: the competitio
 
 ## 9. Verification
 
-- Python: `.venv/bin/python -m pytest -q` → **31 passed**, with 32 existing pyBKT NumPy deprecation warnings.
-- Frontend: `npm run build --prefix apps/web` → passed (`tsc -b` and Vite production build).
+- Python: `.venv/bin/python -m pytest -q` → **34 passed**, with 32 existing pyBKT NumPy deprecation warnings. Added API coverage for the training report, checksum and aggregate fields, missing/malformed-artifact behavior, and launch-directory independence.
+- Frontend: `npm run build --prefix apps/web` → passed (`tsc -b` and Vite production build). The local web server returned HTTP 200, and the training-report API returned HTTP 200 with both splits, eight per-skill metric rows, eight parameter rows, and verified checkpoint/parameter checksums.
 - Patch whitespace: `git diff --check` → passed.
 - Real-data training/evaluation: ASSISTments seed 42 was trained earlier; seed 7 was fit for a second learner holdout. The robustness script checksum-checks the seed-42 artifact before reuse and stores aggregate metrics without per-learner predictions.
 - MAP training: not run because authorized data is absent and the terms have not been accepted by the user.

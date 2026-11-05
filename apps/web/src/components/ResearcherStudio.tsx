@@ -9,7 +9,9 @@ import {
   TrendingUp,
   Scale,
   RefreshCw,
+  FlaskConical,
 } from 'lucide-react';
+import { TrainingResearchPanel } from './TrainingResearchPanel';
 import {
   getDatasetAudits,
   getBenchmarkResults,
@@ -28,7 +30,7 @@ import {
 } from '../types';
 
 export const ResearcherStudio: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'audit' | 'ledger' | 'trajectory' | 'benchmarks'>('benchmarks');
+  const [activeTab, setActiveTab] = useState<'audit' | 'ledger' | 'trajectory' | 'benchmarks' | 'training'>('training');
   const [selectedLearner, setSelectedLearner] = useState<string>('student_A');
   const [learnersList, setLearnersList] = useState<string[]>(['student_A', 'student_B', 'api_student_A']);
 
@@ -103,13 +105,14 @@ export const ResearcherStudio: React.FC = () => {
             Researcher & Instructor Intelligence Console
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Audit datasets, inspect structured Cognitive Evidence ledgers, review learner-state trajectories, and inspect the synthetic pipeline demonstration.
+            Review training results and artifacts, audit datasets, inspect Cognitive Evidence, and explore learner-state trajectories.
           </p>
         </div>
 
         {/* Tab Navigation */}
         <div className="flex flex-wrap items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
           {[
+            { id: 'training', label: 'Training Results', icon: FlaskConical },
             { id: 'benchmarks', label: '3-Tier Benchmarks', icon: Scale },
             { id: 'trajectory', label: 'Learner Trajectories', icon: History },
             { id: 'ledger', label: 'Evidence Ledger', icon: Database },
@@ -140,6 +143,8 @@ export const ResearcherStudio: React.FC = () => {
           <span className="font-semibold">{replayMessage}</span>
         </div>
       )}
+
+      {activeTab === 'training' && <TrainingResearchPanel />}
 
       {/* TAB 1: 3-TIER BENCHMARKS */}
       {activeTab === 'benchmarks' && (

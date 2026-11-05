@@ -5,6 +5,7 @@ import {
   ProcessInteractionResponse,
   DatasetAuditReport,
   BenchmarkResults,
+  TrainingResearchSummary,
   ChatResponse,
   LearnerAuditReport,
 } from '../types';
@@ -87,6 +88,12 @@ export async function getDatasetAudits(): Promise<{
 export async function getBenchmarkResults(): Promise<BenchmarkResults> {
   const res = await fetch(`${API_BASE}/benchmarks`);
   if (!res.ok) throw new Error(`Failed to load benchmarks: ${res.statusText}`);
+  return res.json();
+}
+
+export async function getTrainingResearchSummary(): Promise<TrainingResearchSummary> {
+  const res = await fetch(`${API_BASE}/training-report`);
+  if (!res.ok) throw new Error(`Failed to load training report: ${res.statusText}`);
   return res.json();
 }
 

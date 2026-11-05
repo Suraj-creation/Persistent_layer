@@ -23,6 +23,7 @@ from packages.learner_state_core.diagnosis.prober import (
     DiagnosticItem,
     FRACTION_DIAGNOSTIC_BANK,
 )
+from .training_report import build_training_research_summary
 
 # Load environment variables from .env
 load_dotenv()
@@ -163,6 +164,12 @@ def get_benchmark_results():
         with open(results_path, "r", encoding="utf-8") as f:
             return json.load(f)
     return {"status": "pending", "message": "Benchmark has not been run yet."}
+
+
+@app.get("/api/v1/training-report")
+def get_training_research_report():
+    """Returns aggregate training results, dataset audits, and artifact metadata."""
+    return build_training_research_summary()
 
 
 @app.get("/api/v1/learners")
