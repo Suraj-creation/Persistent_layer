@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone, timedelta
+
 import json
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
@@ -130,6 +132,7 @@ class EediDataLoader:
                 selected_option=str(row["selected_option"]) if pd.notna(row.get("selected_option")) else None,
                 correctness=int(row["correct"]) if pd.notna(row.get("correct")) else 0,
                 latency_seconds=float(row.get("latency", 25.0)),
+                timestamp=datetime.fromisoformat(str(row["timestamp"])).replace(tzinfo=timezone.utc) if pd.notna(row.get("timestamp")) else datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(seconds=int(row.name)),
             )
             gt_misc = str(row.get("misconception_id", "")) if pd.notna(row.get("misconception_id")) else None
             if gt_misc in ["", "none", "nan", "null"]:
@@ -146,7 +149,7 @@ class EediDataLoader:
         Includes Student A (rule misconception), Student B (slip), Mastery, and Ambiguous samples.
         """
         rows = []
-        
+        rng = np.random.RandomState(42)
         # Archetype patterns
         archetypes = [
             # Type 1: Student A archetype (Denominator addition misconception)
@@ -209,7 +212,7 @@ class EediDataLoader:
                     "correct": corr,
                     "explanation": expl,
                     "misconception_id": misc_id if misc_id else "",
-                    "latency": float(np.random.randint(15, 60)),
+                    "latency": float(rng.randint(15, 60)),
                     "timestamp": f"2026-10-27T10:{q_idx * 5:02d}:00",
                 })
                 interaction_counter += 1

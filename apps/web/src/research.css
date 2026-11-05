@@ -1,0 +1,16 @@
+/* A scoped reset for retained training views; no global Tailwind preflight. */
+.research-tools { display: flex; flex-direction: column; background: #f8fafc; color: #0f172a; min-width: 0; line-height: 1.5; font-family: var(--font-body); }
+.research-tools *, .research-tools ::before, .research-tools ::after { box-sizing: border-box; border-width: 0; border-style: solid; border-color: #e2e8f0; }
+.research-tools h1, .research-tools h2, .research-tools h3, .research-tools h4, .research-tools p { margin: 0; }
+.research-tools button, .research-tools input, .research-tools select, .research-tools textarea { font: inherit; color: inherit; line-height: inherit; }
+.research-tools button { cursor: pointer; background: transparent; }
+.research-tools button:disabled { cursor: default; }
+.research-tools svg { display: inline-block; vertical-align: middle; flex-shrink: 0; }
+.research-tools img { max-width: 100%; }
+.research-tools table { border-collapse: collapse; }
+.research-tools .research-intro { padding: 24px; border-bottom: 1px solid var(--line); background: var(--surface); }
+.research-tools .research-intro h1 { font-size: 24px; font-weight: 650; }
+.research-tools .research-intro p { color: var(--muted); max-width: 85ch; margin-top: 8px; }
+.research-tools :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+@tailwind base;
+@tailwind utilities;

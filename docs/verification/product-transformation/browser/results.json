@@ -1,0 +1,71 @@
+{
+  "mode": "fixture",
+  "synthetic": true,
+  "viewports": [
+    {
+      "width": 1440,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 1024,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 768,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 390,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 320,
+      "horizontal_overflow": false
+    }
+  ],
+  "browser_errors": [],
+  "trace_id": "nlp_ee12b24e3f7346c08536ac658fc8b660",
+  "turn_id": "turn_b612dca82f5d42b5b9032c7f04ad3aa7",
+  "evidence_id": "evidence_84488a31153547299661f5d316f18dd9",
+  "snapshot_id": "state_ba877184a4e1416595115b7df0aefb06",
+  "database_counts": {
+    "assessment_answers": 1,
+    "assessment_questions": 2,
+    "assessment_state_history": 2,
+    "assessment_submissions": 2,
+    "nlp_executions": 5,
+    "nlp_stages": 30
+  },
+  "receipts": [
+    {
+      "trace_id": "nlp_2de7101ef201438eb75a550505c328be",
+      "question_id": "question_9234eec292844383837c48e749bc0f0f",
+      "status": "failed",
+      "turn_id": null
+    },
+    {
+      "trace_id": "nlp_ee12b24e3f7346c08536ac658fc8b660",
+      "question_id": "question_9234eec292844383837c48e749bc0f0f",
+      "status": "completed",
+      "turn_id": "turn_b612dca82f5d42b5b9032c7f04ad3aa7"
+    }
+  ],
+  "checks": [
+    "failed submission recovered without local draft",
+    "filtered totals",
+    "execution lookup",
+    "stage filter",
+    "error filter",
+    "UTC date filter",
+    "performance metrics",
+    "history search",
+    "report reload",
+    "cancelled report loading recovery",
+    "keyboard guide dismissal and focus restoration",
+    "SQLite relationships",
+    "foreign keys",
+    "integrity",
+    "on-demand math loading",
+    "split bundle failure recovery"
+  ]
+}

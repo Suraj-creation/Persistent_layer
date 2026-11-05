@@ -1,0 +1,20 @@
+{
+  "mode": "live",
+  "synthetic_data": true,
+  "checks": [
+    "grade-only notes rejected without creating a conversation",
+    "answer commits once and a distinct next question is displayed",
+    "reload preserves question and topic memory",
+    "generation failure and retry preserve answers and estimates",
+    "generation retry recovers without duplicate evidence",
+    "legacy short material can be replaced without changing evidence",
+    "explicit model reference recovery uses only labeled model sources",
+    "observability navigation leaves learner memory unchanged",
+    "finish/report/resume retain the submitted evidence",
+    "mobile question, answer field and actions are readable without overflow",
+    "zero browser JavaScript errors"
+  ],
+  "javascript_errors": [],
+  "final_answer_count": 2,
+  "state_unchanged_during_retries_and_recovery": true
+}

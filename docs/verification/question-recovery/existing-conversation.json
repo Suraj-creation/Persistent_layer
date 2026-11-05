@@ -1,0 +1,8 @@
+{
+  "existing_conversation_recovered": true,
+  "learner_state_unchanged": true,
+  "submitted_answers_unchanged": true,
+  "active_question_present": true,
+  "reference_kind": "model_reference",
+  "backup_created": true
+}

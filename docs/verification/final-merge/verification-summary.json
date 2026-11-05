@@ -1,0 +1,42 @@
+{
+  "date": "2026-11-05",
+  "mode": "synthetic fixtures and isolated SQLite; no hosted inference",
+  "base_improve": "7395a1eaa2e278f29bd18327de39b7ac78eab7a1",
+  "merged_training": "105fe56a885e29b2686a59ae3176c3e4fc5473de",
+  "python": {
+    "passed": 210,
+    "failed": 0,
+    "warnings": 32,
+    "warning_source": "upstream pyBKT NumPy deprecation"
+  },
+  "frontend_unit": {
+    "passed": 7,
+    "failed": 0
+  },
+  "playwright": {
+    "passed": 7,
+    "failed": 0
+  },
+  "workspace_harness": {
+    "checks_passed": 16,
+    "responsive_widths": [
+      1440,
+      1024,
+      768,
+      390,
+      320
+    ],
+    "javascript_errors": 0
+  },
+  "observability_harness": {
+    "checks_passed": 16,
+    "javascript_errors": 0
+  },
+  "build": "passed",
+  "python_lock": "uv lock --check passed",
+  "local_smoke": {
+    "api_health": "healthy",
+    "vite_proxy": "passed",
+    "model_configured": false
+  }
+}

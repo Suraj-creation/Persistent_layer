@@ -88,7 +88,7 @@ FRACTION_TAXONOMY: Dict[str, KnowledgeComponent] = {
                 name="Cross Multiplication Confusion in Addition",
                 description="Attempting to cross-multiply when adding fractions without using common denominators.",
                 typical_distractor_pattern="Confusing fraction division/proportion rules with addition.",
-                remediation_hint="Cross-multiplication is for solving proportions or dividing, not adding.",
+                remediation_hint="For a/b + c/d, use common denominator bd and numerator ad + bc; do not omit either numerator term or mix proportion rules.",
             ),
             MisconceptionDefinition(
                 misconception_id="calculation_slip",
