@@ -5,6 +5,7 @@ import hashlib
 import json
 import math
 import uuid
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple, Any
 from ..evidence.models import CognitiveEvidence, Interaction
 from .models import ConceptState, LearnerStateSnapshot, MisconceptionBelief, StateChangeEvent
@@ -47,7 +48,7 @@ class BayesianLearnerStateEngine:
     They are not learned parameters or calibrated Bayesian posteriors.
     """
 
-    def __init__(self, policy_version: str = "beta-bayesian-v2.0"):
+    def __init__(self, policy_version: str = "evidence-heuristic-v3.0"):
         self.policy_version = policy_version
 
     def initialize_learner_state(self, learner_id: str, concept_ids: List[str]) -> LearnerStateSnapshot:
@@ -75,6 +76,7 @@ class BayesianLearnerStateEngine:
                 "S", learner_id, self.policy_version, *sorted(concept_ids)
             ),
             learner_id=learner_id,
+            timestamp=datetime(1970, 1, 1, tzinfo=timezone.utc),
             as_of_interaction_id="INIT",
             concept_states=concept_states,
             active_prerequisite_gaps=[],
@@ -97,7 +99,12 @@ class BayesianLearnerStateEngine:
         if len(concept_ids) != len(set(concept_ids)):
             raise ValueError("Evidence must contain at most one concept link per concept_id")
 
+        if interaction and (interaction.interaction_id != evidence.interaction_id or interaction.learner_id != evidence.learner_id):
+            raise ValueError("Interaction and evidence provenance must match")
+        if prior_snapshot.as_of_interaction_id == evidence.interaction_id:
+            raise ValueError("Interaction already applied to this snapshot")
         new_snapshot = copy.deepcopy(prior_snapshot)
+        new_snapshot.policy_version = self.policy_version
         new_snapshot.snapshot_id = _stable_identifier(
             "S",
             self.policy_version,
@@ -142,13 +149,17 @@ class BayesianLearnerStateEngine:
             cstate.interaction_count += 1
             cstate.last_interaction_timestamp = evidence.timestamp
 
-            # Evaluate evidence sufficiency
-            if cstate.interaction_count >= 5:
+            # Repeated guesses must not make reasoning evidence sufficient.
+            if interp.category not in {"ambiguous", "guessing"} and interp.hypothesis_confidence >= 0.5:
+                cstate.informative_evidence_count += 1
+            if cstate.informative_evidence_count >= 5:
                 cstate.evidence_sufficiency = "sufficient"
-            elif cstate.interaction_count >= 3:
+            elif cstate.informative_evidence_count >= 3:
                 cstate.evidence_sufficiency = "moderate"
-            else:
+            elif cstate.informative_evidence_count > 0:
                 cstate.evidence_sufficiency = "sparse"
+            else:
+                cstate.evidence_sufficiency = "insufficient"
 
             delta_alpha = 0.0
             delta_beta = 0.0
@@ -297,7 +308,7 @@ class BayesianLearnerStateEngine:
             # ----------------------------------------------------
             # Case 3: Mastery / Contradiction of Previous Misconception
             # ----------------------------------------------------
-            elif interp.category == "mastery" or evidence.polarity == "supports":
+            elif interp.category == "mastery" and evidence.polarity == "supports":
                 delta_alpha = 2.0 * link.confidence * interp.hypothesis_confidence
                 new_alpha = prior_alpha + delta_alpha
                 new_beta = prior_beta
@@ -308,17 +319,16 @@ class BayesianLearnerStateEngine:
                 cstate.mastery_estimate = new_mastery
                 cstate.uncertainty = new_uncertainty
 
-                # The current polarity is concept-level, not candidate-specific. This
-                # heuristic discounts all active candidates on the concept and must be
-                # replaced with per-hypothesis counterevidence before production use.
+                # Only explicitly targeted candidate hypotheses receive counterevidence.
                 for m_belief in list(cstate.candidate_misconceptions.values()):
-                    if m_belief.status in {"suspected", "confirmed"}:
+                    if m_belief.status in {"suspected", "confirmed"} and m_belief.misconception_id in evidence.contradicted_hypothesis_ids:
                         prior_prob = m_belief.posterior_probability
-                        discount = 0.75 * link.confidence
+                        discount = 0.75 * link.confidence * interp.hypothesis_confidence
                         new_prob = max(0.05, prior_prob * (1.0 - discount))
                         m_belief.posterior_probability = new_prob
                         if evidence.evidence_id not in m_belief.contradicting_evidence_ids:
                             m_belief.contradicting_evidence_ids.append(evidence.evidence_id)
+                        m_belief.last_updated = evidence.timestamp
                         if new_prob <= 0.25:
                             m_belief.status = "resolved"
 

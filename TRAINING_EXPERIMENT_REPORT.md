@@ -10,7 +10,7 @@
 
 This project is a fraction-focused prototype for maintaining a cautious, auditable representation of a learner. Its intended path is to preserve a learner's words and answer, derive candidate evidence tied to math concepts, and update a learner state as new observations arrive. Its research question is whether reasoning language adds useful and faithful evidence beyond binary correctness.
 
-The repository did not contain a trained explanation classifier or a data-fitted persistent state updater. Its built-in benchmark used 48 synthetic examples generated from four fixed response archetypes. The current extractor remains rule-based when the optional Azure-backed extraction path is unavailable, and state updates use hand-set heuristics.
+At the start of the training work, the repository did not contain a trained explanation classifier or a data-fitted persistent state updater. Its built-in benchmark used 48 synthetic examples generated from four fixed response archetypes. The current extractor remains rule-based when the optional Azure-backed extraction path is unavailable, and state updates use hand-set heuristics.
 
 Work in this branch adds two distinct training paths:
 
@@ -23,16 +23,16 @@ The report distinguishes synthetic demonstrations, actual training, and planned 
 
 The intended system should preserve evidence rather than turn a single answer into an overconfident cognitive label. A useful model should propose candidate interpretations from the item, selected answer, and explanation. The evidence ledger and state updater should remain auditable, should represent uncertainty and contradiction, and should allow later responses to revise earlier hypotheses.
 
-Current runtime is a prototype: a React fraction interface calls a FastAPI service; evidence extraction uses hand-written phrase rules or an optional Azure Instructor path; SQLite stores interactions, evidence, current learner state, and audit events; and a small fraction-only diagnostic prober selects follow-up items. The app does not currently consume the trained BKT artifact or the prepared MAP model path. The optional semantic matcher compares claims with a small static taxonomy; it is not a production retrieval system.
+Current runtime remains a prototype; the retrieval and persistence continuation is documented in [RAG_AND_REGRESSION_REPORT.md](RAG_AND_REGRESSION_REPORT.md). The current architecture is: a React fraction interface calls a FastAPI service; evidence extraction uses hand-written phrase rules or an optional Azure Instructor path; SQLite stores interactions, evidence, current learner state, and audit events; and a small fraction-only diagnostic prober selects follow-up items. The app does not currently consume the trained BKT artifact or the prepared MAP model path. The optional semantic matcher compares claims with a small static taxonomy; it is not a production retrieval system.
 
 Important implementation findings recorded in the assessment include:
 
 - The default Eedi and FoundationalASSIST loaders return synthetic fixtures when no local file is supplied. Their demo rows are not the corresponding releases.
 - State updates are deterministic hand-set heuristics; the Beta-shaped quantities and misconception scores are not calibrated Bayesian posteriors or learned transitions.
-- This continuation stopped repeat discounts to resolved/dismissed misconceptions and added a regression check. Replay snapshot/event IDs are repeatable for the same prior state and evidence, and duplicate evidence IDs in a replay ledger are rejected. The schema still has only concept-level polarity, so mastery evidence discounts every active misconception candidate on that concept; candidate-specific counterevidence remains open work.
-- The state engine rejects cross-learner evidence and repeated concept links in one evidence record. Transactional, cross-process idempotency is still absent from the SQLite API path.
-- The student UI's probe selection does not currently persist the student's answer as a backend event, so it does not complete a closed learning loop.
-- The repository has no live FTS/BM25/vector retrieval index or broad math misconception knowledge graph.
+- This continuation stopped repeat discounts to resolved/dismissed misconceptions and added a regression check. Replay snapshot/event IDs are repeatable for the same prior state and evidence, and duplicate evidence IDs in a replay ledger are rejected. The evidence schema now also names explicit counterevidence targets, and only those candidate scores are discounted.
+- The state engine rejects cross-learner evidence and repeated concept links in one evidence record. The SQLite API path now commits the interaction, evidence, full snapshot, events, retrieval trace, and idempotency receipt atomically under a write transaction.
+- Diagnostic responses now persist through a server-scored endpoint tied to the issued learner/item/parent event. Answer choices alone remain unverified reasoning evidence.
+- Live tutoring now retrieves from a persistent SQLite FTS5, hashed-vector, and prerequisite graph index of the app curriculum. The audited Eedi graph is separately indexed for researcher retrieval; it is not automatically mapped to learner concepts.
 
 These findings are detailed in [RESEARCH_AND_IMPLEMENTATION_ASSESSMENT.md](RESEARCH_AND_IMPLEMENTATION_ASSESSMENT.md). The data/model choices and their task boundaries are also summarized in [DATA_AND_TRAINING_PLAN.md](DATA_AND_TRAINING_PLAN.md).
 
@@ -55,15 +55,15 @@ The checked-in benchmark uses 48 generated examples from 12 synthetic learner ID
 
 | Metric | Tier 1: pyBKT | Tier 2: TF-IDF text classifier | Tier 3: evidence + heuristic state |
 | --- | ---: | ---: | ---: |
-| AUC-ROC | 0.9062 | 1.0000 | 0.4688 |
-| Accuracy | 0.7500 | 1.0000 | 0.5000 |
-| Brier score | 0.1653 | 0.0958 | 0.3176 |
-| ECE | 0.1161 | 0.2938 | 0.4387 |
+| AUC-ROC | 0.9062 | 1.0000 | 0.5938 |
+| Accuracy | 0.7500 | 1.0000 | 0.6667 |
+| Brier score | 0.1653 | 0.0958 | 0.2233 |
+| ECE | 0.1161 | 0.2938 | 0.2744 |
 | Misconception F1 | 0.0000* | 1.0000 | 0.5000 |
 
 `*` Tier 1 does not produce a misconception label; the benchmark assigns F1 = 0.0 by construction. It is not a measured diagnostic comparison.
 
-These scores are retained as a software demonstration only. Tier 2's perfect score reflects synthetic-template leakage, and its ECE is poor. Tier 3's AUC is below Tier 1 and its ECE is the highest. Consequently, these numbers do not show that the proposed evidence/state pipeline improves prediction or produces calibrated uncertainty. The benchmark code, JSON, report, and researcher UI were updated to label these limitations accurately.
+These scores are retained as a software demonstration only. Tier 2's perfect score reflects synthetic-template leakage, and its ECE is poor. Tier 3's AUC remains below Tier 1. The refreshed policy produces AUC 0.5938 and accuracy 0.6667 on this fixture; Tier 2 uses current-response text while Tiers 1 and 3 use history, so cross-tier deltas are not fair model comparisons. Consequently, these numbers do not show that the proposed evidence/state pipeline improves prediction or produces calibrated uncertainty. The benchmark code, JSON, report, and researcher UI were updated to label these limitations accurately.
 
 ## 5. Experiment B: ASSISTments correctness-only BKT
 
@@ -175,8 +175,8 @@ MAP is also unsuitable for training the persistent state updater: the competitio
 
 ## 9. Verification
 
-- Python: `.venv/bin/python -m pytest -q` → **34 passed**, with 32 existing pyBKT NumPy deprecation warnings. Added API coverage for the training report, checksum and aggregate fields, missing/malformed-artifact behavior, and launch-directory independence.
-- Frontend: `npm run build --prefix apps/web` → passed (`tsc -b` and Vite production build). The local web server returned HTTP 200, and the training-report API returned HTTP 200 with both splits, eight per-skill metric rows, eight parameter rows, and verified checkpoint/parameter checksums.
+- Python: `.venv/bin/python -m pytest -q` → **102 passed**, with 32 existing pyBKT NumPy deprecation warnings. Added API coverage for the training report, checksum and aggregate fields, missing/malformed-artifact behavior, and launch-directory independence.
+- Frontend: `npm run build --prefix apps/web` → passed (`tsc -b` and Vite production build). Six isolated Playwright browser flows also pass, including diagnostics, chat reload, research retrieval, mobile failure handling, and retry after a committed response is lost. The training-report API includes both splits, eight per-skill metric rows, eight parameter rows, and verified checkpoint/parameter checksums.
 - Patch whitespace: `git diff --check` → passed.
 - Real-data training/evaluation: ASSISTments seed 42 was trained earlier; seed 7 was fit for a second learner holdout. The robustness script checksum-checks the seed-42 artifact before reuse and stores aggregate metrics without per-learner predictions.
 - MAP training: not run because authorized data is absent and the terms have not been accepted by the user.

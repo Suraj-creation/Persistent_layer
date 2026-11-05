@@ -73,6 +73,9 @@ class CognitiveEvidence(BaseModel):
     concept_links: List[ConceptLink] = Field(..., min_length=1, description="Mapped curriculum concepts")
     candidate_interpretation: CandidateInterpretation = Field(..., description="Inferred cognitive hypothesis")
 
+    contradicted_hypothesis_ids: List[str] = Field(default_factory=list, description="Explicit candidate IDs refuted by this observation; empty means no candidate-specific refutation")
+    retrieval_citation_ids: List[str] = Field(default_factory=list)
+
     # 4. Provenance & Audit
     extractor_model: str = Field(default="pretrained-instructor-v2", description="Extractor model identifier")
     prompt_version: str = Field(default="v2.0", description="Extraction prompt version")
@@ -82,11 +85,10 @@ class CognitiveEvidence(BaseModel):
 
     def validate_against_raw_text(self, raw_text: str) -> bool:
         """Verifies that source_quote actually exists within the raw text if verbatim."""
-        if not self.is_verbatim_quote or not self.source_quote.strip():
+        if not self.is_verbatim_quote:
             return True
-        clean_quote = re.sub(r"[^\w\s]", "", self.source_quote.strip().lower())
-        clean_raw = re.sub(r"[^\w\s]", "", raw_text.strip().lower())
-        return clean_quote in clean_raw
+        return bool(self.source_quote.strip()) and self.source_quote in raw_text
+
 
 
 class Interaction(BaseModel):
@@ -99,7 +101,7 @@ class Interaction(BaseModel):
     response_text: Optional[str] = None
     selected_option: Optional[str] = None
     correctness: Optional[int] = Field(None, ge=0, le=1, description="Binary correctness (0=incorrect, 1=correct)")
-    latency_seconds: Optional[float] = None
+    latency_seconds: Optional[float] = Field(None, ge=0)
     attempt_number: int = 1
     hint_used: bool = False
     timestamp: datetime = Field(default_factory=utc_now)

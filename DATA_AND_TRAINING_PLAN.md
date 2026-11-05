@@ -1,5 +1,7 @@
 # Data and Training Plan
 
+> Continuation update: live curriculum retrieval, durable diagnostic/chat flows, atomic persistence, and the regression results are documented in [RAG_AND_REGRESSION_REPORT.md](RAG_AND_REGRESSION_REPORT.md). This document retains the earlier research assessment and dataset task boundaries.
+
 ## Research objective
 
 The project's core object is a learner representation: preserve a learner's words and outcome, turn them into concept-grounded candidate evidence with provenance, and revise a learner's uncertain state as later evidence arrives. A useful model should therefore propose a candidate interpretation from the current question, answer, and explanation. It should not overwrite the evidence ledger or directly assert a persistent diagnosis.

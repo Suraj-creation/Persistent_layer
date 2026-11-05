@@ -6,6 +6,12 @@
 [![React 19](https://img.shields.io/badge/React-19.0-cyan.svg)](https://react.dev)
 [![pyBKT](https://img.shields.io/badge/pyBKT-1.4.3-orange.svg)](https://github.com/CAHLR/pyBKT)
 
+## Current implementation and regression report
+
+The `training` branch now includes persistent graph and chunk retrieval, transactional learner updates, idempotent request handling, stored chat and diagnostic answers, and exact snapshot/event round trips. See [RAG_AND_REGRESSION_REPORT.md](RAG_AND_REGRESSION_REPORT.md) for the implementation decisions, feature matrix, retrieval evaluation, limits, and reproduction commands.
+
+The default extraction and tutoring modes are deterministic. Optional Azure extraction and generation require explicit `EVIDENCE_EXTRACTOR_MODE=azure` and `TUTOR_RESPONSE_MODE=azure`; external generation is not guaranteed deterministic. Both modes preserve the committed result for retries using the same `Idempotency-Key`.
+
 ## 1. Problem Statement & Motivation
 
 > **Authoritative Statement:** We aim to develop and evaluate a language-grounded learner-state modeling platform that transforms students' natural-language interactions and learning history into structured, concept-grounded, uncertainty-aware evidence. This evidence is used to maintain a persistent representation of learners' conceptual understanding, identify possible misconceptions and prerequisite gaps, and support more informed diagnostic and adaptive learning decisions.
@@ -75,7 +81,7 @@ NLP/
 │   ├── run_benchmark.py             # 3-tier comparative evaluation script
 │   ├── benchmark_results.json       # JSON benchmark metrics
 │   └── benchmark_report.md          # Generated benchmark report
-├── tests/                           # 15 unit and integration tests
+├── tests/                           # Unit and integration regression tests
 ├── pyproject.toml                   # Python package definition
 └── README.md
 ```
@@ -142,9 +148,9 @@ Raw graph CSVs remain under the Git-ignored `data/raw/` directory. Only the aggr
 
 ### Start Backend API Server
 ```bash
-uvicorn apps.api.app.main:app --reload --port 8000
+uvicorn apps.api.app.main:app --reload --port 8001
 ```
-Interactive API Docs available at `http://localhost:8000/docs`.
+Interactive API Docs available at `http://localhost:8001/docs`.
 
 ### Start Frontend Console (React 19 + TypeScript + Vite)
 ```bash
@@ -154,3 +160,25 @@ npm run dev
 Open `http://localhost:5173` to interact with:
 - **Student Learning Portal:** Solve problems, provide reasoning, and trigger real-time Cognitive Evidence extraction and adaptive diagnostic probing.
 - **Researcher Studio:** Inspect dataset audits, browse the evidence ledger, review learner-state trajectories with "Why Changed?" events, and view the synthetic pipeline demonstration.
+
+### Index and inspect retrieval
+
+The 10 curated fraction curriculum documents are indexed on first retrieval use. To add the already audited public Eedi graph to a separate researcher collection:
+
+```bash
+.venv/bin/python experiments/index_retrieval_corpus.py --include-eedi
+.venv/bin/python experiments/evaluate_retrieval.py
+```
+
+The local SQLite index stays Git-ignored. The branch tracks the reproducible indexer, aggregate index audit, authored query cases, and retrieval evaluation. Eedi IDs are not automatically mapped into live learner concepts.
+
+### Browser regression suite
+
+```bash
+npm ci --prefix apps/web
+cd apps/web
+npx playwright install chromium
+npm run test:e2e
+```
+
+Playwright starts an isolated backend on port 8013, a frontend on 5193, and a temporary learner database. Use `API_PROXY_TARGET` to point Vite at another backend; the normal development default is `http://127.0.0.1:8001`.

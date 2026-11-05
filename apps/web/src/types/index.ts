@@ -29,6 +29,8 @@ export interface CognitiveEvidence {
   prompt_version: string;
   schema_version: string;
   review_status: string;
+  contradicted_hypothesis_ids?: string[];
+  retrieval_citation_ids?: string[];
 }
 
 export interface MisconceptionBelief {
@@ -109,6 +111,7 @@ export interface ChatMessage {
   diagnostic_probe?: DiagnosticItem;
   diagnostic_rationale?: string;
   selected_option?: string;
+  retrieval?: RetrievalResult;
 }
 
 export interface ChatResponse {
@@ -118,6 +121,7 @@ export interface ChatResponse {
   events: StateChangeEvent[];
   recommended_diagnostic_probe?: DiagnosticItem;
   diagnostic_rationale?: string;
+  retrieval?: RetrievalResult;
 }
 
 export interface ProcessInteractionResponse {
@@ -127,6 +131,7 @@ export interface ProcessInteractionResponse {
   events: StateChangeEvent[];
   recommended_diagnostic_probe?: DiagnosticItem;
   diagnostic_rationale?: string;
+  retrieval?: RetrievalResult;
 }
 
 export interface DatasetAuditReport {
@@ -277,6 +282,7 @@ export interface TrainingResearchSummary {
     file_sha256: Record<string, string>;
     data_role?: string;
     runtime_integrated: boolean;
+    researcher_index?: { documents: number; edges: number; index_fingerprint: string };
   };
   map_classifier: {
     status: string;
@@ -304,4 +310,26 @@ export interface LearnerAuditReport {
   total_evidence: number;
   total_audit_events: number;
   snapshot: LearnerStateSnapshot;
+}
+
+export interface RetrievalResult {
+  query: string;
+  mode: 'local' | 'global' | 'hybrid' | 'naive' | 'mix';
+  namespace: string;
+  index_version: string;
+  index_fingerprint: string;
+  context: string;
+  abstained: boolean;
+  truncated: boolean;
+  ranking_note: string;
+  relationships: Array<{ source_id: string; target_id: string; relation: string; weight: number }>;
+  hits: Array<{ citation_id: string; document_id: string; title: string; text: string; source: string; source_revision: string; license: string; entity_ids: string[]; score: number; channels: string[] }>;
+}
+
+export interface ConversationTurn {
+  interaction_id: string;
+  user: string;
+  selected_option?: string;
+  timestamp: string;
+  response: ChatResponse;
 }

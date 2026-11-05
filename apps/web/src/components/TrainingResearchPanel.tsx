@@ -97,8 +97,8 @@ export const TrainingResearchPanel: React.FC = () => {
             <div className="mt-1 text-slate-500">{report.map_classifier.status.replace(/_/g, ' ')}</div>
           </div>
           <div className="rounded-xl border border-slate-200 bg-white/80 p-3 text-xs">
-            <div className="font-bold text-slate-800">Eedi graph → runtime retrieval</div>
-            <div className="mt-1 text-slate-500">{report.runtime_boundary.eedi_graph_used_for_runtime_retrieval ? 'Connected' : 'Audited; not connected'}</div>
+            <div className="font-bold text-slate-800">Eedi graph → live tutor</div>
+            <div className="mt-1 text-slate-500">{report.runtime_boundary.eedi_graph_used_for_runtime_retrieval ? 'Connected' : 'Researcher collection; no learner mapping'}</div>
           </div>
         </div>
       </section>
@@ -192,7 +192,8 @@ export const TrainingResearchPanel: React.FC = () => {
       <section className="grid gap-4 xl:grid-cols-2">
         <div className="rounded-2xl border border-emerald-200 bg-white p-5 shadow-sm">
           <div className="flex items-start justify-between gap-3"><div><div className="flex items-center gap-2 text-emerald-800"><BadgeCheck className="h-4 w-4" /><h3 className="text-sm font-extrabold">Eedi Misconceptions Graph v1.0</h3></div><p className="mt-1 text-[11px] text-slate-500">Structural data audit · curriculum grounding resource</p></div><span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[9px] font-bold text-emerald-800">{report.eedi_graph.license}</span></div>
-          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">{[['Edges', report.eedi_graph.row_counts['misconception-map.csv']], ['Constructs', eediCounts.constructs], ['Misconceptions', eediCounts.misconceptions], ['Subtopics', eediCounts.subtopics], ['Topics', eediCounts.topics], ['Subjects', eediCounts.subjects]].map(([label, value]) => <div key={label} className="rounded-lg bg-slate-50 p-3"><div className="text-[9px] uppercase tracking-wider text-slate-400">{label}</div><div className="mt-1 text-lg font-extrabold text-slate-800">{Number(value || 0).toLocaleString()}</div></div>)}</div>
+          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">{[['Edges', report.eedi_graph.row_counts['misconception-map.csv']], ['Constructs', eediCounts.construct_catalogue], ['Misconceptions', eediCounts.misconceptions], ['Subtopics', eediCounts.subtopics], ['Topics', eediCounts.topics], ['Subjects', eediCounts.subjects]].map(([label, value]) => <div key={label} className="rounded-lg bg-slate-50 p-3"><div className="text-[9px] uppercase tracking-wider text-slate-400">{label}</div><div className="mt-1 text-lg font-extrabold text-slate-800">{Number(value || 0).toLocaleString()}</div></div>)}</div>
+          {report.eedi_graph.researcher_index && <p className="mt-3 rounded-lg bg-emerald-50 p-3 text-[11px] text-emerald-800">Researcher retrieval collection: {report.eedi_graph.researcher_index.documents.toLocaleString()} indexed documents and {report.eedi_graph.researcher_index.edges.toLocaleString()} relationships. Use Retrieval Explorer to inspect sources.</p>}
           <p className="mt-3 text-[11px] leading-relaxed text-slate-600">{report.eedi_graph.data_role}. Edge weights validated: {report.eedi_graph.weight_validation.all_groups_sum_to_100_within_tolerance ? 'all checked misconception groups sum to 100% within tolerance.' : 'validation unavailable.'} The graph contains no student responses and has not been mapped to the app taxonomy.</p>
           <p className="mt-2 text-[10px] text-slate-500">{report.eedi_graph.attribution} Pinned revision: <code>{report.eedi_graph.revision}</code></p>
           {report.eedi_graph.source_url && <a className="mt-3 inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-700 hover:text-indigo-900" href={report.eedi_graph.source_url} target="_blank" rel="noreferrer">Pinned dataset source <ExternalLink className="h-3 w-3" /></a>}

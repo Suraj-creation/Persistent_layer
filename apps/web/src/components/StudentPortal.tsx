@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Brain,
   HelpCircle,
@@ -7,7 +7,7 @@ import {
   Send,
   RefreshCw,
 } from 'lucide-react';
-import { processInteraction } from '../api/client';
+import { processInteraction, answerDiagnostic } from '../api/client';
 import { ProcessInteractionResponse, DiagnosticOption } from '../types';
 
 interface StudentPortalProps {
@@ -23,6 +23,27 @@ export const StudentPortal: React.FC<StudentPortalProps> = ({ activeLearner, onS
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [result, setResult] = useState<ProcessInteractionResponse | null>(null);
   const [diagnosticAnswer, setDiagnosticAnswer] = useState<string | null>(null);
+
+  const learnerRef = useRef(activeLearner);
+  learnerRef.current = activeLearner;
+  const [probeMessage, setProbeMessage] = useState<string | null>(null);
+  useEffect(() => { setResult(null); setDiagnosticAnswer(null); setProbeMessage(null); }, [activeLearner]);
+
+  const saveDiagnostic = async (optionKey: string) => {
+    if (!result?.recommended_diagnostic_probe || isSubmitting) return;
+    const learner = activeLearner;
+    setIsSubmitting(true);
+    try {
+      const response = await answerDiagnostic({ learner_id: learner, parent_interaction_id: result.evidence.interaction_id, item_id: result.recommended_diagnostic_probe.item_id, option_key: optionKey });
+      if (learnerRef.current !== learner) return;
+      setDiagnosticAnswer(optionKey);
+      setResult(response);
+      setProbeMessage('Diagnostic answer and updated evidence saved. An answer choice alone leaves reasoning unverified.');
+      onStateUpdated?.();
+    } catch (error) {
+      setProbeMessage(error instanceof Error ? error.message : 'Could not save diagnostic answer.');
+    } finally { setIsSubmitting(false); }
+  };
 
   // Quick Preset Scenarios directly from the PRD
   const applyPreset = (type: 'student_a' | 'student_b' | 'mastery') => {
@@ -58,6 +79,7 @@ export const StudentPortal: React.FC<StudentPortalProps> = ({ activeLearner, onS
         correctness: isCorrect,
         latency_seconds: 28.5,
       });
+      if (learnerRef.current !== activeLearner) return;
       setResult(resp);
       if (onStateUpdated) onStateUpdated();
     } catch (err: any) {
@@ -219,6 +241,8 @@ export const StudentPortal: React.FC<StudentPortalProps> = ({ activeLearner, onS
             </div>
           )}
 
+          {probeMessage && <p role="status" className="rounded-xl border border-indigo-200 bg-indigo-50 p-3 text-xs text-indigo-900">{probeMessage}</p>}
+
           {result && (
             <>
               {/* Extracted Cognitive Evidence Card */}
@@ -315,7 +339,8 @@ export const StudentPortal: React.FC<StudentPortalProps> = ({ activeLearner, onS
                         <button
                           key={opt.option_key}
                           type="button"
-                          onClick={() => setDiagnosticAnswer(opt.option_key)}
+                          disabled={isSubmitting}
+                          onClick={() => saveDiagnostic(opt.option_key)}
                           className={`w-full text-left p-3 rounded-lg text-xs font-medium border transition-all flex items-center justify-between ${
                             diagnosticAnswer === opt.option_key
                               ? 'bg-amber-100 border-amber-500 text-amber-950 font-bold'
@@ -340,7 +365,7 @@ export const StudentPortal: React.FC<StudentPortalProps> = ({ activeLearner, onS
                     <div className="p-3 bg-white rounded-xl border border-amber-300 text-xs text-amber-950">
                       <div className="font-bold text-amber-800 mb-0.5">Probe Answer Recorded</div>
                       <p className="text-[11px] text-slate-600">
-                        This response resolves the entropy gap between competing hypotheses and will update the persistent belief state accordingly.
+                        The answer and resulting evidence have been saved to the learner history.
                       </p>
                     </div>
                   )}
