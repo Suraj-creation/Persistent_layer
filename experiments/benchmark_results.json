@@ -3,12 +3,16 @@
   "data_provenance": "synthetic_fixture",
   "research_validity": "synthetic_demo_only",
   "caveats": [
-    "The 48 rows are generated from four hand-authored fraction archetypes; they are not real student interactions.",
-    "Generated wording and labels are coupled by construction, so the language baseline can memorize templates.",
-    "The persistent-state AUC is below the correctness-only baseline and its ECE is high; it is not calibrated.",
-    "These values are for exercising code paths only and must not be reported as empirical research findings."
+    "The default loader generated four hand-authored fraction archetypes; these are not real student interactions.",
+    "The same response templates recur across synthetic learners, so the text classifier can memorize generator patterns.",
+    "This run is for exercising software paths only and must not be cited as an empirical benchmark.",
+    "Tier 3 is a hand-tuned state policy, not a trained model; its probabilities are not calibrated.",
+    "Tier 2 classifies the current response text, while Tiers 1 and 3 predict correctness from previous responses. These are different tasks, so deltas are descriptive fixture values only."
   ],
   "sample_size": 48,
+  "state_policy_version": "evidence-heuristic-v3.0",
+  "extractor_version": "rule-based-baseline-v3",
+  "seed": 42,
   "tiers": {
     "tier_1_correctness_only_pybkt": {
       "name": "Tier 1: Correctness-Only KT (pyBKT)",
@@ -40,10 +44,10 @@
       "name": "Tier 3: Structured Evidence + Heuristic Persistent State",
       "description": "Language -> Structured Evidence -> KC Grounding -> Hand-tuned mastery and misconception scores; not a trained or calibrated state model.",
       "metrics": {
-        "auc": 0.4688,
-        "accuracy": 0.5,
-        "brier_score": 0.3176,
-        "ece": 0.4387,
+        "auc": 0.5938,
+        "accuracy": 0.6667,
+        "brier_score": 0.2233,
+        "ece": 0.2744,
         "misconception_precision": 0.5,
         "misconception_recall": 0.5,
         "misconception_f1": 0.5
@@ -51,9 +55,9 @@
     }
   },
   "comparison_delta_tier3_vs_tier1": {
-    "auc_delta": -0.4374,
-    "accuracy_delta": -0.25,
-    "ece_reduction": -0.3226,
+    "auc_delta": -0.3124,
+    "accuracy_delta": -0.0833,
+    "ece_reduction": -0.1583,
     "misconception_f1_gain": 0.5
   }
 }

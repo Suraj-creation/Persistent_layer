@@ -1,5 +1,7 @@
 # Research and Implementation Assessment
 
+> Continuation update: live curriculum retrieval, durable diagnostic/chat flows, atomic persistence, and the regression results are documented in [RAG_AND_REGRESSION_REPORT.md](RAG_AND_REGRESSION_REPORT.md). This document retains the earlier research assessment and dataset task boundaries.
+
 ## Executive assessment
 
 The intended project is a research-oriented learner-state system. It asks whether a student's explanations and interaction history can provide more useful evidence about conceptual understanding than correctness alone. The central output is not an unconstrained tutor answer: it is a traceable record of what the learner said, a candidate interpretation tied to educational concepts, and an appropriately cautious update to a persistent learner representation.

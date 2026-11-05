@@ -3,9 +3,12 @@ from __future__ import annotations
 import json
 import sqlite3
 import os
+import threading
+from contextlib import contextmanager
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Any, Tuple
+from .connection import open_connection
 from ..evidence.models import CognitiveEvidence, ConceptLink, CandidateInterpretation, Interaction
 from ..state.models import (
     ConceptState,
@@ -41,19 +44,35 @@ class LocalDatabaseManager:
             self.db_path = db_path
             Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
 
+        self._local = threading.local()
         self._init_db()
 
-    def _get_connection(self) -> sqlite3.Connection:
-        conn = sqlite3.connect(self.db_path, timeout=10.0)
-        conn.row_factory = sqlite3.Row
-        # Enable WAL mode for high concurrency and write safety
-        conn.execute("PRAGMA journal_mode = WAL;")
-        conn.execute("PRAGMA foreign_keys = ON;")
-        return conn
+    @contextmanager
+    def _get_connection(self):
+        active = getattr(self._local, "connection", None)
+        if active is not None:
+            yield active
+            return
+        conn = open_connection(self.db_path)
+        self._local.connection = conn
+        try:
+            with conn:
+                yield conn
+        finally:
+            self._local.connection = None
+            conn.close()
+
+    @contextmanager
+    def transaction(self):
+        """Serialize state transitions across processes; rollback the entire event on failure."""
+        with self._get_connection() as conn:
+            conn.execute("BEGIN IMMEDIATE")
+            yield conn
 
     def _init_db(self):
-        """Initializes tables if they do not exist."""
+        """Initializes tables and serializes additive schema migrations across workers."""
         with self._get_connection() as conn:
+            conn.execute("BEGIN IMMEDIATE")
             cursor = conn.cursor()
 
             # 1. Learners
@@ -162,7 +181,41 @@ class LocalDatabaseManager:
             );
             """)
 
-            conn.commit()
+
+            for table in ("interactions", "cognitive_evidence", "state_audit_events"):
+                columns = {row[1] for row in conn.execute(f"PRAGMA table_info({table})")}
+                if "payload_json" not in columns:
+                    conn.execute(f"ALTER TABLE {table} ADD COLUMN payload_json TEXT")
+            conn.executescript("""
+                CREATE TABLE IF NOT EXISTS learner_snapshots (
+                    learner_id TEXT PRIMARY KEY REFERENCES learners(learner_id), payload_json TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS learner_replay_baselines (
+                    learner_id TEXT PRIMARY KEY REFERENCES learners(learner_id), snapshot_json TEXT NOT NULL,
+                    excluded_evidence_ids_json TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS processed_requests (
+                    learner_id TEXT NOT NULL REFERENCES learners(learner_id), request_key TEXT NOT NULL,
+                    input_hash TEXT NOT NULL, response_json TEXT NOT NULL,
+                    PRIMARY KEY(learner_id,request_key)
+                );
+                CREATE TABLE IF NOT EXISTS conversation_turns (
+                    sequence INTEGER PRIMARY KEY AUTOINCREMENT, learner_id TEXT NOT NULL REFERENCES learners(learner_id),
+                    interaction_id TEXT NOT NULL UNIQUE, payload_json TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS retrieval_traces (
+                    interaction_id TEXT PRIMARY KEY REFERENCES interactions(interaction_id),
+                    learner_id TEXT NOT NULL REFERENCES learners(learner_id), payload_json TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS issued_probes (
+                    learner_id TEXT NOT NULL REFERENCES learners(learner_id), parent_interaction_id TEXT NOT NULL,
+                    probe_id TEXT NOT NULL, answered_interaction_id TEXT,
+                    PRIMARY KEY(learner_id,parent_interaction_id,probe_id)
+                );
+                CREATE INDEX IF NOT EXISTS evidence_learner ON cognitive_evidence(learner_id);
+                CREATE INDEX IF NOT EXISTS interaction_learner ON interactions(learner_id);
+                CREATE INDEX IF NOT EXISTS audit_learner ON state_audit_events(learner_id);
+            """)
 
     # -------------------------------------------------------------
     # Learner Operations
@@ -172,14 +225,11 @@ class LocalDatabaseManager:
         now = utc_now_iso()
         with self._get_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT learner_id FROM learners WHERE learner_id = ?", (learner_id,))
-            if not cursor.fetchone():
-                display_name = name or learner_id.replace("_", " ").title()
-                cursor.execute(
-                    "INSERT INTO learners (learner_id, name, created_at, updated_at) VALUES (?, ?, ?, ?)",
-                    (learner_id, display_name, now, now),
-                )
-                conn.commit()
+            display_name = name or learner_id.replace("_", " ").title()
+            cursor.execute(
+                "INSERT OR IGNORE INTO learners (learner_id,name,created_at,updated_at) VALUES(?,?,?,?)",
+                (learner_id,display_name,now,now),
+            )
 
     def list_learners(self) -> List[Dict[str, Any]]:
         with self._get_connection() as conn:
@@ -196,7 +246,7 @@ class LocalDatabaseManager:
             cursor = conn.cursor()
             cursor.execute(
                 """
-                INSERT OR REPLACE INTO interactions (
+                INSERT INTO interactions (
                     interaction_id, learner_id, item_id, item_text, item_concepts_json,
                     response_text, selected_option, correctness, latency_seconds, timestamp
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -214,13 +264,14 @@ class LocalDatabaseManager:
                     interaction.timestamp.isoformat(),
                 ),
             )
-            conn.commit()
+
+            conn.execute("UPDATE interactions SET payload_json=? WHERE interaction_id=?", (interaction.model_dump_json(), interaction.interaction_id))
 
     def get_learner_interactions(self, learner_id: str) -> List[Dict[str, Any]]:
         with self._get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT * FROM interactions WHERE learner_id = ? ORDER BY timestamp ASC",
+                "SELECT * FROM interactions WHERE learner_id = ? ORDER BY rowid ASC",
                 (learner_id,),
             )
             return [dict(row) for row in cursor.fetchall()]
@@ -232,7 +283,7 @@ class LocalDatabaseManager:
             cursor = conn.cursor()
             cursor.execute(
                 """
-                INSERT OR REPLACE INTO cognitive_evidence (
+                INSERT INTO cognitive_evidence (
                     evidence_id, interaction_id, learner_id, source_type, source_quote,
                     is_verbatim_quote, extracted_claim, polarity, expressed_uncertainty,
                     category, hypothesis_id, hypothesis_description, hypothesis_confidence,
@@ -258,18 +309,22 @@ class LocalDatabaseManager:
                     evidence.timestamp.isoformat(),
                 ),
             )
-            conn.commit()
+
+            conn.execute("UPDATE cognitive_evidence SET payload_json=? WHERE evidence_id=?", (evidence.model_dump_json(), evidence.evidence_id))
 
     def get_learner_evidence_ledger(self, learner_id: str) -> List[CognitiveEvidence]:
         with self._get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT * FROM cognitive_evidence WHERE learner_id = ? ORDER BY timestamp ASC",
+                "SELECT * FROM cognitive_evidence WHERE learner_id = ? ORDER BY rowid ASC",
                 (learner_id,),
             )
             rows = cursor.fetchall()
             evidences = []
             for r in rows:
+                if r["payload_json"]:
+                    evidences.append(CognitiveEvidence.model_validate_json(r["payload_json"]))
+                    continue
                 concept_links = [
                     ConceptLink(**cl) for cl in json.loads(r["concept_links_json"])
                 ]
@@ -326,6 +381,9 @@ class LocalDatabaseManager:
                 ),
             )
 
+            # Replace the concept's candidate set so removed hypotheses cannot reappear.
+            cursor.execute("DELETE FROM misconception_beliefs WHERE learner_id=? AND concept_id=?", (learner_id, cstate.concept_id))
+            cursor.execute("DELETE FROM learner_snapshots WHERE learner_id=?", (learner_id,))
             # Persist candidate misconceptions
             for mid, m in cstate.candidate_misconceptions.items():
                 cursor.execute(
@@ -349,12 +407,14 @@ class LocalDatabaseManager:
                     ),
                 )
 
-            conn.commit()
 
     def get_learner_snapshot(self, learner_id: str) -> Optional[LearnerStateSnapshot]:
         self.ensure_learner(learner_id)
         with self._get_connection() as conn:
             cursor = conn.cursor()
+            saved = cursor.execute("SELECT payload_json FROM learner_snapshots WHERE learner_id=?", (learner_id,)).fetchone()
+            if saved:
+                return LearnerStateSnapshot.model_validate_json(saved[0])
             cursor.execute("SELECT * FROM concept_states WHERE learner_id = ?", (learner_id,))
             rows = cursor.fetchall()
             if not rows:
@@ -397,7 +457,9 @@ class LocalDatabaseManager:
 
             return LearnerStateSnapshot(
                 learner_id=learner_id,
-                as_of_interaction_id="LATEST",
+                snapshot_id="S_LEGACY_" + learner_id,
+                timestamp=max((state.last_interaction_timestamp for state in concept_states.values() if state.last_interaction_timestamp), default=datetime(1970, 1, 1, tzinfo=timezone.utc)),
+                as_of_interaction_id="LEGACY",
                 concept_states=concept_states,
                 active_prerequisite_gaps=[],
                 policy_version="beta-bayesian-v2.0",
@@ -433,13 +495,14 @@ class LocalDatabaseManager:
                     event.timestamp.isoformat(),
                 ),
             )
-            conn.commit()
+
+            conn.execute("UPDATE state_audit_events SET payload_json=? WHERE event_id=?", (event.model_dump_json(), event.event_id))
 
     def get_learner_audit_events(self, learner_id: str) -> List[Dict[str, Any]]:
         with self._get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT * FROM state_audit_events WHERE learner_id = ? ORDER BY timestamp ASC",
+                "SELECT * FROM state_audit_events WHERE learner_id = ? ORDER BY rowid ASC",
                 (learner_id,),
             )
             rows = cursor.fetchall()
@@ -453,9 +516,64 @@ class LocalDatabaseManager:
     def clear_learner_data(self, learner_id: str) -> None:
         with self._get_connection() as conn:
             cursor = conn.cursor()
+            for table in ("learner_replay_baselines", "issued_probes", "retrieval_traces", "conversation_turns", "processed_requests", "learner_snapshots"):
+                cursor.execute(f"DELETE FROM {table} WHERE learner_id=?", (learner_id,))
             cursor.execute("DELETE FROM state_audit_events WHERE learner_id = ?", (learner_id,))
             cursor.execute("DELETE FROM misconception_beliefs WHERE learner_id = ?", (learner_id,))
             cursor.execute("DELETE FROM concept_states WHERE learner_id = ?", (learner_id,))
             cursor.execute("DELETE FROM cognitive_evidence WHERE learner_id = ?", (learner_id,))
             cursor.execute("DELETE FROM interactions WHERE learner_id = ?", (learner_id,))
-            conn.commit()
+
+    def save_snapshot(self, snapshot: LearnerStateSnapshot) -> None:
+        self.ensure_learner(snapshot.learner_id)
+        with self._get_connection() as conn:
+            for state in snapshot.concept_states.values():
+                self.save_concept_state(snapshot.learner_id, state)
+            conn.execute("INSERT INTO learner_snapshots VALUES(?,?) ON CONFLICT(learner_id) DO UPDATE SET payload_json=excluded.payload_json", (snapshot.learner_id, snapshot.model_dump_json()))
+
+    def get_request(self, learner_id: str, request_key: str):
+        with self._get_connection() as conn:
+            row = conn.execute("SELECT input_hash,response_json FROM processed_requests WHERE learner_id=? AND request_key=?", (learner_id,request_key)).fetchone()
+            return dict(row) if row else None
+
+    def save_request(self, learner_id: str, request_key: str, input_hash: str, response: dict):
+        with self._get_connection() as conn:
+            conn.execute("INSERT INTO processed_requests VALUES(?,?,?,?)", (learner_id,request_key,input_hash,json.dumps(response,sort_keys=True)))
+
+    def save_turn(self, learner_id: str, interaction_id: str, turn: dict):
+        with self._get_connection() as conn:
+            conn.execute("INSERT INTO conversation_turns(learner_id,interaction_id,payload_json) VALUES(?,?,?)", (learner_id,interaction_id,json.dumps(turn)))
+
+    def get_turns(self, learner_id: str):
+        with self._get_connection() as conn:
+            return [json.loads(row[0]) for row in conn.execute("SELECT payload_json FROM conversation_turns WHERE learner_id=? ORDER BY sequence", (learner_id,))]
+
+    def save_retrieval_trace(self, learner_id: str, interaction_id: str, trace: dict):
+        with self._get_connection() as conn:
+            conn.execute("INSERT INTO retrieval_traces VALUES(?,?,?)", (interaction_id,learner_id,json.dumps(trace)))
+
+    def get_retrieval_traces(self, learner_id: str):
+        with self._get_connection() as conn:
+            return [json.loads(row[0]) for row in conn.execute("SELECT payload_json FROM retrieval_traces WHERE learner_id=? ORDER BY rowid", (learner_id,))]
+
+    def issue_probe(self, learner_id: str, parent_interaction_id: str, probe_id: str):
+        with self._get_connection() as conn:
+            conn.execute("INSERT INTO issued_probes(learner_id,parent_interaction_id,probe_id) VALUES(?,?,?)", (learner_id,parent_interaction_id,probe_id))
+
+    def get_issued_probe(self, learner_id: str, parent_interaction_id: str, probe_id: str):
+        with self._get_connection() as conn:
+            row = conn.execute("SELECT * FROM issued_probes WHERE learner_id=? AND parent_interaction_id=? AND probe_id=?", (learner_id,parent_interaction_id,probe_id)).fetchone()
+            return dict(row) if row else None
+
+    def answer_probe(self, learner_id: str, parent_interaction_id: str, probe_id: str, interaction_id: str):
+        with self._get_connection() as conn:
+            conn.execute("UPDATE issued_probes SET answered_interaction_id=? WHERE learner_id=? AND parent_interaction_id=? AND probe_id=?", (interaction_id,learner_id,parent_interaction_id,probe_id))
+
+    def save_replay_baseline(self, snapshot: LearnerStateSnapshot, excluded_evidence_ids: list[str]):
+        with self._get_connection() as conn:
+            conn.execute("INSERT OR IGNORE INTO learner_replay_baselines VALUES(?,?,?)", (snapshot.learner_id,snapshot.model_dump_json(),json.dumps(excluded_evidence_ids)))
+
+    def get_replay_baseline(self, learner_id: str):
+        with self._get_connection() as conn:
+            row = conn.execute("SELECT snapshot_json,excluded_evidence_ids_json FROM learner_replay_baselines WHERE learner_id=?", (learner_id,)).fetchone()
+            return (LearnerStateSnapshot.model_validate_json(row[0]), set(json.loads(row[1]))) if row else None

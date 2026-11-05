@@ -2,200 +2,81 @@ from __future__ import annotations
 
 import re
 import uuid
-from typing import Optional
-from .models import (
-    CandidateInterpretation,
-    CognitiveEvidence,
-    ConceptLink,
-    Interaction,
-)
+from .models import CandidateInterpretation, CognitiveEvidence, ConceptLink, Interaction
 from ..grounding.taxonomy import FRACTION_TAXONOMY
 
 
 class RuleBasedEvidenceExtractor:
-    """
-    Deterministic rule-based extractor for baseline benchmarking, unit tests,
-    and fallback operation when offline.
-    """
+    """Conservative deterministic fraction evidence rules; abstain when reasoning is absent."""
 
     def extract(self, interaction: Interaction) -> CognitiveEvidence:
-        raw_text = (interaction.response_text or "").strip()
-        lowered = raw_text.lower()
-
-        # Default concept
-        primary_cid = (
-            interaction.item_concepts[0]
-            if interaction.item_concepts
-            else "fraction_addition_unlike_denominators"
+        raw = (interaction.response_text or "").strip()
+        lower = raw.lower()
+        cid = interaction.item_concepts[0] if interaction.item_concepts else "fraction_addition_unlike_denominators"
+        if cid not in FRACTION_TAXONOMY:
+            raise ValueError(f"Unknown curriculum concept: {cid}")
+        kc = FRACTION_TAXONOMY[cid]
+        category, hypothesis, confidence, polarity = "ambiguous", "ambiguous_unspecified", 0.4, "ambiguous"
+        claim = "The response provides insufficient verified reasoning to characterize conceptual understanding."
+        targets = []
+        common = any(phrase in lower for phrase in ("found a common denominator", "converted to common denominator", "common denominator is", "equivalent fractions first", "multiply top and bottom by"))
+        misc_patterns = ("added the top and bottom", "add the top numbers and the bottom numbers", "added the top numbers and the bottom numbers", "add both parts", "added numerators and denominators", "add numerators and add denominators")
+        matches = [phrase for phrase in misc_patterns if phrase in lower]
+        # A negated rule or discussion of someone else's rule is not evidence of its use.
+        component = any(not re.search(r"(?:not|never|don't|shouldn't|incorrect to)\s+(?:just\s+)?$", lower[:lower.find(phrase)]) for phrase in matches)
+        guess = any(phrase in lower for phrase in ("just guessed", "i guessed", "random guess", "not sure"))
+        gap = any(phrase in lower for phrase in ("what is a denominator", "what is a common denominator", "what does denominator mean", "don't understand fractions", "what is a numerator"))
+        slip = any(phrase in lower for phrase in ("calculation mistake", "calculation error", "multiplied incorrectly", "arithmetic error", "math mistake"))
+        if gap:
+            category, hypothesis, confidence, polarity = "prerequisite_gap", "fraction_basics", 0.8, "neutral"
+            claim = "The learner explicitly asks about a prerequisite fraction definition."
+        elif guess:
+            category, hypothesis, confidence = "guessing", "unverified_guess", 0.6
+            claim = "The learner expresses guessing or uncertainty; reasoning remains unverified."
+        elif cid in {"fraction_addition_like_denominators", "fraction_addition_unlike_denominators"} and component and interaction.correctness != 1:
+            category, hypothesis, confidence, polarity = "misconception", "denominator_addition_rule" if cid.endswith("unlike_denominators") else "like_denominator_addition", 0.91, "contradicts"
+            claim = "The learner describes independently adding numerators and denominators."
+        elif slip and ("denominator" in lower or "multip" in lower):
+            category, hypothesis, confidence, polarity = "calculation_slip", "calculation_slip", 0.88, "neutral"
+            claim = "The learner describes the common-denominator method and an arithmetic slip."
+        elif common and interaction.correctness != 0 and not component:
+            category, hypothesis, confidence, polarity = "mastery", "fraction_common_denominator_mastery", 0.89, "supports"
+            claim = "The learner explains equivalent fractions or common-denominator reasoning."
+            if cid == "fraction_addition_unlike_denominators":
+                targets = ["denominator_addition_rule"]
+        elif cid == "fraction_equivalence" and any(phrase in lower for phrase in ("add one to both", "added 1 to both", "adding the same number")) and interaction.correctness != 1:
+            category, hypothesis, confidence, polarity = "misconception", "additive_equivalence", 0.85, "contradicts"
+            claim = "The learner describes additive changes as preserving fraction equivalence."
+        elif cid == "fraction_addition_like_denominators" and "keep the denominator" in lower and "numerator" in lower and interaction.correctness != 0:
+            category, hypothesis, confidence, polarity = "mastery", "like_denominator_mastery", 0.85, "supports"
+            claim = "The learner explains adding numerators while keeping the common denominator."
+            targets = ["like_denominator_addition"]
+        elif cid == "fraction_basics" and "equal parts" in lower and "denominator" in lower and "numerator" in lower and interaction.correctness != 0:
+            category, hypothesis, confidence, polarity = "mastery", "fraction_representation_mastery", 0.8, "supports"
+            claim = "The learner describes numerator and denominator using equal parts of a whole."
+            targets = ["numerator_denominator_inversion"]
+        elif cid == "fraction_equivalence" and "same factor" in lower and interaction.correctness != 0:
+            category, hypothesis, confidence, polarity = "mastery", "fraction_equivalence_mastery", 0.85, "supports"
+            claim = "The learner explains scaling both fraction parts by the same factor."
+            targets = ["additive_equivalence"]
+        # A selected option alone is an observation; it does not establish reasoning.
+        quote = raw or interaction.selected_option or ""
+        return CognitiveEvidence(
+            evidence_id="E_" + uuid.uuid5(uuid.NAMESPACE_URL, interaction.interaction_id + ":rules-v3").hex[:24],
+            interaction_id=interaction.interaction_id, learner_id=interaction.learner_id, timestamp=interaction.timestamp,
+            source_type="student_explanation" if raw else "answer_choice",
+            source_quote=quote, is_verbatim_quote=bool(quote), extracted_claim=claim,
+            polarity=polarity, expressed_uncertainty="high" if category in {"ambiguous", "guessing"} else "none",
+            concept_links=[ConceptLink(concept_id=cid, concept_name=kc.concept_name, confidence=0.95, grounding_rationale="Canonical concept from validated item metadata.")],
+            candidate_interpretation=CandidateInterpretation(hypothesis_id=hypothesis, category=category, description=claim, hypothesis_confidence=confidence),
+            contradicted_hypothesis_ids=targets, extractor_model="rule-based-baseline-v3", prompt_version="rules-v3", schema_version="3.0",
         )
-        kc = FRACTION_TAXONOMY.get(
-            primary_cid,
-            list(FRACTION_TAXONOMY.values())[-1],
-        )
-
-        # Check for calculation slip patterns (Student B)
-        # e.g., "calculation mistake", "multiplied incorrectly", "arithmetic error", "know common denominator"
-        slip_keywords = [
-            "calculation mistake",
-            "calculation error",
-            "multiplied incorrectly",
-            "arithmetic error",
-            "math mistake",
-            "know the denominators must match",
-            "need a common denominator, but multiplied",
-        ]
-        is_slip = any(k in lowered for k in slip_keywords)
-
-        # Check for component addition misconception (Student A)
-        # e.g., "added the top and bottom", "added numerators and denominators", "add both parts"
-        misc_keywords = [
-            "added the top and bottom",
-            "add the top numbers and the bottom numbers",
-            "added the top numbers and the bottom numbers",
-            "add both parts",
-            "added numerators and denominators",
-            "add numerators and add denominators",
-        ]
-        is_misc = any(k in lowered for k in misc_keywords)
-
-        # Check for explicit mastery explanation
-        mastery_keywords = [
-            "found a common denominator",
-            "converted to common denominator",
-            "common denominator is",
-            "equivalent fractions first",
-            "multiply top and bottom by",
-        ]
-        is_mastery = any(k in lowered for k in mastery_keywords) or interaction.correctness == 1
-
-        if is_slip:
-            quote_match = next((k for k in slip_keywords if k in lowered), raw_text[:50])
-            # Find actual casing from raw text
-            start_idx = lowered.find(quote_match)
-            actual_quote = raw_text[start_idx : start_idx + len(quote_match)] if start_idx != -1 else raw_text
-
-            return CognitiveEvidence(
-                evidence_id=f"E_SLIP_{uuid.uuid4().hex[:6]}",
-                interaction_id=interaction.interaction_id,
-                learner_id=interaction.learner_id,
-                source_type="student_explanation",
-                source_quote=actual_quote,
-                is_verbatim_quote=True,
-                extracted_claim="Learner understands the common denominator requirement but committed an arithmetic calculation slip.",
-                polarity="neutral",
-                expressed_uncertainty="low",
-                concept_links=[
-                    ConceptLink(
-                        concept_id=kc.concept_id,
-                        concept_name=kc.concept_name,
-                        confidence=0.92,
-                        grounding_rationale="Interaction explicitly concerns fraction addition with unlike denominators.",
-                    )
-                ],
-                candidate_interpretation=CandidateInterpretation(
-                    hypothesis_id="calculation_slip",
-                    category="calculation_slip",
-                    description="Arithmetic calculation slip during common denominator multiplication.",
-                    hypothesis_confidence=0.88,
-                ),
-                extractor_model="rule-based-baseline-v2",
-            )
-
-        elif is_misc:
-            quote_match = next((k for k in misc_keywords if k in lowered), raw_text[:50])
-            start_idx = lowered.find(quote_match)
-            actual_quote = raw_text[start_idx : start_idx + len(quote_match)] if start_idx != -1 else raw_text
-
-            return CognitiveEvidence(
-                evidence_id=f"E_MISC_{uuid.uuid4().hex[:6]}",
-                interaction_id=interaction.interaction_id,
-                learner_id=interaction.learner_id,
-                source_type="student_explanation",
-                source_quote=actual_quote,
-                is_verbatim_quote=True,
-                extracted_claim="Learner describes adding numerators together and denominators together as separate components.",
-                polarity="contradicts",  # Contradicts correct conceptual understanding
-                expressed_uncertainty="none",
-                concept_links=[
-                    ConceptLink(
-                        concept_id=kc.concept_id,
-                        concept_name=kc.concept_name,
-                        confidence=0.95,
-                        grounding_rationale="Directly applies invalid component-addition rule to unlike fractions.",
-                    )
-                ],
-                candidate_interpretation=CandidateInterpretation(
-                    hypothesis_id="denominator_addition_rule",
-                    category="misconception",
-                    description="Systematic rule error: adding fractions by adding both numerators and denominators independently.",
-                    hypothesis_confidence=0.91,
-                ),
-                extractor_model="rule-based-baseline-v2",
-            )
-
-        elif is_mastery:
-            actual_quote = raw_text if raw_text else f"Option {interaction.selected_option} (Correct answer)"
-            return CognitiveEvidence(
-                evidence_id=f"E_MAST_{uuid.uuid4().hex[:6]}",
-                interaction_id=interaction.interaction_id,
-                learner_id=interaction.learner_id,
-                source_type="student_explanation" if raw_text else "answer_choice",
-                source_quote=actual_quote,
-                is_verbatim_quote=bool(raw_text),
-                extracted_claim="Learner demonstrated understanding of common denominators in fraction addition.",
-                polarity="supports",
-                expressed_uncertainty="none",
-                concept_links=[
-                    ConceptLink(
-                        concept_id=kc.concept_id,
-                        concept_name=kc.concept_name,
-                        confidence=0.90,
-                        grounding_rationale="Correct explanation/response to fraction addition item.",
-                    )
-                ],
-                candidate_interpretation=CandidateInterpretation(
-                    hypothesis_id="fraction_common_denominator_mastery",
-                    category="mastery",
-                    description="Valid conceptual execution of finding equivalent fractions with common denominators.",
-                    hypothesis_confidence=0.89,
-                ),
-                extractor_model="rule-based-baseline-v2",
-            )
-
-        else:
-            # Ambiguous or guessing
-            return CognitiveEvidence(
-                evidence_id=f"E_AMBIG_{uuid.uuid4().hex[:6]}",
-                interaction_id=interaction.interaction_id,
-                learner_id=interaction.learner_id,
-                source_type="student_explanation" if raw_text else "answer_choice",
-                source_quote=raw_text if raw_text else "No explanation provided",
-                is_verbatim_quote=bool(raw_text),
-                extracted_claim="Insufficient detail to definitively characterize conceptual reasoning.",
-                polarity="ambiguous",
-                expressed_uncertainty="high",
-                concept_links=[
-                    ConceptLink(
-                        concept_id=kc.concept_id,
-                        concept_name=kc.concept_name,
-                        confidence=0.75,
-                        grounding_rationale="Mapped from item taxonomy metadata.",
-                    )
-                ],
-                candidate_interpretation=CandidateInterpretation(
-                    hypothesis_id="ambiguous_unspecified",
-                    category="ambiguous",
-                    description="Ambiguous explanation or unassisted guess.",
-                    hypothesis_confidence=0.40,
-                ),
-                extractor_model="rule-based-baseline-v2",
-            )
 
 
 class InstructorEvidenceExtractor:
     """
     Schema-constrained extractor wrapping an LLM client via Instructor.
-    Guarantees that the LLM generation conforms 100% to CognitiveEvidence schema.
+    Validates generated schema, taxonomy IDs, and exact source quotes before use.
     """
 
     def __init__(self, client=None, model_name: str = "gpt-4o-mini"):
@@ -247,9 +128,9 @@ Taxonomy Rules:
 Task:
 1. Extract the exact source quote from the student explanation (do NOT invent words).
 2. Extract the atomic claim articulated by the student.
-3. Classify category strictly as 'misconception', 'calculation_slip', 'mastery', or 'prerequisite_gap'.
+3. Use any schema category, including ambiguous or guessing when reasoning is insufficient.
 4. Ground to the canonical curriculum concept_id.
-5. Estimate calibrated confidence.
+5. Provide an uncalibrated confidence estimate. Never infer mastery from an answer choice alone; use ambiguous or guessing when evidence is insufficient.
 """
 
         evidence = instructor_client.chat.completions.create(
@@ -262,56 +143,22 @@ Task:
             temperature=0.0,
         )
 
-        # Enforce exact provenance linkage from source interaction
+        # Validate observations before permitting any state update. Invalid generated
+        # evidence is replaced by deterministic rules, not relabeled as a paraphrase.
         evidence.learner_id = interaction.learner_id
         evidence.interaction_id = interaction.interaction_id
-
-        # Grounding post-processing: enforce valid taxonomy concepts
-        valid_concepts = set(FRACTION_TAXONOMY.keys())
-        matcher = SemanticTaxonomyMatcher(FRACTION_TAXONOMY, use_embeddings=False)
-
-        grounded_links = []
-        for cl in evidence.concept_links:
-            if cl.concept_id in valid_concepts:
-                grounded_links.append(cl)
-            else:
-                # Map using semantic matcher
-                matched = matcher.match(cl.concept_name or cl.grounding_rationale or interaction.item_text, top_k=1)
-                if matched:
-                    grounded_links.append(matched[0])
-                elif interaction.item_concepts:
-                    grounded_links.append(
-                        ConceptLink(
-                            concept_id=interaction.item_concepts[0],
-                            concept_name=FRACTION_TAXONOMY.get(interaction.item_concepts[0], KnowledgeComponent(concept_id=interaction.item_concepts[0], concept_name=interaction.item_concepts[0], description="")).concept_name,
-                            confidence=0.90,
-                            grounding_rationale="Mapped from item concepts taxonomy fallback.",
-                        )
-                    )
-
-        if not grounded_links and interaction.item_concepts:
-            grounded_links.append(
-                ConceptLink(
-                    concept_id=interaction.item_concepts[0],
-                    concept_name="Adding Fractions with Unlike Denominators",
-                    confidence=0.90,
-                    grounding_rationale="Fallback item taxonomy mapping.",
-                )
-            )
-
-        evidence.concept_links = grounded_links
-
-        # Misconception canonicalization
-        if evidence.candidate_interpretation.category == "misconception":
-            if "denominator_addition" in evidence.candidate_interpretation.hypothesis_id or "independent" in evidence.candidate_interpretation.description.lower() or "add" in evidence.extracted_claim.lower():
-                evidence.candidate_interpretation.hypothesis_id = "denominator_addition_rule"
-                evidence.candidate_interpretation.description = "Independent Numerator and Denominator Addition"
-        elif evidence.candidate_interpretation.category == "calculation_slip":
-            evidence.candidate_interpretation.hypothesis_id = "calculation_slip"
-            evidence.candidate_interpretation.description = "Arithmetic Calculation Slip"
-
-        # Enforce quote veracity check
-        if interaction.response_text and not evidence.validate_against_raw_text(interaction.response_text):
-            evidence.is_verbatim_quote = False
-
+        evidence.timestamp = interaction.timestamp
+        evidence.review_status = "unreviewed"
+        evidence.reviewer_notes = None
+        evidence.evidence_id = "E_" + uuid.uuid5(uuid.NAMESPACE_URL, interaction.interaction_id + ":" + self.model_name).hex[:24]
+        raw = interaction.response_text or interaction.selected_option or ""
+        ids = [link.concept_id for link in evidence.concept_links]
+        if not evidence.is_verbatim_quote or not evidence.validate_against_raw_text(raw) or len(ids) != len(set(ids)) or any(cid not in FRACTION_TAXONOMY for cid in ids):
+            return self.rule_fallback.extract(interaction)
+        for link in evidence.concept_links:
+            link.concept_name = FRACTION_TAXONOMY[link.concept_id].concept_name
+        known = {m.misconception_id for cid in ids for m in FRACTION_TAXONOMY[cid].known_misconceptions}
+        if evidence.candidate_interpretation.category == "misconception" and evidence.candidate_interpretation.hypothesis_id not in known:
+            return self.rule_fallback.extract(interaction)
+        evidence.contradicted_hypothesis_ids = [hid for hid in evidence.contradicted_hypothesis_ids if hid in known]
         return evidence

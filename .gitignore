@@ -8,3 +8,8 @@ data/*.db*
 data/raw/
 models/
 .venv/
+
+# Browser regression artifacts
+apps/web/test-results/
+apps/web/playwright-report/
+*.tsbuildinfo

@@ -37,6 +37,7 @@ class ConceptState(BaseModel):
     )
     last_interaction_timestamp: Optional[datetime] = None
     interaction_count: int = 0
+    informative_evidence_count: int = 0
 
 
 class LearnerStateSnapshot(BaseModel):
