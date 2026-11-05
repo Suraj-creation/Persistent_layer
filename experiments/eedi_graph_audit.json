@@ -1,0 +1,31 @@
+{
+  "row_counts": {
+    "misconception-map.csv": 19294,
+    "construct-map.csv": 2258
+  },
+  "unique_counts": {
+    "misconceptions": 8117,
+    "constructs_in_edges": 2258,
+    "construct_catalogue": 2258,
+    "subjects": 4,
+    "topics": 50,
+    "subtopics": 236
+  },
+  "weight_validation": {
+    "misconception_groups_checked": 8117,
+    "all_groups_sum_to_100_within_tolerance": true,
+    "tolerance_percentage_points": 0.1
+  },
+  "dataset": "Eedi Misconceptions Graph v1.0",
+  "repo": "Eedi/Eedi-Misconceptions-Graph",
+  "revision": "2ae0839debf73c0ce7dd6578d8ea8b99e7be8631",
+  "license": "CC BY 4.0",
+  "attribution": "\"Eedi Misconceptions Graph v1.0\" by Eedi, licensed under CC BY 4.0.",
+  "source_url": "https://huggingface.co/datasets/Eedi/Eedi-Misconceptions-Graph/tree/2ae0839debf73c0ce7dd6578d8ea8b99e7be8631",
+  "file_sha256": {
+    "misconception-map.csv": "3937e12b96ba2659ab16f060edfffeb6f35a1cce5fb60caedf6955a1b6fed0c2",
+    "construct-map.csv": "45a0fb21687f9b13cc59bb9aa011a39347637e304a8c239ee6d447b5bd77051b"
+  },
+  "data_role": "curriculum grounding only; no learner responses or student-level labels",
+  "audited_at_utc": "2026-11-05T06:55:39.943310+00:00"
+}

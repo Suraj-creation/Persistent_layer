@@ -28,9 +28,9 @@ Current runtime is a prototype: a React fraction interface calls a FastAPI servi
 Important implementation findings recorded in the assessment include:
 
 - The default Eedi and FoundationalASSIST loaders return synthetic fixtures when no local file is supplied. Their demo rows are not the corresponding releases.
-- The persistent state math is deterministic but hand-set; it is not a calibrated Bayesian posterior or a learned state-transition model.
-- A mastery update condition discounts candidate misconceptions whenever a nonempty claim is present, even without evidence that the claim contradicts that specific misconception.
-- Replay can reproduce state values, but snapshot/event IDs are generated anew; full snapshot objects are not byte-identical on replay.
+- State updates are deterministic hand-set heuristics; the Beta-shaped quantities and misconception scores are not calibrated Bayesian posteriors or learned transitions.
+- This continuation stopped repeat discounts to resolved/dismissed misconceptions and added a regression check. Replay snapshot/event IDs are repeatable for the same prior state and evidence, and duplicate evidence IDs in a replay ledger are rejected. The schema still has only concept-level polarity, so mastery evidence discounts every active misconception candidate on that concept; candidate-specific counterevidence remains open work.
+- The state engine rejects cross-learner evidence and repeated concept links in one evidence record. Transactional, cross-process idempotency is still absent from the SQLite API path.
 - The student UI's probe selection does not currently persist the student's answer as a backend event, so it does not complete a closed learning loop.
 - The repository has no live FTS/BM25/vector retrieval index or broad math misconception knowledge graph.
 
@@ -43,7 +43,7 @@ These findings are detailed in [RESEARCH_AND_IMPLEMENTATION_ASSESSMENT.md](RESEA
 | ASSISTments 2009–2010 corrected Skill Builder | **Downloaded and used for the BKT run.** Local raw CSV is Git-ignored. | Student, problem, skill, chronological order, first-action type, and correctness. Supports a separate next-response correctness baseline. | The official page says the release is free to use and asks users to cite the exact dataset page. It has no verified misconception labels or detailed explanation text. Historical skills are not mapped to this app's taxonomy. |
 | MAP: Charting Student Math Misunderstandings | **Selected for the first language-to-misconception classifier; not trained.** No authorized file is present. | Question text, selected answer, student explanation, category, and misconception label. The paper reports 52,463 explanations over 15 items with expert labels and a mixture of authentic and synthetic responses. | It has no learner chronology. Kaggle rules require acceptance before access and limit use to non-commercial purposes. No third-party mirror was used. |
 | FoundationalASSIST | Researched; not downloaded or trained. | Longitudinal correctness/skill sequences can support a separate KT task. | No verified misconception labels; the release has access/responsible-use conditions. Short/numeric answer strings are not equivalent to reasoning explanations. |
-| Eedi Misconceptions Graph | Researched; not ingested. | Concept/construct-to-misconception relations can ground taxonomy alignment and retrieval. | It is a knowledge graph, not student responses or individual evidence. It cannot directly train response classification or longitudinal state updates. |
+| Eedi Misconceptions Graph v1.0 | **Downloaded locally and audited** at pinned revision `2ae0839…`; CC BY 4.0. Raw CSVs are Git-ignored. | 19,294 weighted misconception↔construct edges; 2,258 constructs; 8,117 misconception IDs; four-subject curriculum hierarchy. Supports grounding and retrieval research. | No questions, distractors, answers, or learner data. It cannot directly train a response classifier or learner-state updater. Mapping to the prototype taxonomy remains unreviewed. |
 | Eedi Question-Anchored Tutoring Dialogues-2k | Researched; not used. | Dialogue and tutor-talk-move studies. | Tutor turn labels are not student misconception labels or ground truth for learner state. |
 | Built-in Eedi-style fraction fixture | **Used only by the existing synthetic benchmark.** | Exercises code paths and output presentation. | Generated examples reuse a handful of hand-authored wording templates; labels and wording are coupled by construction. Not an empirical dataset. |
 
@@ -122,7 +122,26 @@ Interpretation is deliberately narrow: on this particular historical release and
 
 The model pickle was inspected: it contains the pyBKT configuration and fitted per-skill parameter arrays, not learner IDs or training interaction rows. The raw CSV is not included in the branch.
 
-## 6. Prepared but unexecuted experiment: MAP misconception classifier
+### Repeated student-split comparison and simple baselines
+
+The follow-up evaluation reuses the tracked seed-42 model only when its training-data SHA-256 matches the local CSV, and fits a separate seed-7 BKT model on that split's training learners. It compares both BKT runs against constant training prevalence, smoothed per-skill prevalence, and logistic regression using skill identity plus the held-out learner's within-skill opportunity count. These baselines use training labels only; the opportunity feature is sequence position, not future correctness. No per-learner predictions are written.
+
+| Model | Mean ROC AUC | Split SD | Mean accuracy | Mean Brier | Mean 10-bin ECE |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Non-forgetting BKT | 0.6639 | 0.0048 | 0.7449 | 0.1798 | 0.0088 |
+| Constant training prevalence | 0.5000 | 0.0000 | 0.7396 | 0.1926 | 0.0074 |
+| Smoothed skill prevalence | 0.5531 | 0.0065 | 0.7397 | 0.1911 | 0.0122 |
+| Skill + opportunity logistic | 0.5653 | 0.0016 | 0.7397 | 0.1904 | 0.0091 |
+
+Across these two paired splits, BKT's mean AUC exceeds the skill/opportunity baseline by 0.0986 and its mean Brier score is lower by 0.0105. Two seeds are an exploratory robustness check, not a confidence interval or significance test. ECE remains bin-dependent and uncalibrated. Per-seed metrics, row counts, model source, artifact hashes, and provenance are in `models/assistments_2009_2010_bkt/robustness.json`; the seed-7 model and parameter CSV are tracked as well. This still tests correctness prediction only.
+
+## 6. Experiment C: open Eedi graph ingestion and audit
+
+The public Eedi v1.0 graph was fetched from a pinned Hugging Face revision under CC BY 4.0. The ingestion script validates both CSV schemas, expected row counts, unique construct IDs, every edge's construct join, construct-name consistency, percentage bounds, and that every misconception's edge weights sum to 100 within 0.1 percentage points. The audit passed for 19,294 edges and 2,258 constructs, covering 8,117 misconceptions, 236 subtopics, 50 topics, and four subjects.
+
+The raw CSVs remain under ignored `data/raw/eedi_misconceptions_graph/`. The checked-in `experiments/eedi_graph_audit.json` contains aggregate counts, the pinned revision, attribution, and file SHA-256 values. This is **curriculum grounding data**, not learner-level training or validation data; the code does not automatically map Eedi IDs into app taxonomy IDs. The [Eedi dataset card](https://huggingface.co/datasets/Eedi/Eedi-Misconceptions-Graph/blob/2ae0839debf73c0ce7dd6578d8ea8b99e7be8631/README.md) confirms the CC BY 4.0 terms and that the release omits diagnostic questions and learner responses; its [data dictionary](https://huggingface.co/datasets/Eedi/Eedi-Misconceptions-Graph/blob/2ae0839debf73c0ce7dd6578d8ea8b99e7be8631/docs/data-dictionary.md) defines the weighted edge fields.
+
+## 7. Prepared but unexecuted experiment: MAP misconception classifier
 
 The response-level training target is the joint `Category:Misconception` label. Input text combines the question, selected multiple-choice answer, and student explanation. This keeps `True_Correct`, `Neither`, and misconception classes distinct rather than reducing them to correctness alone.
 
@@ -138,10 +157,14 @@ This code is ready, but it was **not run**. There is no `data/raw/map/train.csv`
 
 MAP is also unsuitable for training the persistent state updater: the competition rows do not provide learner identity or chronological interaction histories. Response-level classification and longitudinal state estimation remain separate experiments.
 
-## 7. Implementation and research-document changes
+## 8. Implementation and research-document changes
 
 - Added a detailed source/code audit, dataset plan, BKT run report, and this combined experiment report.
 - Added the MAP trainer and the ASSISTments BKT trainer, with provenance and local artifact outputs.
+- Added a two-split ASSISTments robustness evaluator with constant, skill-prevalence, and opportunity-count baselines; saved the seed-7 BKT checkpoint and parameter table.
+- Added a pinned Eedi graph downloader and structural audit with local raw-data handling, CC BY attribution, checksums, and aggregate-only tracked output.
+- Made state transitions and audit event IDs reproducible for identical state/evidence inputs; stopped repeat discounts to inactive beliefs and removed a duplicate replay implementation. Candidate-specific counterevidence targeting remains open because the evidence contract is concept-level.
+- Updated state math traces to identify evidence-weighted Beta masses and misconception scores as heuristics rather than calibrated Bayesian posteriors.
 - Added focused tests for MAP schema/deduplication/ranking and ASSISTments event filters, duplicate rejection, student splits, skill selection, and support thresholds.
 - Corrected descriptions of the synthetic benchmark in the benchmark script/report/results and Researcher Studio; removed unsupported calibration and replay claims.
 - Labeled default Eedi and FoundationalASSIST fixtures as synthetic and adjusted replay API wording to match actual behavior.
@@ -149,25 +172,26 @@ MAP is also unsuitable for training the persistent state updater: the competitio
 - Added explicit runtime dependencies and bounded NumPy/scikit-learn versions for pyBKT compatibility; updated the lockfile.
 - Added ignored-path rules for raw data and generated models. The branch will include the small trained BKT model, parameters, and metric artifact; it will not include raw dataset rows.
 
-## 8. Verification
+## 9. Verification
 
-- Python: `python -m pytest -q` → **24 passed**, with 32 existing pyBKT NumPy deprecation warnings.
+- Python: `.venv/bin/python -m pytest -q` → **31 passed**, with 32 existing pyBKT NumPy deprecation warnings.
 - Frontend: `npm run build --prefix apps/web` → passed (`tsc -b` and Vite production build).
 - Patch whitespace: `git diff --check` → passed.
-- Real-data training: ASSISTments BKT completed and saved the model, parameters, and metrics described above.
+- Real-data training/evaluation: ASSISTments seed 42 was trained earlier; seed 7 was fit for a second learner holdout. The robustness script checksum-checks the seed-42 artifact before reuse and stores aggregate metrics without per-learner predictions.
 - MAP training: not run because authorized data is absent and the terms have not been accepted by the user.
 
 Tests verify software behavior and fixture handling; they do not count as educational validation or evidence that the model improves learning.
 
-## 9. Next experiments, in order
+## 10. Next experiments, in order
 
-1. Repeat ASSISTments BKT over multiple student-level seeds or a temporal holdout; compare constant prevalence, opportunity-count, and BKT per skill. Report confidence intervals and per-skill support.
-2. Run the MAP baseline after the user accepts its rules and supplies the authorized file. Add a separate leave-question-out evaluation and report unseen-label coverage; do not claim generalization from the known-item split alone.
-3. Build a human-reviewed response sample with exact evidence spans, concept links, category, misconception, and abstention labels. MAP's class label does not provide evidence offsets.
-4. Fix and separately evaluate state-update contradictions and replay semantics before connecting any response classifier to persistent state.
-5. Keep response classification, correctness prediction, evidence faithfulness, and learning impact as separate metrics and claims. Do not fine-tune a transformer or add a graph-RAG stack until a measured baseline gap supports that cost.
+1. Expand ASSISTments to at least five learner seeds and a time-based evaluation if event chronology supports a defensible cutoff; add per-skill paired metrics and learner-cluster resampling intervals. The current two-seed summary reports only descriptive split SD.
+2. Run the MAP baseline only after the user accepts the current rules and supplies the authorized file. Add leave-question-out validation and unseen-label coverage; do not claim generalization from known-item folds alone.
+3. Evaluate graph-to-app concept mapping on an expert-reviewed set, then build the retrieval adapter. The graph remains grounding data, not learner-level training data.
+4. Build a human-reviewed response sample with exact evidence spans, concept links, category, misconception, and abstention labels. MAP's class label does not provide evidence offsets.
+5. Add explicit per-hypothesis counterevidence targets, transactional event idempotency, and persistent snapshot metadata to the SQLite API path; validate policy weights against reviewed longitudinal trajectories.
+6. Keep response classification, correctness prediction, evidence faithfulness, and learning impact separate. Nothing in this branch establishes that the approach beats the cited papers or improves student learning; only compare after datasets, splits, and target definitions are aligned.
 
-## 10. Sources
+## 11. Sources
 
 - [ASSISTments 2009–2010 dataset page](https://sites.google.com/site/assistmentsdata/home/2009-2010-assistment-data)
 - [Corrected ASSISTments Skill Builder download page](https://sites.google.com/site/assistmentsdata/home/2009-2010-assistment-data/skill-builder-data-2009-2010)

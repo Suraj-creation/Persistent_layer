@@ -122,6 +122,24 @@ python experiments/train_assistments_bkt.py
 
 By default it selects fraction/percent skills with at least 100 events and 20 learners, then evaluates on a deterministic student-level holdout. It predicts next-response correctness, not misconceptions. Metrics, parameters, and a serialized model are written to `models/assistments_2009_2010_bkt/`. See [the run report](experiments/assistments_bkt_report.md).
 
+For the repeated-split comparison against constant, smoothed skill-prevalence, and opportunity-count baselines, run:
+
+```bash
+.venv/bin/python experiments/evaluate_assistments_bkt_robustness.py
+```
+
+The default check uses student split seeds 42 and 7. It verifies the seed-42 artifact against the local CSV checksum, fits and saves the seed-7 aggregate model, and writes metrics to `models/assistments_2009_2010_bkt/robustness.json`. The two-split spread is descriptive only and is not a confidence interval.
+
+### Audit the public Eedi misconception graph
+
+The separate graph release is licensed CC BY 4.0 and contains curriculum constructs and weighted misconception links, not student responses. Fetch and validate the pinned version with:
+
+```bash
+.venv/bin/python experiments/ingest_eedi_misconceptions_graph.py --download
+```
+
+Raw graph CSVs remain under the Git-ignored `data/raw/` directory. Only the aggregate audit, source revision, attribution, and file checksums are tracked in `experiments/eedi_graph_audit.json`. See [the training pipeline plan](DATA_AND_TRAINING_PLAN.md).
+
 ### Start Backend API Server
 ```bash
 uvicorn apps.api.app.main:app --reload --port 8000

@@ -186,6 +186,27 @@ def test_contradiction_handling_and_reversal():
     discount_event = next(e for e in events_2 if e.applied_rule == "RULE_CONTRADICTION_DISCOUNT")
     assert discount_event.prior_misconception_prob > discount_event.new_misconception_prob
 
+    # A resolved belief must not keep accumulating contradiction records or
+    # being discounted again by later mastery evidence.
+    interaction_3 = Interaction(
+        interaction_id="I_A_03",
+        learner_id=learner_id,
+        item_id="ITEM_FRAC_03",
+        item_text="Solve 2/5 + 1/5",
+        item_concepts=[concept_id],
+        response_text="I kept the denominator and added the numerators.",
+        selected_option="3/5",
+        correctness=1,
+    )
+    evidence_3 = extractor.extract(interaction_3)
+    state_3, events_3 = state_engine.update_state(state_2, evidence_3, interaction_3)
+    belief_3 = state_3.concept_states[concept_id].candidate_misconceptions[
+        "denominator_addition_rule"
+    ]
+    assert belief_3.posterior_probability == m_belief_2.posterior_probability
+    assert belief_3.contradicting_evidence_ids == m_belief_2.contradicting_evidence_ids
+    assert not any(e.applied_rule == "RULE_CONTRADICTION_DISCOUNT" for e in events_3)
+
 
 def test_deterministic_replay():
     """
@@ -249,3 +270,55 @@ def test_deterministic_replay():
     m1 = {k: round(v.posterior_probability, 4) for k, v in c1.candidate_misconceptions.items()}
     m2 = {k: round(v.posterior_probability, 4) for k, v in c2.candidate_misconceptions.items()}
     assert m1 == m2
+    assert [state.snapshot_id for state, _ in traj_1] == [
+        state.snapshot_id for state, _ in traj_2
+    ]
+    assert [[event.event_id for event in events] for _, events in traj_1] == [
+        [event.event_id for event in events] for _, events in traj_2
+    ]
+    assert [state.model_dump(mode="json") for state, _ in traj_1] == [
+        state.model_dump(mode="json") for state, _ in traj_2
+    ]
+
+
+def test_replay_rejects_duplicate_evidence_id():
+    state_engine = BayesianLearnerStateEngine()
+    extractor = RuleBasedEvidenceExtractor()
+    interaction = Interaction(
+        interaction_id="I_DUPLICATE",
+        learner_id="student_duplicate",
+        item_id="ITEM_DUPLICATE",
+        item_text="1/2 + 1/3",
+        item_concepts=["fraction_addition_unlike_denominators"],
+        response_text="I added the top and bottom numbers.",
+        correctness=0,
+    )
+    evidence = extractor.extract(interaction)
+
+    with pytest.raises(ValueError, match="Duplicate evidence_id"):
+        state_engine.replay_trajectory(
+            interaction.learner_id,
+            interaction.item_concepts,
+            [evidence, evidence],
+        )
+
+
+def test_state_update_rejects_evidence_for_another_learner():
+    state_engine = BayesianLearnerStateEngine()
+    extractor = RuleBasedEvidenceExtractor()
+    interaction = Interaction(
+        interaction_id="I_WRONG_LEARNER",
+        learner_id="student_a",
+        item_id="ITEM_WRONG_LEARNER",
+        item_text="1/2 + 1/3",
+        item_concepts=["fraction_addition_unlike_denominators"],
+        response_text="I added the top and bottom numbers.",
+        correctness=0,
+    )
+    evidence = extractor.extract(interaction)
+    other_learner_state = state_engine.initialize_learner_state(
+        "student_b", interaction.item_concepts
+    )
+
+    with pytest.raises(ValueError, match="learner_id must match"):
+        state_engine.update_state(other_learner_state, evidence)
