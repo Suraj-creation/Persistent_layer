@@ -1,0 +1,17 @@
+{
+  "mode": "read_only",
+  "database": "data/learner_state.db",
+  "integrity": "ok",
+  "foreign_key_violations": 0,
+  "journal_mode": "wal",
+  "counts": {
+    "assessment_answers": 14,
+    "assessment_conversations": 7,
+    "assessment_questions": 20,
+    "assessment_state_history": 19,
+    "assessment_submissions": 0,
+    "assessment_topics": 5,
+    "nlp_executions": 38,
+    "nlp_stages": 231
+  }
+}

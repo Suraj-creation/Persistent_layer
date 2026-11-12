@@ -21,10 +21,13 @@ class LeakageSafeSplitter:
         Splits dataset by student ID: all interactions for a student belong strictly to train OR test.
         Prevents student-identity leakage.
         """
-        np.random.seed(seed)
+        if df[student_col].isna().any():
+            raise ValueError("Student IDs must be present")
         unique_students = np.array(df[student_col].unique())
-        np.random.shuffle(unique_students)
+        np.random.RandomState(seed).shuffle(unique_students)
 
+        if not 0 < test_ratio < 1 or len(unique_students) < 2:
+            raise ValueError("Student split needs at least two students and a test ratio between 0 and 1")
         split_idx = int(len(unique_students) * (1.0 - test_ratio))
         train_students = set(unique_students[:split_idx])
         test_students = set(unique_students[split_idx:])
@@ -45,10 +48,13 @@ class LeakageSafeSplitter:
         Generates k leakage-safe folds partitioned at the student level.
         Returns: List of (train_df, test_df) for each fold.
         """
-        np.random.seed(seed)
+        if df[student_col].isna().any():
+            raise ValueError("Student IDs must be present")
         unique_students = np.array(df[student_col].unique())
-        np.random.shuffle(unique_students)
+        np.random.RandomState(seed).shuffle(unique_students)
 
+        if not 2 <= k <= len(unique_students):
+            raise ValueError("Fold count must be between 2 and the number of students")
         student_folds = np.array_split(unique_students, k)
         folds = []
 

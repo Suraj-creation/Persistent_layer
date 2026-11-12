@@ -1,0 +1,96 @@
+{
+  "provider": "fixture",
+  "synthetic_data": true,
+  "setup_measurements": [
+    {
+      "viewport": [
+        1366,
+        768
+      ],
+      "start_button": {
+        "x": 794.921875,
+        "y": 541.34375,
+        "width": 475.078125,
+        "height": 48
+      },
+      "document": {
+        "width": 1366,
+        "height": 768,
+        "scrollWidth": 1366,
+        "scrollHeight": 768
+      }
+    },
+    {
+      "viewport": [
+        1280,
+        720
+      ],
+      "start_button": {
+        "x": 752.40625,
+        "y": 513.75,
+        "width": 470.578125,
+        "height": 48
+      },
+      "document": {
+        "width": 1280,
+        "height": 720,
+        "scrollWidth": 1280,
+        "scrollHeight": 720
+      }
+    },
+    {
+      "viewport": [
+        1024,
+        768
+      ],
+      "start_button": {
+        "x": 612.109375,
+        "y": 543.34375,
+        "width": 362.875,
+        "height": 48
+      },
+      "document": {
+        "width": 1024,
+        "height": 768,
+        "scrollWidth": 1024,
+        "scrollHeight": 768
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "start_button": {
+        "x": 33,
+        "y": 667.09375,
+        "width": 324,
+        "height": 48
+      },
+      "document": {
+        "width": 390,
+        "height": 844,
+        "scrollWidth": 390,
+        "scrollHeight": 844
+      }
+    }
+  ],
+  "complete_tokens_displayed": 325,
+  "checks": [
+    "setup fits viewport",
+    "desktop question actions visible",
+    "memory navigation",
+    "default response selection",
+    "complete long-answer tokens",
+    "criterion descriptions",
+    "committed state comparison",
+    "generation-to-response navigation",
+    "rejected evidence absent",
+    "failed request preserves state",
+    "mobile no horizontal overflow",
+    "guide reveals target pane",
+    "ambiguous response holds estimates",
+    "replay loads original saved response"
+  ],
+  "javascript_errors": []
+}

@@ -9,7 +9,10 @@ import {
   TrendingUp,
   Scale,
   RefreshCw,
+  FlaskConical,
 } from 'lucide-react';
+import { RetrievalExplorer } from './RetrievalExplorer';
+import { TrainingResearchPanel } from './TrainingResearchPanel';
 import {
   getDatasetAudits,
   getBenchmarkResults,
@@ -28,7 +31,7 @@ import {
 } from '../types';
 
 export const ResearcherStudio: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'audit' | 'ledger' | 'trajectory' | 'benchmarks'>('benchmarks');
+  const [activeTab, setActiveTab] = useState<'audit' | 'ledger' | 'trajectory' | 'benchmarks' | 'training' | 'retrieval'>('training');
   const [selectedLearner, setSelectedLearner] = useState<string>('student_A');
   const [learnersList, setLearnersList] = useState<string[]>(['student_A', 'student_B', 'api_student_A']);
 
@@ -103,13 +106,15 @@ export const ResearcherStudio: React.FC = () => {
             Researcher & Instructor Intelligence Console
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Audit datasets, inspect structured Cognitive Evidence ledgers, review learner-state trajectories, and inspect the synthetic pipeline demonstration.
+            Review training results and artifacts, audit datasets, inspect Cognitive Evidence, and explore learner-state trajectories.
           </p>
         </div>
 
         {/* Tab Navigation */}
         <div className="flex flex-wrap items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
           {[
+            { id: 'training', label: 'Training Results', icon: FlaskConical },
+            { id: 'retrieval', label: 'Retrieval Explorer', icon: Database },
             { id: 'benchmarks', label: '3-Tier Benchmarks', icon: Scale },
             { id: 'trajectory', label: 'Learner Trajectories', icon: History },
             { id: 'ledger', label: 'Evidence Ledger', icon: Database },
@@ -140,6 +145,9 @@ export const ResearcherStudio: React.FC = () => {
           <span className="font-semibold">{replayMessage}</span>
         </div>
       )}
+
+      {activeTab === 'training' && <TrainingResearchPanel />}
+      {activeTab === 'retrieval' && <RetrievalExplorer />}
 
       {/* TAB 1: 3-TIER BENCHMARKS */}
       {activeTab === 'benchmarks' && (
@@ -267,7 +275,7 @@ export const ResearcherStudio: React.FC = () => {
                         </td>
                       </tr>
                       <tr className="bg-amber-50/20">
-                        <td className="py-3.5 px-6 font-bold text-amber-950">Misconception Macro-F1</td>
+                        <td className="py-3.5 px-6 font-bold text-amber-950">Binary Misconception F1</td>
                         <td className="py-3.5 px-6 font-mono text-slate-400">Not measured (stored as 0.0000)</td>
                         <td className="py-3.5 px-6 font-mono">{benchmarks.tiers.tier_2_language_aware_baseline.metrics.misconception_f1.toFixed(4)}</td>
                         <td className="py-3.5 px-6 bg-indigo-50/50 font-mono font-extrabold text-indigo-700">

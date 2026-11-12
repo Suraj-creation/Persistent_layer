@@ -13,7 +13,7 @@ import {
   Copy,
   Check,
 } from 'lucide-react';
-import { sendChatMessage, getLearnerState, getLearnerAuditReport } from '../api/client';
+import { sendChatMessage, getLearnerState, getLearnerAuditReport, getConversation, answerDiagnostic } from '../api/client';
 import {
   ChatMessage,
   CognitiveEvidence,
@@ -66,14 +66,27 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     scrollToBottom();
   }, [messages, isLoading]);
 
+  const learnerRef = useRef(activeLearner);
+  learnerRef.current = activeLearner;
   useEffect(() => {
-    // Load persisted state for active learner from SQLite
-    getLearnerState(activeLearner)
-      .then((s) => setActiveState(s))
-      .catch(() => {});
+    let active = true;
+    setMessages([]);
+    setSelectedEvidence(null);
+    setActiveState(null);
+    setSelectedOption(null);
+    getLearnerState(activeLearner).then((state) => { if (active) setActiveState(state); }).catch(() => {});
+    getConversation(activeLearner).then((turns) => {
+      if (!active) return;
+      setMessages(turns.flatMap((turn) => [
+        { id: turn.interaction_id + '-user', role: 'user' as const, content: turn.user, timestamp: turn.timestamp, selected_option: turn.selected_option },
+        { id: turn.interaction_id + '-assistant', role: 'assistant' as const, content: turn.response.reply, timestamp: turn.timestamp, evidence: turn.response.evidence, events: turn.response.events, diagnostic_probe: turn.response.recommended_diagnostic_probe, diagnostic_rationale: turn.response.diagnostic_rationale, retrieval: turn.response.retrieval },
+      ]));
+    }).catch(() => {});
+    return () => { active = false; };
   }, [activeLearner]);
 
   const handleSend = async (customMessage?: string, customOption?: string) => {
+    if (isLoading) return;
     const textToSend = customMessage !== undefined ? customMessage : inputValue;
     if (!textToSend.trim() && !customOption) return;
 
@@ -110,16 +123,19 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
         events: resp.events,
         diagnostic_probe: resp.recommended_diagnostic_probe,
         diagnostic_rationale: resp.diagnostic_rationale,
+        retrieval: resp.retrieval,
       };
 
+      if (learnerRef.current !== activeLearner) return;
       setMessages((prev) => [...prev, assistantMsg]);
       setActiveState(resp.new_state);
       setSelectedEvidence(resp.evidence);
     } catch (err: any) {
+      if (learnerRef.current !== activeLearner) return;
       const errorMsg: ChatMessage = {
         id: `err_${Date.now()}`,
         role: 'assistant',
-        content: `Error connecting to persistent backend: ${err.message}. Please verify the server is running on port 8001.`,
+        content: `Error connecting to persistent backend: ${err.message}. Please try again when the service is available.`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, errorMsg]);
@@ -128,11 +144,17 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     }
   };
 
-  const handleDiagnosticAnswer = (opt: DiagnosticOption) => {
-    handleSend(
-      `For the follow-up, I choose ${opt.option_key}: "${opt.option_text}".`,
-      opt.option_key
-    );
+  const handleDiagnosticAnswer = async (opt: DiagnosticOption, parent: ChatMessage) => {
+    if (isLoading || !parent.diagnostic_probe || !parent.evidence) return;
+    setIsLoading(true);
+    try {
+      const response = await answerDiagnostic({ learner_id: activeLearner, parent_interaction_id: parent.evidence.interaction_id, item_id: parent.diagnostic_probe.item_id, option_key: opt.option_key });
+      if (learnerRef.current !== activeLearner) return;
+      setActiveState(response.new_state);
+      setMessages((previous) => [...previous, { id: response.evidence.interaction_id + '-diagnostic', role: 'assistant', content: `Diagnostic answer ${opt.option_key} saved. Explain your reasoning to provide stronger evidence.`, timestamp: new Date().toISOString(), evidence: response.evidence, events: response.events, retrieval: response.retrieval }]);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Could not save diagnostic answer.');
+    } finally { setIsLoading(false); }
   };
 
   const openAuditReport = async () => {
@@ -191,7 +213,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
           </button>
         </div>
 
-        {/* New Session Button */}
+        {/* Clear View Button */}
         <div className="p-3">
           <button
             onClick={() => {
@@ -201,7 +223,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
             className="w-full flex items-center space-x-2.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold border border-slate-700/60 transition shadow-sm"
           >
             <Plus className="w-4 h-4 text-slate-400" />
-            {sidebarOpen && <span>New Session</span>}
+            {sidebarOpen && <span>Clear View</span>}
           </button>
         </div>
 
@@ -418,15 +440,19 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
                     </div>
                   )}
 
+                  {msg.retrieval && msg.retrieval.hits.length > 0 && <details className="pt-2 text-[11px] text-slate-500"><summary className="cursor-pointer font-medium">Curriculum sources ({msg.retrieval.hits.length})</summary><ul className="mt-2 space-y-2">{msg.retrieval.hits.map((hit) => <li key={hit.citation_id} className="rounded-lg border border-slate-200 p-2"><strong>{hit.title}</strong><p>{hit.text}</p><code className="break-all text-[9px]">{hit.source} · {hit.source_revision}</code></li>)}</ul></details>}
+
                   {/* Clean contextual option pills if diagnostic probe exists */}
                   {msg.diagnostic_probe && (
                     <div className="pt-2 space-y-1.5">
+                      <div className="text-xs font-semibold text-slate-700">{msg.diagnostic_probe.question_text}</div>
                       <div className="text-xs text-slate-500 font-medium">Quick response options:</div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                         {msg.diagnostic_probe.options.map((opt) => (
                           <button
                             key={opt.option_key}
-                            onClick={() => handleDiagnosticAnswer(opt)}
+                            disabled={isLoading}
+                            onClick={() => handleDiagnosticAnswer(opt, msg)}
                             className="text-left px-3 py-2 rounded-xl border border-slate-200 hover:border-indigo-300 bg-white hover:bg-indigo-50/50 transition text-xs text-slate-700 font-medium"
                           >
                             <strong className="text-indigo-600 mr-1">{opt.option_key}:</strong> {opt.option_text}

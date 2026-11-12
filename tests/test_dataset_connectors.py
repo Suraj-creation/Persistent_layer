@@ -60,3 +60,28 @@ def test_leakage_safe_splitter():
     assert len(folds) == 3
     for tr, te in folds:
         assert len(set(tr["user_id"]).intersection(set(te["user_id"]))) == 0
+
+
+def test_synthetic_loaders_and_canonical_records_are_repeatable():
+    from pandas.testing import assert_frame_equal
+    for loader_type in (EediDataLoader, FoundationalAssistLoader):
+        first, second = loader_type(), loader_type()
+        assert_frame_equal(first.load(), second.load())
+        a, b = first.to_canonical_interactions(), second.to_canonical_interactions()
+        assert a == b
+
+
+def test_splitter_does_not_change_global_random_state():
+    import numpy as np
+    df = EediDataLoader().load()
+    np.random.seed(123)
+    expected = np.random.random()
+    np.random.seed(123)
+    LeakageSafeSplitter.student_split(df)
+    assert np.random.random() == expected
+
+
+@pytest.mark.parametrize("ratio", [0, 1, -1, 2])
+def test_splitter_rejects_invalid_ratio(ratio):
+    with pytest.raises(ValueError):
+        LeakageSafeSplitter.student_split(EediDataLoader().load(), test_ratio=ratio)

@@ -25,7 +25,7 @@ class ClassicalBKTBaseline:
         target_skills = skill_name if skill_name is not None else skills
         try:
             from pyBKT.models import Model
-            self.model = Model(seed=self.seed, num_fits=3)
+            self.model = Model(seed=self.seed, num_fits=3, parallel=False)
             self.model.fit(data=train_df, skills=target_skills)
             return self.model
         except Exception as e:
@@ -43,7 +43,9 @@ class ClassicalBKTBaseline:
         # In pyBKT output, correct_predictions contains the predicted probability of correct answer
         y_true = preds_df["correct"].values
         # Column name in pyBKT is typically 'correct_predictions'
-        pred_col = "correct_predictions" if "correct_predictions" in preds_df.columns else preds_df.columns[-1]
+        if "correct_predictions" not in preds_df.columns:
+            raise ValueError("pyBKT output does not contain correct_predictions")
+        pred_col = "correct_predictions"
         y_prob = preds_df[pred_col].values
 
         # Remove NaNs if any
@@ -51,8 +53,10 @@ class ClassicalBKTBaseline:
         y_true = y_true[valid_mask]
         y_prob = y_prob[valid_mask]
 
+        if len(y_true) == 0 or ((y_prob < 0) | (y_prob > 1)).any():
+            raise ValueError("Evaluation requires nonempty valid probability predictions")
         if len(np.unique(y_true)) < 2:
-            auc = 0.50
+            auc = None  # ROC AUC is undefined when the target has one class.
         else:
             auc = float(roc_auc_score(y_true, y_prob))
 
@@ -63,7 +67,7 @@ class ClassicalBKTBaseline:
         ece = self.compute_ece(y_true, y_prob, n_bins=10)
 
         return {
-            "auc": round(auc, 4),
+            "auc": round(auc, 4) if auc is not None else None,
             "accuracy": round(acc, 4),
             "brier_score": round(brier, 4),
             "ece": round(ece, 4),
@@ -72,6 +76,10 @@ class ClassicalBKTBaseline:
     @staticmethod
     def compute_ece(y_true: np.ndarray, y_prob: np.ndarray, n_bins: int = 10) -> float:
         """Computes Expected Calibration Error."""
+        if n_bins < 1 or len(y_true) != len(y_prob):
+            raise ValueError("ECE needs matching arrays and a positive bin count")
+        if not np.isfinite(y_prob).all() or ((y_prob < 0) | (y_prob > 1)).any():
+            raise ValueError("ECE requires finite probability scores in [0,1]")
         bin_limits = np.linspace(0, 1, n_bins + 1)
         ece = 0.0
         n_total = len(y_true)

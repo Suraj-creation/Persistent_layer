@@ -1,0 +1,32 @@
+{
+  "stores": [
+    {
+      "updated_documents": 10,
+      "deleted_documents": 0,
+      "namespace": "curriculum",
+      "documents": 10,
+      "unique_entities": 10,
+      "chunks": 10,
+      "entities": 10,
+      "edges": 10,
+      "index_version": "curriculum-graph-rrf-v2",
+      "index_fingerprint": "INDEX_61236e4b220a16ecb8971fa5"
+    },
+    {
+      "updated_documents": 0,
+      "deleted_documents": 0,
+      "namespace": "eedi_research",
+      "documents": 10375,
+      "unique_entities": 10425,
+      "chunks": 10375,
+      "entities": 12633,
+      "edges": 21552,
+      "index_version": "curriculum-graph-rrf-v2",
+      "index_fingerprint": "INDEX_7170c8ece0a111798dd52ebf"
+    }
+  ],
+  "learner_data_indexed": false,
+  "eedi_role": "External curriculum research only; no app concept crosswalk or learner evidence",
+  "eedi_attribution": "\"Eedi Misconceptions Graph v1.0\" by Eedi, licensed under CC BY 4.0.",
+  "eedi_revision": "2ae0839debf73c0ce7dd6578d8ea8b99e7be8631"
+}

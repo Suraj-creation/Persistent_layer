@@ -1,0 +1,19 @@
+
+> learner-state-web@2.0.0 test
+> node --test tests/*.test.mjs
+
+✔ source recovery sends only the selected conversation, learner and material (191.0737ms)
+✔ editing a new question cannot overwrite a preserved earlier draft (3.6318ms)
+✔ submitting or clearing one question removes only that question draft (0.4094ms)
+✔ legacy draft survives migration, a new question, and a browser reload (0.4395ms)
+✔ initial inspection prefers learner evidence over a newer generated question (152.363ms)
+✔ bounded telemetry markers never become tokens or invented complete output (29.6728ms)
+✔ trace filters are encoded and cancellation reaches the HTTP request (113.5212ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1259.1778
