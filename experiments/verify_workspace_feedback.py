@@ -3,6 +3,7 @@
 Uses fixture inference and a disposable database; never edits real learner data.
 Build apps/web first. Screenshots and results go to docs/verification/workspace-feedback.
 """
+import argparse
 import json
 import socket
 import sys
@@ -16,6 +17,9 @@ sys.path[:0] = [str(ROOT), str(ROOT / 'tests')]
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output', type=Path, default=ROOT / 'docs/verification/workspace-feedback')
+    args = parser.parse_args()
     from apps.api.app import main as api
     from packages.learner_state_core.db import LocalDatabaseManager
     from test_conversation_assessment import FixtureProvider
@@ -23,7 +27,7 @@ def main():
     from playwright.sync_api import sync_playwright, expect
     import uvicorn
 
-    output = ROOT / 'docs/verification/workspace-feedback'
+    output = args.output
     output.mkdir(parents=True, exist_ok=True)
     api.assessment_provider = FixtureProvider()
     with tempfile.TemporaryDirectory(prefix='workspace-feedback-') as temporary:
@@ -56,6 +60,10 @@ def main():
                 measurements = []
                 for width, height in [(1366,768), (1280,720), (1024,768), (390,844)]:
                     page.set_viewport_size({'width':width,'height':height})
+                    # Chromium updates innerWidth/innerHeight before the next
+                    # responsive CSS layout. Wait for two frames so geometry
+                    # assertions measure the requested viewport, not stale CSS.
+                    page.evaluate('() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))')
                     page.evaluate('window.scrollTo(0,0)')
                     bounds = page.get_by_role('button', name='Start my assessment').bounding_box()
                     document = page.evaluate('({width:innerWidth, height:innerHeight, scrollWidth:document.documentElement.scrollWidth, scrollHeight:document.documentElement.scrollHeight})')

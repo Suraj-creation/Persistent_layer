@@ -202,7 +202,9 @@ def main():
                     turn = session['turns'][-1]
                     page.get_by_role('button', name='NLP Observability', exact=True).click()
                     page.locator('.nlp-filters label').filter(has_text='Execution').locator('select').select_option('answer')
-                    page.locator('.nlp-filters label').filter(has_text='Question ID').locator('input').fill(turn['question']['question_id'])
+                    # Observability exposes question/conversation lookup in the
+                    # primary execution search; it is not an advanced filter.
+                    page.get_by_label('Execution lookup', exact=True).fill(turn['question']['question_id'])
                     expect(page.locator('.nlp-execution-detail h2')).to_have_text('Response processing')
                     page.get_by_role('button', name='Text transformations', exact=True).click()
                     expect(page.locator('.nlp-record-source')).to_contain_text(turn['turn_id'])
