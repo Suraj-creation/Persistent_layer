@@ -34,7 +34,11 @@ def valid_observation():
 def test_provider_contract_rejects_old_gap_ids_and_removes_nested_question_history(monkeypatch):
     provider = AssessmentProvider(object(), 'test')
     captured = []
-    monkeypatch.setattr(provider, '_call', lambda schema, instructions, payload: captured.append((schema,payload)))
+    wire = {**{k:v for k,v in valid_observation().items() if k != 'source_quote'}, 'reasoning_status':'substantive'}
+    def select(schema, instructions, payload):
+        captured.append((schema, payload))
+        return {**wire, 'source_passage_id':payload['response_passages'][0]['passage_id']}
+    monkeypatch.setattr(provider, '_call', select)
     context = evaluation_context()
     original = deepcopy(context)
     provider.evaluate(context)
@@ -46,14 +50,15 @@ def test_provider_contract_rejects_old_gap_ids_and_removes_nested_question_histo
     assert 'evidence' not in payload['retrieval']
     assert payload['allowed_criterion_ids'] == ['current_sum']
     assert payload['allowed_source_citations'] == ['source_current']
-    assert schema.model_validate(valid_observation()).met_criteria == ['current_sum']
-    invalid = {**valid_observation(), 'missing_criteria':['old_associativity']}
+    valid = {**wire, 'source_passage_id':payload['response_passages'][0]['passage_id']}
+    assert schema.model_validate(valid).met_criteria == ['current_sum']
+    invalid = {**valid, 'missing_criteria':['old_associativity']}
     with pytest.raises(ValidationError):
         schema.model_validate(invalid)
     with pytest.raises(ValidationError):
-        schema.model_validate({**valid_observation(), 'concept_id':'other'})
+        schema.model_validate({**valid, 'concept_id':'other'})
     with pytest.raises(ValidationError):
-        schema.model_validate({**valid_observation(), 'source_citations':['learner_evidence_id']})
+        schema.model_validate({**valid, 'source_citations':['learner_evidence_id']})
     assert context == original
 
 

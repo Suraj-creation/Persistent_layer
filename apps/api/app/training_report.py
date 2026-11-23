@@ -21,6 +21,7 @@ def _mapping(value: Any) -> dict[str, Any]:
     return value if isinstance(value, dict) else {}
 
 
+# Read an offline JSON report and collect a usable message if the artifact is unavailable.
 def _read_json(path: Path, warnings: list[str], label: str) -> dict[str, Any] | None:
     try:
         with path.open("r", encoding="utf-8") as source:
@@ -33,6 +34,7 @@ def _read_json(path: Path, warnings: list[str], label: str) -> dict[str, Any] | 
         return None
 
 
+# Resolve an artifact path while restricting it to the project directory.
 def _safe_repo_path(root: Path, relative_path: str) -> Path | None:
     candidate = (root / relative_path).resolve()
     try:
@@ -42,6 +44,7 @@ def _safe_repo_path(root: Path, relative_path: str) -> Path | None:
     return candidate
 
 
+# Calculate the checksum of a local training artifact.
 def _sha256(path: Path) -> str | None:
     try:
         digest = hashlib.sha256()
@@ -53,6 +56,7 @@ def _sha256(path: Path) -> str | None:
         return None
 
 
+# Return artifact provenance and checksum status for frontend display.
 def _artifact_metadata(
     root: Path,
     relative_path: str,
@@ -72,6 +76,7 @@ def _artifact_metadata(
     }
 
 
+# Read skill parameters from the saved files of the evaluated runs.
 def _load_skill_parameters(root: Path, seed_results: list[dict[str, Any]]) -> list[dict[str, Any]]:
     by_skill: dict[str, dict[str, Any]] = {}
     for seed_result in seed_results:
@@ -103,22 +108,37 @@ def _load_skill_parameters(root: Path, seed_results: list[dict[str, Any]]) -> li
     ]
 
 
+# Build the research workspace summary from existing experiment artifacts.
 def build_training_research_summary(repository_root: Path | None = None) -> dict[str, Any]:
     """Return aggregate training, audit, and artifact metadata for Researcher Studio."""
+    # Choose the supplied repository for tests or the configured project root.
     root = (repository_root or REPOSITORY_ROOT).resolve()
+    # Collect artifact loading and validation messages.
     warnings: list[str] = []
+    # Find the saved ASSISTments model and evaluation folder.
     model_dir = root / BKT_ARTIFACT_DIR
+    # Read the primary BKT fit and metrics report.
     metrics = _read_json(model_dir / "metrics.json", warnings, "BKT run")
+    # Read the comparison over repeated holdout splits.
     robustness = _read_json(model_dir / "robustness.json", warnings, "BKT robustness")
+    # Read the external Eedi graph audit.
     graph = _read_json(root / "experiments/eedi_graph_audit.json", warnings, "Eedi graph audit")
 
+    # Convert the primary output into a mapping safe for optional fields.
     metrics_data = _mapping(metrics)
+    # Do the same for the repeated evaluation.
     robustness_data = _mapping(robustness)
+    # Prepare the graph audit for optional lookups.
     graph_data = _mapping(graph)
+    # Read the configured seed runs from the robustness artifact.
     raw_seed_results = robustness_data.get("seed_results", [])
+    # Keep only well-formed seed result objects.
     seed_results = [result for result in raw_seed_results if isinstance(result, dict)] if isinstance(raw_seed_results, list) else []
+    # Check that the primary report contains audit and held-out metrics.
     valid_metrics = bool(metrics) and isinstance(metrics_data.get("heldout_metrics"), dict) and isinstance(metrics_data.get("audit"), dict)
+    # Check that the robustness report contains the seed outcomes and summary.
     valid_robustness = bool(robustness) and isinstance(raw_seed_results, list) and isinstance(robustness_data.get("summary"), dict)
+    # Check that the graph audit includes the expected aggregate counts.
     valid_graph = bool(graph) and isinstance(graph_data.get("row_counts"), dict) and isinstance(graph_data.get("unique_counts"), dict)
     if metrics and not valid_metrics:
         warnings.append("BKT run metadata is missing required evaluation fields.")
@@ -127,9 +147,11 @@ def build_training_research_summary(repository_root: Path | None = None) -> dict
     if graph and not valid_graph:
         warnings.append("Eedi graph audit metadata is missing required aggregate counts.")
     seeds: list[dict[str, Any]] = []
+    # Build one display row for each recorded train and test split.
     for result in seed_results:
         artifact_refs = _mapping(result.get("bkt_artifacts"))
         seed_artifacts = []
+        # Include artifact information for the saved fitted models and parameter tables.
         for key, artifact_type in (("model", "serialized_model"), ("parameters", "parameter_csv")):
             relative_path = artifact_refs.get(key)
             if isinstance(relative_path, str):
@@ -137,7 +159,9 @@ def build_training_research_summary(repository_root: Path | None = None) -> dict
                 seed_artifacts.append(
                     _artifact_metadata(root, relative_path, artifact_refs.get(checksum_key), artifact_type)
                 )
+        # Read the counts that describe this particular learner holdout.
         split_counts = _mapping(result.get("split_counts"))
+        # Assemble the experiment split, fitted comparisons and artifact metadata.
         seeds.append({
             "seed": result.get("seed"),
             "train_rows": split_counts.get("train_rows"),
@@ -148,15 +172,20 @@ def build_training_research_summary(repository_root: Path | None = None) -> dict
             "artifacts": seed_artifacts,
         })
 
+    # Prepare the comparison across repeated holdouts.
     model_summary = []
     summary_models = _mapping(robustness_data.get("summary"))
     for model_name, metric_values in summary_models.items():
         if isinstance(metric_values, dict):
             model_summary.append({"name": model_name, "metrics": metric_values})
 
+    # Read how the dataset was filtered for the main model run.
     data_audit = _mapping(metrics_data.get("audit"))
+    # Read the sizes of the primary training and test partitions.
     primary_split = _mapping(metrics_data.get("split_counts"))
+    # Read the actual metrics from the held-out set.
     heldout_metrics = _mapping(metrics_data.get("heldout_metrics"))
+    # Collect the available local experiment artifact references.
     model_artifacts = []
     if metrics:
         model_artifacts.extend([
@@ -180,12 +209,15 @@ def build_training_research_summary(repository_root: Path | None = None) -> dict
             ),
         ])
 
+    # Assemble the complete response for the Training workspace.
     return {
+        # Report whether all required source artifacts were available.
         "status": "available" if valid_metrics and valid_robustness and valid_graph else "partial",
         "purpose": (
             "Research artifacts for a fraction-focused prototype that records learner language as "
             "auditable, concept-linked evidence and explores cautious learner-state updates."
         ),
+        # State the boundaries between the displayed artifacts and learner state computation.
         "runtime_boundary": {
             "bkt_used_for_live_learner_state": False,
             "map_classifier_trained_or_used": False,
@@ -193,6 +225,7 @@ def build_training_research_summary(repository_root: Path | None = None) -> dict
             "live_state_method": "Rule-based or optional Azure-backed evidence extraction followed by heuristic state updates.",
             "notice": "These research artifacts are not connected to live prediction or learner-state updates.",
         },
+        # Group the ASSISTments trained baseline, experiment results and provenance.
         "assistments_bkt": {
             "status": "evaluated" if valid_robustness else "unavailable",
             "dataset": robustness_data.get("dataset") or metrics_data.get("dataset"),
@@ -221,6 +254,7 @@ def build_training_research_summary(repository_root: Path | None = None) -> dict
             if isinstance(robustness_data.get("interpretation_limits", []), list) else [],
             "calibration_note": metrics_data.get("calibration_note"),
         },
+        # Show audit metadata for the external Eedi graph.
         "eedi_graph": {
             "status": "audited" if valid_graph else "unavailable",
             "dataset": graph_data.get("dataset"),
@@ -235,6 +269,7 @@ def build_training_research_summary(repository_root: Path | None = None) -> dict
             "data_role": graph_data.get("data_role"),
             "runtime_integrated": False,
         },
+        # Describe the prepared MAP classifier and its proposed validation.
         "map_classifier": {
             "status": "prepared_not_trained",
             "model_available": False,
@@ -244,6 +279,7 @@ def build_training_research_summary(repository_root: Path | None = None) -> dict
             "planned_metrics": ["MAP@3", "top-1 accuracy", "macro-F1", "per-label precision/recall/F1", "label coverage", "multiclass Brier", "top-label ECE"],
             "runtime_integrated": False,
         },
+        # Report the recorded availability and scope of other candidate datasets.
         "other_dataset_status": [
             {
                 "dataset": "FoundationalASSIST",
@@ -258,11 +294,13 @@ def build_training_research_summary(repository_root: Path | None = None) -> dict
                 "limitation": "Generated wording and labels are coupled; scores are not empirical training results.",
             },
         ],
+        # Link to the existing training reports retained alongside the code.
         "related_reports": [
             "TRAINING_EXPERIMENT_REPORT.md",
             "DATA_AND_TRAINING_PLAN.md",
             "experiments/assistments_bkt_report.md",
             "experiments/benchmark_report.md",
         ],
+        # Return any artifact issues alongside the available experiment results.
         "warnings": warnings,
     }

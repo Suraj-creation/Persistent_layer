@@ -67,6 +67,7 @@ FILES = {
 }
 
 
+# Compute the digest recorded for each imported graph file.
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -75,6 +76,7 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+# Fetch the source file from the pinned graph revision when download is requested.
 def download_pinned_file(relative_path: str, destination: Path) -> None:
     url = (
         f"https://huggingface.co/datasets/{EEDI_REPO}/resolve/"
@@ -95,12 +97,15 @@ def download_pinned_file(relative_path: str, destination: Path) -> None:
     os.replace(temp_path, destination)
 
 
+# Validate the external graph data before it can become research retrieval material.
 def audit_graph(frames: dict[str, pd.DataFrame]) -> dict[str, Any]:
     """Validate the v1.0 schema, keys, links, and edge-weight totals."""
+    # Identify any missing source tables.
     missing_files = set(FILES) - set(frames)
     if missing_files:
         raise ValueError(f"Missing graph tables: {sorted(missing_files)}")
 
+    # Verify the columns expected in each source table.
     for filename, spec in FILES.items():
         frame = frames[filename]
         missing_columns = spec["required_columns"] - set(frame.columns)
@@ -113,7 +118,9 @@ def audit_graph(frames: dict[str, pd.DataFrame]) -> dict[str, Any]:
                 f"{filename} has {len(frame)} rows; pinned v1.0 expects {spec['rows']}"
             )
 
+    # Read the audited input table of misconception-to-construct relationships.
     edges = frames["misconception-map.csv"]
+    # Read the audited curriculum construct list.
     constructs = frames["construct-map.csv"]
     for filename, frame, columns in (
         (
@@ -130,32 +137,42 @@ def audit_graph(frames: dict[str, pd.DataFrame]) -> dict[str, Any]:
         if frame[columns].isna().any().any():
             raise ValueError(f"{filename} contains null identity or hierarchy values")
 
+    # Require each construct ID to uniquely identify a curriculum entry.
     if constructs["ConstructId"].duplicated().any():
         raise ValueError("construct-map.csv contains duplicate ConstructId values")
+    # Require a known misconception ID for every mapping row.
     if edges["MisconceptionId"].isna().any():
         raise ValueError("misconception-map.csv contains null MisconceptionId values")
+    # Verify that every relationship points to a defined construct.
     if not set(edges["ConstructId"]).issubset(set(constructs["ConstructId"])):
         raise ValueError("misconception-map.csv contains ConstructId values absent from construct-map.csv")
 
+    # Use the construct table as the official name lookup for each ID.
     names = constructs.set_index("ConstructId")["ConstructName"]
     edge_names = edges["ConstructId"].map(names)
+    # Check the display names against that lookup.
     if not edge_names.reset_index(drop=True).equals(
         edges["ConstructName"].reset_index(drop=True)
     ):
         raise ValueError("ConstructName values do not match the construct catalogue")
 
+    # Parse relationship weights as numeric percentages.
     weights = pd.to_numeric(
         edges["PercentageMisconceptionExistsInThisConstruct"], errors="coerce"
     )
+    # Require every percentage to be within the supported range.
     if weights.isna().any() or ((weights < 0) | (weights > 100)).any():
         raise ValueError("Misconception-to-construct weights must be numeric percentages in [0, 100]")
+    # Add relationship percentages within each misconception.
     totals = weights.groupby(edges["MisconceptionId"]).sum()
     bad_totals = totals[(totals - 100.0).abs() > 0.1]
+    # Reject groups whose percentage totals are inconsistent with the source contract.
     if not bad_totals.empty:
         raise ValueError(
             f"{len(bad_totals)} misconception edge groups do not sum to 100 within 0.1"
         )
 
+    # Return counts and weight checks for the graph report.
     return {
         "row_counts": {filename: int(len(frame)) for filename, frame in frames.items()},
         "unique_counts": {
@@ -174,10 +191,13 @@ def audit_graph(frames: dict[str, pd.DataFrame]) -> dict[str, Any]:
     }
 
 
+# Load, audit and record provenance for the external research graph.
 def ingest(data_dir: Path, audit_path: Path, download: bool) -> dict[str, Any]:
     data_dir = data_dir.expanduser().resolve()
+    # Collect the loaded tables for the joint validation.
     frames: dict[str, pd.DataFrame] = {}
     hashes: dict[str, str] = {}
+    # Inspect each expected file in the pinned dataset.
     for filename, spec in FILES.items():
         path = data_dir / filename
         if download and not path.exists():
@@ -193,7 +213,9 @@ def ingest(data_dir: Path, audit_path: Path, download: bool) -> dict[str, Any]:
                 f"{filename} checksum does not match pinned revision {EEDI_REVISION}"
             )
 
+    # Validate the graph only after all required tables are ready.
     audit = audit_graph(frames)
+    # Record data provenance and explicit research use in the audit payload.
     audit.update(
         {
             "dataset": "Eedi Misconceptions Graph v1.0",
@@ -207,11 +229,14 @@ def ingest(data_dir: Path, audit_path: Path, download: bool) -> dict[str, Any]:
             "audited_at_utc": datetime.now(timezone.utc).isoformat(),
         }
     )
+    # Identify the local audit output file.
     audit_path = audit_path.expanduser().resolve()
     audit_path.parent.mkdir(parents=True, exist_ok=True)
+    # Save the aggregate audit and checksums for the corpus loader.
     audit_path.write_text(json.dumps(audit, indent=2) + "\n")
     print(json.dumps(audit, indent=2))
     print(f"Saved aggregate audit to {audit_path}")
+    # Return the same verified audit recorded on disk.
     return audit
 
 
