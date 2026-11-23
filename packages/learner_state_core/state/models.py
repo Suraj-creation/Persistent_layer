@@ -37,6 +37,7 @@ class ConceptState(BaseModel):
     )
     last_interaction_timestamp: Optional[datetime] = None
     interaction_count: int = 0
+    informative_evidence_count: int = 0
 
 
 class LearnerStateSnapshot(BaseModel):
@@ -44,7 +45,7 @@ class LearnerStateSnapshot(BaseModel):
     Immutable snapshot of a learner's cognitive state as of a specific interaction.
     Allows exact time-travel replay and provenance tracking.
     """
-    snapshot_id: str = Field(default_factory=lambda: f"S_{uuid.uuid4().hex[:8]}")
+    snapshot_id: str = Field(default_factory=lambda: f"S_{uuid.uuid4().hex}")
     learner_id: str
     as_of_interaction_id: str
     timestamp: datetime = Field(default_factory=utc_now)
@@ -57,7 +58,7 @@ class StateChangeEvent(BaseModel):
     """
     Structured change event capturing 'Why did this state change?'
     """
-    event_id: str = Field(default_factory=lambda: f"EV_{uuid.uuid4().hex[:8]}")
+    event_id: str = Field(default_factory=lambda: f"EV_{uuid.uuid4().hex}")
     learner_id: str
     concept_id: str
     prior_snapshot_id: Optional[str]

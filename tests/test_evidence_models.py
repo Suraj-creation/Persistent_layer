@@ -40,7 +40,7 @@ def test_evidence_model_schema_validation():
     )
 
     assert evidence.evidence_id == "E_001"
-    assert evidence.validate_against_raw_text("To solve this, I added the top and bottom numbers because they are separate.")
+    assert evidence.validate_against_raw_text("To solve this, I added the top and bottom numbers. They are separate.")
     assert not evidence.validate_against_raw_text("I used a completely different technique.")
 
 

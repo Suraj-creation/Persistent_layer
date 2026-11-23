@@ -19,7 +19,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex flex-col gap-3 py-3 sm:flex-row items-center justify-between min-h-16">
           {/* Logo & Platform Name */}
           <div
             className="flex items-center space-x-3 cursor-pointer"
@@ -33,7 +33,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 LearnerState<span className="text-indigo-600">.AI</span>
               </span>
               <span className="hidden md:inline-block ml-3 px-2 py-0.5 text-xs font-medium bg-indigo-50 text-indigo-700 rounded-full border border-indigo-200">
-                v2.0 Azure gpt-4.1-mini
+                v3 · Persistent evidence
               </span>
             </div>
           </div>

@@ -1,0 +1,3919 @@
+{
+  "provider_mode": "live_configured_model",
+  "synthetic_learner": true,
+  "is_research_evaluation": false,
+  "checks": [
+    "UI topic creation",
+    "UI answer submission",
+    "distinct visible next question",
+    "next question uses committed state",
+    "question and memory survive reload",
+    "observability leaves learner state unchanged",
+    "navigation during inference",
+    "persisted trace",
+    "text/evidence/state inspectors",
+    "historical saved response",
+    "records outage and refresh recovery",
+    "technique search",
+    "truthful research matrix",
+    "desktop/mobile",
+    "reload",
+    "cross-profile isolation"
+  ],
+  "javascript_errors": [],
+  "mobile_overflow": false,
+  "execution": {
+    "ordinal": 3,
+    "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+    "learner_id": "verification_synthetic_learner",
+    "conversation_id": "conversation_f41b356969e94ba0b53f7b034c6894df",
+    "question_id": "question_743e536203e746f6b4081970d2e3fbfd",
+    "operation": "answer",
+    "status": "completed",
+    "started_at": "2026-11-01T17:32:03.573664+00:00",
+    "completed_at": "2026-11-01T17:32:11.372545+00:00",
+    "duration_ms": 7796.323,
+    "metadata": {
+      "parent_trace_id": null,
+      "confidence_calibrated": false,
+      "turn_id": "turn_af63748947334820a1858e7d0caf562a",
+      "evidence_id": "evidence_3c0f16491cc042e69d8394fd0c272058",
+      "snapshot_before_id": "state_22f481c13df14b44970b190b240f5d7c",
+      "snapshot_after_id": "state_73c2c49ab33b474790f8c43c972aa8fb"
+    },
+    "stages": [
+      {
+        "stage_id": "stage_63b6bc079a514a20b3dfc3917ec1430c",
+        "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+        "sequence": 1,
+        "key": "retrieval",
+        "name": "Scoped source retrieval",
+        "parent_stage_id": null,
+        "previous_stage_id": null,
+        "technique": "SQLite FTS5 · Porter/unicode61 · BM25",
+        "implementation": "packages/learner_state_core/assessment/storage.py:retrieve",
+        "input": {
+          "concept_id": "fraction_definition",
+          "snapshot_id": "state_22f481c13df14b44970b190b240f5d7c"
+        },
+        "parameters": {
+          "limit": 5,
+          "ranking": "bm25",
+          "fallback": "scoped_recent"
+        },
+        "status": "completed",
+        "attempt": 1,
+        "started_at": "2026-11-01T17:32:03.590651+00:00",
+        "completed_at": "2026-11-01T17:32:03.602614+00:00",
+        "duration_ms": 4.906,
+        "output": {
+          "query": "Fraction definition A fraction denotes a ratio of the numerator to the denominator, representing a part of a whole or a ratio between two quantities. ",
+          "scope": {
+            "learner_id": "verification_synthetic_learner",
+            "topic_key": "b0581a2bae10b7a8847a9973d8ed3752627649ac"
+          },
+          "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+          "materials": [
+            {
+              "chunk_id": "chunk_6a9043cbd8f7499f8c572ef6fc595e79",
+              "source_id": "source_284662151d2c44a08f2943c1ec228654",
+              "kind": "study_notes",
+              "content": "Equivalent fractions represent the same value. Multiply or divide both numerator and denominator by the same nonzero number. Changing only the numerator usually changes the value. A fraction denotes a ratio of numerator to denominator.",
+              "metadata": {
+                "start": 0,
+                "end": 235,
+                "title": "Equivalent fractions · supplied notes"
+              },
+              "rank": -7.32142857142857e-06,
+              "retrieval_method": "fts5_bm25"
+            }
+          ],
+          "evidence": []
+        },
+        "error": null
+      },
+      {
+        "stage_id": "stage_4cc56ad4d69941e7889cadcd92a9fe28",
+        "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+        "sequence": 2,
+        "key": "input",
+        "name": "Input validation",
+        "parent_stage_id": null,
+        "previous_stage_id": "stage_63b6bc079a514a20b3dfc3917ec1430c",
+        "technique": "Pydantic request contract",
+        "implementation": "packages/learner_state_core/assessment/models.py",
+        "input": {
+          "question_id": "question_743e536203e746f6b4081970d2e3fbfd",
+          "request_id": "544def69-e0b8-4eae-bf6f-c7d6d79100a4"
+        },
+        "parameters": {},
+        "status": "completed",
+        "attempt": 1,
+        "started_at": "2026-11-01T17:32:03.628319+00:00",
+        "completed_at": "2026-11-01T17:32:03.643251+00:00",
+        "duration_ms": 0.534,
+        "output": {
+          "response_text": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+          "question": {
+            "concept_id": "fraction_definition",
+            "kind": "explain",
+            "prompt": "Explain why a fraction represents a ratio between the numerator and the denominator, and how this ratio relates to the concept of a part of a whole or a comparison between two quantities. Use your explanation to clarify what the numerator and denominator each signify in this ratio.",
+            "expected_focus": "Explain the meaning of a fraction as a ratio, detailing the roles of numerator and denominator and how they represent parts of a whole or ratios between quantities.",
+            "learning_support": "",
+            "source_citations": [
+              "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+            ],
+            "usage": {
+              "completion_tokens": 334,
+              "prompt_tokens": 1902,
+              "total_tokens": 2236,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": 0,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": 0
+              },
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cached_tokens": 0
+              },
+              "latency_checkpoint": {
+                "engine_tbt_ms": 6,
+                "engine_ttft_ms": 45,
+                "engine_ttlt_ms": 1929,
+                "pre_inference_ms": 122,
+                "service_tbt_ms": 6,
+                "service_ttft_ms": 314,
+                "service_ttlt_ms": 2192,
+                "user_visible_ttft_ms": 192
+              }
+            },
+            "question_id": "question_743e536203e746f6b4081970d2e3fbfd",
+            "created_at": "2026-11-01T17:32:02.355426+00:00",
+            "generation_trace": {
+              "trace_id": "nlp_1ef30bb56238429f8bbeac6163de29fa",
+              "state_snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+              "context_sha256": "472a141976c83f61fa0c1831bc305cac2911e037322046b7067291afa2eb7f31",
+              "context": {
+                "topic": {
+                  "title": "Equivalent fractions",
+                  "overview": "Equivalent fractions are fractions that represent the same value or proportion, even though they may have different numerators and denominators. To find equivalent fractions, multiply or divide both the numerator and denominator of a fraction by the same nonzero number. Changing only the numerator or only the denominator without the corresponding change in the other part usually changes the value of the fraction. A fraction itself denotes a ratio of the numerator to the denominator.",
+                  "concepts": [
+                    {
+                      "concept_id": "fraction_definition",
+                      "name": "Fraction definition",
+                      "description": "A fraction denotes a ratio of the numerator to the denominator, representing a part of a whole or a ratio between two quantities.",
+                      "prerequisites": []
+                    },
+                    {
+                      "concept_id": "equivalent_fractions",
+                      "name": "Equivalent fractions",
+                      "description": "Equivalent fractions represent the same value or proportion, even if their numerators and denominators are different.",
+                      "prerequisites": []
+                    },
+                    {
+                      "concept_id": "finding_equivalents",
+                      "name": "Finding equivalent fractions",
+                      "description": "Equivalent fractions can be found by multiplying or dividing both the numerator and denominator of a fraction by the same nonzero number.",
+                      "prerequisites": [
+                        "fraction_definition"
+                      ]
+                    },
+                    {
+                      "concept_id": "changing_numerator_only",
+                      "name": "Changing numerator only",
+                      "description": "Changing only the numerator of a fraction usually changes the value of the fraction, so it does not produce an equivalent fraction.",
+                      "prerequisites": [
+                        "fraction_definition"
+                      ]
+                    }
+                  ]
+                },
+                "state": {
+                  "snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+                  "timestamp": "2026-11-01T17:31:59.104133+00:00",
+                  "policy_version": "criterion-weighted-state-v1",
+                  "concepts": {
+                    "fraction_definition": {
+                      "concept_id": "fraction_definition",
+                      "name": "Fraction definition",
+                      "alpha": 1.0,
+                      "beta": 1.0,
+                      "estimate": 0.5,
+                      "uncertainty": 0.28868,
+                      "observation_count": 0,
+                      "informative_count": 0,
+                      "evidence_ids": [],
+                      "response_hashes": [],
+                      "hypotheses": {},
+                      "criterion_gaps": {},
+                      "missing_criteria": [],
+                      "last_category": null
+                    },
+                    "equivalent_fractions": {
+                      "concept_id": "equivalent_fractions",
+                      "name": "Equivalent fractions",
+                      "alpha": 1.0,
+                      "beta": 1.0,
+                      "estimate": 0.5,
+                      "uncertainty": 0.28868,
+                      "observation_count": 0,
+                      "informative_count": 0,
+                      "evidence_ids": [],
+                      "response_hashes": [],
+                      "hypotheses": {},
+                      "criterion_gaps": {},
+                      "missing_criteria": [],
+                      "last_category": null
+                    },
+                    "finding_equivalents": {
+                      "concept_id": "finding_equivalents",
+                      "name": "Finding equivalent fractions",
+                      "alpha": 1.0,
+                      "beta": 1.0,
+                      "estimate": 0.5,
+                      "uncertainty": 0.28868,
+                      "observation_count": 0,
+                      "informative_count": 0,
+                      "evidence_ids": [],
+                      "response_hashes": [],
+                      "hypotheses": {},
+                      "criterion_gaps": {},
+                      "missing_criteria": [],
+                      "last_category": null
+                    },
+                    "changing_numerator_only": {
+                      "concept_id": "changing_numerator_only",
+                      "name": "Changing numerator only",
+                      "alpha": 1.0,
+                      "beta": 1.0,
+                      "estimate": 0.5,
+                      "uncertainty": 0.28868,
+                      "observation_count": 0,
+                      "informative_count": 0,
+                      "evidence_ids": [],
+                      "response_hashes": [],
+                      "hypotheses": {},
+                      "criterion_gaps": {},
+                      "missing_criteria": [],
+                      "last_category": null
+                    }
+                  }
+                },
+                "plan": {
+                  "concept_id": "fraction_definition",
+                  "kind": "explain",
+                  "intent": "diagnose",
+                  "reason": "Collect an initial explanation; there is no evidence for this concept yet.",
+                  "difficulty": "foundational",
+                  "missing_criteria": [],
+                  "required_criteria": [],
+                  "hypotheses": [],
+                  "evidence_ids": [],
+                  "state_snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+                  "policy_version": "focused-adaptive-planner-v2"
+                },
+                "retrieval": {
+                  "query": "Fraction definition A fraction denotes a ratio of the numerator to the denominator, representing a part of a whole or a ratio between two quantities. ",
+                  "scope": {
+                    "learner_id": "verification_synthetic_learner",
+                    "topic_key": "b0581a2bae10b7a8847a9973d8ed3752627649ac"
+                  },
+                  "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+                  "materials": [
+                    {
+                      "chunk_id": "chunk_6a9043cbd8f7499f8c572ef6fc595e79",
+                      "source_id": "source_284662151d2c44a08f2943c1ec228654",
+                      "kind": "study_notes",
+                      "content": "Equivalent fractions represent the same value. Multiply or divide both numerator and denominator by the same nonzero number. Changing only the numerator usually changes the value. A fraction denotes a ratio of numerator to denominator.",
+                      "metadata": {
+                        "start": 0,
+                        "end": 235,
+                        "title": "Equivalent fractions · supplied notes"
+                      },
+                      "rank": -7.32142857142857e-06,
+                      "retrieval_method": "fts5_bm25"
+                    }
+                  ],
+                  "evidence": []
+                },
+                "allowed_source_citations": [
+                  "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+                ],
+                "previous_questions": [],
+                "contract_version": "saved-state-question-v1"
+              },
+              "plan": {
+                "concept_id": "fraction_definition",
+                "kind": "explain",
+                "intent": "diagnose",
+                "reason": "Collect an initial explanation; there is no evidence for this concept yet.",
+                "difficulty": "foundational",
+                "missing_criteria": [],
+                "required_criteria": [],
+                "hypotheses": [],
+                "evidence_ids": [],
+                "state_snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+                "policy_version": "focused-adaptive-planner-v2"
+              },
+              "source_citations": [
+                "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+              ],
+              "model": "gpt-4.1-mini",
+              "attempts": 1,
+              "duration_ms": 3023.22,
+              "prompt_version": "saved-state-question-v1"
+            }
+          },
+          "session_id": "conversation_f41b356969e94ba0b53f7b034c6894df",
+          "source_kind": "learner_response",
+          "validated": true
+        },
+        "error": null
+      },
+      {
+        "stage_id": "stage_2a8c1965c5234ada9d3eb09b17706259",
+        "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+        "sequence": 3,
+        "key": "preprocessing",
+        "name": "Text transformations",
+        "parent_stage_id": null,
+        "previous_stage_id": "stage_4cc56ad4d69941e7889cadcd92a9fe28",
+        "technique": "NFKC · regex tokens/sentences · lexical features",
+        "implementation": "packages/learner_state_core/assessment/nlp.py:analyze",
+        "input": {
+          "original_text": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it."
+        },
+        "parameters": {
+          "version": "unicode-math-spans-v2",
+          "offsets": "original Unicode code points",
+          "negation_removed": false
+        },
+        "status": "completed",
+        "attempt": 1,
+        "started_at": "2026-11-01T17:32:03.656199+00:00",
+        "completed_at": "2026-11-01T17:32:03.669265+00:00",
+        "duration_ms": 0.98,
+        "output": {
+          "raw_text": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+          "normalized_text": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+          "token_spans": [
+            {
+              "token": "I",
+              "start": 0,
+              "end": 1
+            },
+            {
+              "token": "multiply",
+              "start": 2,
+              "end": 10
+            },
+            {
+              "token": "both",
+              "start": 11,
+              "end": 15
+            },
+            {
+              "token": "numerator",
+              "start": 16,
+              "end": 25
+            },
+            {
+              "token": "and",
+              "start": 26,
+              "end": 29
+            },
+            {
+              "token": "denominator",
+              "start": 30,
+              "end": 41
+            },
+            {
+              "token": "by",
+              "start": 42,
+              "end": 44
+            },
+            {
+              "token": "the",
+              "start": 45,
+              "end": 48
+            },
+            {
+              "token": "same",
+              "start": 49,
+              "end": 53
+            },
+            {
+              "token": "nonzero",
+              "start": 54,
+              "end": 61
+            },
+            {
+              "token": "number",
+              "start": 62,
+              "end": 68
+            },
+            {
+              "token": ",",
+              "start": 68,
+              "end": 69
+            },
+            {
+              "token": "so",
+              "start": 70,
+              "end": 72
+            },
+            {
+              "token": "their",
+              "start": 73,
+              "end": 78
+            },
+            {
+              "token": "ratio",
+              "start": 79,
+              "end": 84
+            },
+            {
+              "token": "stays",
+              "start": 85,
+              "end": 90
+            },
+            {
+              "token": "unchanged",
+              "start": 91,
+              "end": 100
+            },
+            {
+              "token": ".",
+              "start": 100,
+              "end": 101
+            },
+            {
+              "token": "For",
+              "start": 102,
+              "end": 105
+            },
+            {
+              "token": "example",
+              "start": 106,
+              "end": 113
+            },
+            {
+              "token": ",",
+              "start": 113,
+              "end": 114
+            },
+            {
+              "token": "1",
+              "start": 115,
+              "end": 116
+            },
+            {
+              "token": "/",
+              "start": 116,
+              "end": 117
+            },
+            {
+              "token": "2",
+              "start": 117,
+              "end": 118
+            },
+            {
+              "token": "=",
+              "start": 119,
+              "end": 120
+            },
+            {
+              "token": "2",
+              "start": 121,
+              "end": 122
+            },
+            {
+              "token": "/",
+              "start": 122,
+              "end": 123
+            },
+            {
+              "token": "4",
+              "start": 123,
+              "end": 124
+            },
+            {
+              "token": "because",
+              "start": 125,
+              "end": 132
+            },
+            {
+              "token": "multiplying",
+              "start": 133,
+              "end": 144
+            },
+            {
+              "token": "both",
+              "start": 145,
+              "end": 149
+            },
+            {
+              "token": "parts",
+              "start": 150,
+              "end": 155
+            },
+            {
+              "token": "by",
+              "start": 156,
+              "end": 158
+            },
+            {
+              "token": "two",
+              "start": 159,
+              "end": 162
+            },
+            {
+              "token": "preserves",
+              "start": 163,
+              "end": 172
+            },
+            {
+              "token": "the",
+              "start": 173,
+              "end": 176
+            },
+            {
+              "token": "value",
+              "start": 177,
+              "end": 182
+            },
+            {
+              "token": ";",
+              "start": 182,
+              "end": 183
+            },
+            {
+              "token": "multiplying",
+              "start": 184,
+              "end": 195
+            },
+            {
+              "token": "only",
+              "start": 196,
+              "end": 200
+            },
+            {
+              "token": "the",
+              "start": 201,
+              "end": 204
+            },
+            {
+              "token": "numerator",
+              "start": 205,
+              "end": 214
+            },
+            {
+              "token": "would",
+              "start": 215,
+              "end": 220
+            },
+            {
+              "token": "change",
+              "start": 221,
+              "end": 227
+            },
+            {
+              "token": "it",
+              "start": 228,
+              "end": 230
+            },
+            {
+              "token": ".",
+              "start": 230,
+              "end": 231
+            }
+          ],
+          "token_count": 46,
+          "sentences": [
+            {
+              "text": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged.",
+              "start": 0,
+              "end": 101
+            },
+            {
+              "text": " For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+              "start": 101,
+              "end": 231
+            }
+          ],
+          "keywords": [
+            "both",
+            "numerator",
+            "multiplying",
+            "multiply",
+            "denominator",
+            "same",
+            "nonzero",
+            "number",
+            "ratio",
+            "stays",
+            "unchanged",
+            "example",
+            "because",
+            "parts",
+            "two",
+            "preserves"
+          ],
+          "response_hash": "99c59e313d45e0494b374f77783356424d1ec51be5b22d26e8a2fdecc6027c2d",
+          "negation_cues": [],
+          "uncertainty_cues": [],
+          "version": "unicode-math-spans-v2"
+        },
+        "error": null
+      },
+      {
+        "stage_id": "stage_e0bc49c9d2b04b949cd00e9ad9c67d2f",
+        "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+        "sequence": 4,
+        "key": "extraction",
+        "name": "Cognitive interpretation",
+        "parent_stage_id": null,
+        "previous_stage_id": "stage_2a8c1965c5234ada9d3eb09b17706259",
+        "technique": "Schema-constrained pretrained model",
+        "implementation": "packages/learner_state_core/assessment/provider.py:evaluate",
+        "input": {
+          "response_text": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+          "question_id": "question_743e536203e746f6b4081970d2e3fbfd",
+          "state_snapshot_id": "state_22f481c13df14b44970b190b240f5d7c"
+        },
+        "parameters": {
+          "model": "gpt-4.1-mini",
+          "prompt_version": "rubric-evidence-v1",
+          "confidence_calibrated": false
+        },
+        "status": "completed",
+        "attempt": 1,
+        "started_at": "2026-11-01T17:32:03.681757+00:00",
+        "completed_at": "2026-11-01T17:32:07.444060+00:00",
+        "duration_ms": 3750.439,
+        "output": {
+          "concept_id": "fraction_definition",
+          "source_quote": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+          "claim": "The response shows understanding that a fraction denotes a ratio between numerator and denominator by explaining that multiplying numerator and denominator by the same number preserves the ratio, while changing only the numerator changes the value.",
+          "category": "partial",
+          "confidence": 0.7,
+          "met_criteria": [
+            "understand_ratio"
+          ],
+          "missing_criteria": [
+            "role_numerator",
+            "role_denominator"
+          ],
+          "misconception": null,
+          "contradicts_hypothesis_ids": [],
+          "feedback": "You understand that a fraction represents a ratio between numerator and denominator and how equivalent fractions preserve this ratio. However, you did not explain the specific roles of numerator and denominator in representing parts of a whole or quantities. Try to clarify what each part signifies in the fraction.",
+          "coaching": "A fraction represents a ratio where the numerator is the number of parts considered, and the denominator is the total number of equal parts or the reference quantity. This ratio shows how much of the whole or quantity is taken or compared. For example, in 3/4, 3 is the numerator indicating three parts taken, and 4 is the denominator indicating the whole is divided into four equal parts.",
+          "source_citations": [
+            "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+          ],
+          "_usage": {
+            "completion_tokens": 303,
+            "prompt_tokens": 3628,
+            "total_tokens": 3931,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": 0,
+              "audio_tokens": 0,
+              "reasoning_tokens": 0,
+              "rejected_prediction_tokens": 0
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": 0,
+              "cached_tokens": 0
+            },
+            "latency_checkpoint": {
+              "engine_tbt_ms": 7,
+              "engine_ttft_ms": 55,
+              "engine_ttlt_ms": 2032,
+              "pre_inference_ms": 87,
+              "service_tbt_ms": 7,
+              "service_ttft_ms": 172,
+              "service_ttlt_ms": 2145,
+              "user_visible_ttft_ms": 86
+            }
+          }
+        },
+        "error": null
+      },
+      {
+        "stage_id": "stage_ae7f197404404aef94cc04dc7193b0e4",
+        "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+        "sequence": 5,
+        "key": "validation",
+        "name": "Evidence validation",
+        "parent_stage_id": null,
+        "previous_stage_id": "stage_e0bc49c9d2b04b949cd00e9ad9c67d2f",
+        "technique": "Pydantic · exact spans · rubric and reference checks",
+        "implementation": "packages/learner_state_core/assessment/service.py:validate_observation",
+        "input": {
+          "candidate": {
+            "concept_id": "fraction_definition",
+            "source_quote": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+            "claim": "The response shows understanding that a fraction denotes a ratio between numerator and denominator by explaining that multiplying numerator and denominator by the same number preserves the ratio, while changing only the numerator changes the value.",
+            "category": "partial",
+            "confidence": 0.7,
+            "met_criteria": [
+              "understand_ratio"
+            ],
+            "missing_criteria": [
+              "role_numerator",
+              "role_denominator"
+            ],
+            "misconception": null,
+            "contradicts_hypothesis_ids": [],
+            "feedback": "You understand that a fraction represents a ratio between numerator and denominator and how equivalent fractions preserve this ratio. However, you did not explain the specific roles of numerator and denominator in representing parts of a whole or quantities. Try to clarify what each part signifies in the fraction.",
+            "coaching": "A fraction represents a ratio where the numerator is the number of parts considered, and the denominator is the total number of equal parts or the reference quantity. This ratio shows how much of the whole or quantity is taken or compared. For example, in 3/4, 3 is the numerator indicating three parts taken, and 4 is the denominator indicating the whole is divided into four equal parts.",
+            "source_citations": [
+              "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+            ],
+            "_usage": {
+              "completion_tokens": 303,
+              "prompt_tokens": 3628,
+              "total_tokens": 3931,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": 0,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": 0
+              },
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cached_tokens": 0
+              },
+              "latency_checkpoint": {
+                "engine_tbt_ms": 7,
+                "engine_ttft_ms": 55,
+                "engine_ttlt_ms": 2032,
+                "pre_inference_ms": 87,
+                "service_tbt_ms": 7,
+                "service_ttft_ms": 172,
+                "service_ttlt_ms": 2145,
+                "user_visible_ttft_ms": 86
+              }
+            }
+          }
+        },
+        "parameters": {
+          "schema": "ExtractedObservation",
+          "checks": [
+            "schema",
+            "quote",
+            "rubric_partition",
+            "citations",
+            "contradiction_ids"
+          ]
+        },
+        "status": "completed",
+        "attempt": 1,
+        "started_at": "2026-11-01T17:32:07.904210+00:00",
+        "completed_at": "2026-11-01T17:32:07.999066+00:00",
+        "duration_ms": 2.327,
+        "output": {
+          "schema_valid": true,
+          "quote_verified": true,
+          "confidence_calibrated": false,
+          "abstained": false
+        },
+        "error": null
+      },
+      {
+        "stage_id": "stage_922c184acc014e4580868c54cbf27fef",
+        "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+        "sequence": 6,
+        "key": "grounding",
+        "name": "Concept grounding",
+        "parent_stage_id": null,
+        "previous_stage_id": "stage_ae7f197404404aef94cc04dc7193b0e4",
+        "technique": "Assigned-concept identity constraint",
+        "implementation": "packages/learner_state_core/assessment/service.py:ground_observation",
+        "input": {
+          "concept_id": "fraction_definition",
+          "question_concept_id": "fraction_definition"
+        },
+        "parameters": {},
+        "status": "completed",
+        "attempt": 1,
+        "started_at": "2026-11-01T17:32:08.074162+00:00",
+        "completed_at": "2026-11-01T17:32:08.129335+00:00",
+        "duration_ms": 0.109,
+        "output": {
+          "accepted_concept": {
+            "concept_id": "fraction_definition",
+            "name": "Fraction definition",
+            "description": "A fraction denotes a ratio of the numerator to the denominator, representing a part of a whole or a ratio between two quantities.",
+            "prerequisites": []
+          },
+          "candidate_concept_ids": [
+            "fraction_definition"
+          ],
+          "method": "assigned_concept_constraint",
+          "source_quote": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+          "similarity_score": null,
+          "taxonomy_provenance": "model_authored_topic_map_unverified"
+        },
+        "error": null
+      },
+      {
+        "stage_id": "stage_b8f4c07f71fb49a78d32ab54acfd90a3",
+        "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+        "sequence": 7,
+        "key": "evidence",
+        "name": "Cognitive Evidence",
+        "parent_stage_id": null,
+        "previous_stage_id": "stage_922c184acc014e4580868c54cbf27fef",
+        "technique": "Validated structured evidence assembly",
+        "implementation": "packages/learner_state_core/assessment/service.py:answer",
+        "input": {
+          "source_kind": "learner_response",
+          "source_quote": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it."
+        },
+        "parameters": {},
+        "status": "completed",
+        "attempt": 1,
+        "started_at": "2026-11-01T17:32:08.149638+00:00",
+        "completed_at": "2026-11-01T17:32:08.168231+00:00",
+        "duration_ms": 0.128,
+        "output": {
+          "concept_id": "fraction_definition",
+          "source_quote": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+          "claim": "The response shows understanding that a fraction denotes a ratio between numerator and denominator by explaining that multiplying numerator and denominator by the same number preserves the ratio, while changing only the numerator changes the value.",
+          "category": "partial",
+          "confidence": 0.7,
+          "met_criteria": [
+            "understand_ratio"
+          ],
+          "missing_criteria": [
+            "role_numerator",
+            "role_denominator"
+          ],
+          "misconception": null,
+          "contradicts_hypothesis_ids": [],
+          "feedback": "You understand that a fraction represents a ratio between numerator and denominator and how equivalent fractions preserve this ratio. However, you did not explain the specific roles of numerator and denominator in representing parts of a whole or quantities. Try to clarify what each part signifies in the fraction.",
+          "coaching": "A fraction represents a ratio where the numerator is the number of parts considered, and the denominator is the total number of equal parts or the reference quantity. This ratio shows how much of the whole or quantity is taken or compared. For example, in 3/4, 3 is the numerator indicating three parts taken, and 4 is the denominator indicating the whole is divided into four equal parts.",
+          "source_citations": [
+            "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+          ],
+          "evidence_id": "evidence_3c0f16491cc042e69d8394fd0c272058",
+          "question_id": "question_743e536203e746f6b4081970d2e3fbfd",
+          "timestamp": "2026-11-01T17:32:08.149638+00:00",
+          "source_start": 0,
+          "source_end": 231,
+          "extractor_model": "gpt-4.1-mini",
+          "confidence_calibrated": false,
+          "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+          "source_interaction_id": "turn_af63748947334820a1858e7d0caf562a",
+          "session_id": "conversation_f41b356969e94ba0b53f7b034c6894df",
+          "validation_status": "passed"
+        },
+        "error": null
+      },
+      {
+        "stage_id": "stage_33515f5ce1114928a9a8a1bde6d4cc23",
+        "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+        "sequence": 8,
+        "key": "state_update",
+        "name": "Learner-state computation",
+        "parent_stage_id": null,
+        "previous_stage_id": "stage_b8f4c07f71fb49a78d32ab54acfd90a3",
+        "technique": "Criterion-weighted Beta update",
+        "implementation": "packages/learner_state_core/assessment/state.py:integrate",
+        "input": {
+          "state_before": {
+            "snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+            "timestamp": "2026-11-01T17:31:59.104133+00:00",
+            "policy_version": "criterion-weighted-state-v1",
+            "concepts": {
+              "fraction_definition": {
+                "concept_id": "fraction_definition",
+                "name": "Fraction definition",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              },
+              "equivalent_fractions": {
+                "concept_id": "equivalent_fractions",
+                "name": "Equivalent fractions",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              },
+              "finding_equivalents": {
+                "concept_id": "finding_equivalents",
+                "name": "Finding equivalent fractions",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              },
+              "changing_numerator_only": {
+                "concept_id": "changing_numerator_only",
+                "name": "Changing numerator only",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              }
+            }
+          },
+          "evidence_id": "evidence_3c0f16491cc042e69d8394fd0c272058"
+        },
+        "parameters": {
+          "policy": "criterion-weighted-state-v1"
+        },
+        "status": "completed",
+        "attempt": 1,
+        "started_at": "2026-11-01T17:32:08.189618+00:00",
+        "completed_at": "2026-11-01T17:32:08.228470+00:00",
+        "duration_ms": 1.023,
+        "output": {
+          "state_before": {
+            "snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+            "timestamp": "2026-11-01T17:31:59.104133+00:00",
+            "policy_version": "criterion-weighted-state-v1",
+            "concepts": {
+              "fraction_definition": {
+                "concept_id": "fraction_definition",
+                "name": "Fraction definition",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              },
+              "equivalent_fractions": {
+                "concept_id": "equivalent_fractions",
+                "name": "Equivalent fractions",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              },
+              "finding_equivalents": {
+                "concept_id": "finding_equivalents",
+                "name": "Finding equivalent fractions",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              },
+              "changing_numerator_only": {
+                "concept_id": "changing_numerator_only",
+                "name": "Changing numerator only",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              }
+            }
+          },
+          "state_after": {
+            "snapshot_id": "state_73c2c49ab33b474790f8c43c972aa8fb",
+            "timestamp": "2026-11-01T17:32:08.227929+00:00",
+            "policy_version": "criterion-weighted-state-v1",
+            "concepts": {
+              "fraction_definition": {
+                "concept_id": "fraction_definition",
+                "name": "Fraction definition",
+                "alpha": 1.233333,
+                "beta": 1.466667,
+                "estimate": 0.45679,
+                "uncertainty": 0.25897,
+                "observation_count": 1,
+                "informative_count": 1,
+                "evidence_ids": [
+                  "evidence_3c0f16491cc042e69d8394fd0c272058"
+                ],
+                "response_hashes": [
+                  "99c59e313d45e0494b374f77783356424d1ec51be5b22d26e8a2fdecc6027c2d"
+                ],
+                "hypotheses": {},
+                "criterion_gaps": {
+                  "gap_44263ffee8ac9c3a302c": {
+                    "criterion_id": "gap_44263ffee8ac9c3a302c",
+                    "description": "Explain the role of the numerator in the fraction as the number of parts considered.",
+                    "status": "open",
+                    "evidence_ids": [
+                      "evidence_3c0f16491cc042e69d8394fd0c272058"
+                    ],
+                    "resolved_by_evidence_ids": []
+                  },
+                  "gap_3bd8ba0e64e8595801e4": {
+                    "criterion_id": "gap_3bd8ba0e64e8595801e4",
+                    "description": "Explain the role of the denominator in the fraction as the total number of equal parts or the reference quantity.",
+                    "status": "open",
+                    "evidence_ids": [
+                      "evidence_3c0f16491cc042e69d8394fd0c272058"
+                    ],
+                    "resolved_by_evidence_ids": []
+                  }
+                },
+                "missing_criteria": [
+                  "Explain the role of the numerator in the fraction as the number of parts considered.",
+                  "Explain the role of the denominator in the fraction as the total number of equal parts or the reference quantity."
+                ],
+                "last_category": "partial"
+              },
+              "equivalent_fractions": {
+                "concept_id": "equivalent_fractions",
+                "name": "Equivalent fractions",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              },
+              "finding_equivalents": {
+                "concept_id": "finding_equivalents",
+                "name": "Finding equivalent fractions",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              },
+              "changing_numerator_only": {
+                "concept_id": "changing_numerator_only",
+                "name": "Changing numerator only",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              }
+            }
+          },
+          "changes": {
+            "concept_id": "fraction_definition",
+            "rule": "weighted_criterion_update",
+            "confidence": 0.7,
+            "coverage": 0.3333333333333333,
+            "novelty_factor": 1.0,
+            "informativeness": 1.0,
+            "duplicate_response": false,
+            "weight": 0.7,
+            "delta_alpha": 0.233333,
+            "delta_beta": 0.466667,
+            "before_alpha": 1.0,
+            "before_beta": 1.0,
+            "after_alpha": 1.233333,
+            "after_beta": 1.466667,
+            "before_estimate": 0.5,
+            "after_estimate": 0.45679,
+            "delta_estimate": -0.04321,
+            "before_uncertainty": 0.28868,
+            "after_uncertainty": 0.25897,
+            "hypothesis_changes": [],
+            "resolved_criteria": [],
+            "formula": "w=confidence×novelty×min(tokens/16,1); α′=α+w×rubric_coverage; β′=β+w×(1−coverage)×slip_factor; estimate=α′/(α′+β′)",
+            "limitation": "Heuristic evidence estimate, not a calibrated measurement of understanding. Tutor coaching never updates these parameters."
+          },
+          "persisted": false
+        },
+        "error": null
+      },
+      {
+        "stage_id": "stage_d0690d8acf864ef4b1ea24b5ab5c36b4",
+        "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+        "sequence": 9,
+        "key": "persistence",
+        "name": "Atomic persistence",
+        "parent_stage_id": null,
+        "previous_stage_id": "stage_33515f5ce1114928a9a8a1bde6d4cc23",
+        "technique": "SQLite WAL transaction · optimistic version check",
+        "implementation": "packages/learner_state_core/assessment/service.py",
+        "input": {
+          "turn_id": "turn_af63748947334820a1858e7d0caf562a",
+          "evidence_id": "evidence_3c0f16491cc042e69d8394fd0c272058",
+          "expected_snapshot_id": "state_22f481c13df14b44970b190b240f5d7c"
+        },
+        "parameters": {},
+        "status": "completed",
+        "attempt": 1,
+        "started_at": "2026-11-01T17:32:08.244626+00:00",
+        "completed_at": "2026-11-01T17:32:08.273949+00:00",
+        "duration_ms": 11.719,
+        "output": {
+          "turn_id": "turn_af63748947334820a1858e7d0caf562a",
+          "evidence_id": "evidence_3c0f16491cc042e69d8394fd0c272058",
+          "snapshot_id": "state_73c2c49ab33b474790f8c43c972aa8fb",
+          "revision": 1,
+          "committed": true
+        },
+        "error": null
+      }
+    ],
+    "incomplete_warning": null
+  },
+  "linked_executions": [
+    {
+      "ordinal": 4,
+      "trace_id": "nlp_499ed2b6b575411f99cec67017464d8f",
+      "learner_id": "verification_synthetic_learner",
+      "conversation_id": "conversation_f41b356969e94ba0b53f7b034c6894df",
+      "question_id": "question_fe81c48e50454e79ade0ed69419d30c0",
+      "operation": "generation",
+      "status": "completed",
+      "started_at": "2026-11-01T17:32:08.284005+00:00",
+      "completed_at": "2026-11-01T17:32:11.363599+00:00",
+      "duration_ms": 3077.375,
+      "metadata": {
+        "parent_trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+        "confidence_calibrated": false
+      },
+      "stages": [
+        {
+          "stage_id": "stage_cdbaee75a876483795256fad15739975",
+          "trace_id": "nlp_499ed2b6b575411f99cec67017464d8f",
+          "sequence": 1,
+          "key": "planning",
+          "name": "Diagnostic question planning",
+          "parent_stage_id": null,
+          "previous_stage_id": null,
+          "technique": "Deterministic criterion/prerequisite policy",
+          "implementation": "packages/learner_state_core/assessment/state.py:plan_next",
+          "input": {
+            "state_snapshot_id": "state_73c2c49ab33b474790f8c43c972aa8fb",
+            "prior_turn_ids": [
+              "turn_af63748947334820a1858e7d0caf562a"
+            ]
+          },
+          "parameters": {},
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:32:08.299670+00:00",
+          "completed_at": "2026-11-01T17:32:08.304246+00:00",
+          "duration_ms": 0.192,
+          "output": {
+            "concept_id": "fraction_definition",
+            "kind": "guided_practice",
+            "intent": "repair",
+            "reason": "The last saved explanation leaves these criteria unverified: Explain the role of the numerator in the fraction as the number of parts considered.; Explain the role of the denominator in the fraction as the total number of equal parts or the reference quantity.",
+            "difficulty": "foundational",
+            "missing_criteria": [
+              "Explain the role of the numerator in the fraction as the number of parts considered.",
+              "Explain the role of the denominator in the fraction as the total number of equal parts or the reference quantity."
+            ],
+            "required_criteria": [
+              {
+                "criterion_id": "gap_44263ffee8ac9c3a302c",
+                "description": "Explain the role of the numerator in the fraction as the number of parts considered."
+              },
+              {
+                "criterion_id": "gap_3bd8ba0e64e8595801e4",
+                "description": "Explain the role of the denominator in the fraction as the total number of equal parts or the reference quantity."
+              }
+            ],
+            "hypotheses": [],
+            "evidence_ids": [
+              "evidence_3c0f16491cc042e69d8394fd0c272058"
+            ],
+            "state_snapshot_id": "state_73c2c49ab33b474790f8c43c972aa8fb",
+            "policy_version": "focused-adaptive-planner-v2"
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_f4548c2574ca4b35b2e9e88691e6ebb2",
+          "trace_id": "nlp_499ed2b6b575411f99cec67017464d8f",
+          "sequence": 2,
+          "key": "retrieval",
+          "name": "Scoped source retrieval",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_cdbaee75a876483795256fad15739975",
+          "technique": "SQLite FTS5 · Porter/unicode61 · BM25",
+          "implementation": "packages/learner_state_core/assessment/storage.py:retrieve",
+          "input": {
+            "concept_id": "fraction_definition",
+            "snapshot_id": "state_73c2c49ab33b474790f8c43c972aa8fb"
+          },
+          "parameters": {
+            "limit": 5,
+            "ranking": "bm25",
+            "fallback": "scoped_recent"
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:32:08.318692+00:00",
+          "completed_at": "2026-11-01T17:32:08.333103+00:00",
+          "duration_ms": 2.06,
+          "output": {
+            "query": "Fraction definition A fraction denotes a ratio of the numerator to the denominator, representing a part of a whole or a ratio between two quantities. Explain the role of the numerator in the fraction as the number of parts considered. Explain the role of the denominator in the fraction as the total number of equal parts or the reference quantity.",
+            "scope": {
+              "learner_id": "verification_synthetic_learner",
+              "topic_key": "b0581a2bae10b7a8847a9973d8ed3752627649ac"
+            },
+            "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+            "materials": [
+              {
+                "chunk_id": "chunk_6a9043cbd8f7499f8c572ef6fc595e79",
+                "source_id": "source_284662151d2c44a08f2943c1ec228654",
+                "kind": "study_notes",
+                "content": "Equivalent fractions represent the same value. Multiply or divide both numerator and denominator by the same nonzero number. Changing only the numerator usually changes the value. A fraction denotes a ratio of numerator to denominator.",
+                "metadata": {
+                  "start": 0,
+                  "end": 235,
+                  "title": "Equivalent fractions · supplied notes"
+                },
+                "rank": -9.528028126297177e-06,
+                "retrieval_method": "fts5_bm25"
+              }
+            ],
+            "evidence": [
+              {
+                "chunk_id": "chunk_274679dd7bdd4f9387b1867d67f146f1",
+                "source_id": "evidence_3c0f16491cc042e69d8394fd0c272058",
+                "kind": "learner_evidence",
+                "content": "fraction_definition Equivalent fractions I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it. The response shows understanding that a fraction denotes a ratio between numerator and denominator by explaining that multiplying numerator and denominator by the same number preserves the ratio, while changing only the numerator changes the value.",
+                "metadata": {
+                  "evidence_id": "evidence_3c0f16491cc042e69d8394fd0c272058",
+                  "concept_id": "fraction_definition",
+                  "category": "partial",
+                  "source_quote": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+                  "conversation_id": "conversation_f41b356969e94ba0b53f7b034c6894df",
+                  "turn_id": "turn_af63748947334820a1858e7d0caf562a"
+                },
+                "rank": -1.2474028677434918e-05,
+                "retrieval_method": "fts5_bm25"
+              }
+            ]
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_12f2a333841a43ec92b173c616d166b9",
+          "trace_id": "nlp_499ed2b6b575411f99cec67017464d8f",
+          "sequence": 3,
+          "key": "validation",
+          "name": "Evidence validation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_f4548c2574ca4b35b2e9e88691e6ebb2",
+          "technique": "Pydantic · exact spans · rubric and reference checks",
+          "implementation": "packages/learner_state_core/assessment/service.py:validate_observation",
+          "input": {
+            "material_count": 1
+          },
+          "parameters": {
+            "checks": [
+              "minimum_source_material"
+            ]
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:32:08.344717+00:00",
+          "completed_at": "2026-11-01T17:32:08.352484+00:00",
+          "duration_ms": 0.105,
+          "output": {
+            "material_available": true
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_cda12632507547f889614300c2e4c55d",
+          "trace_id": "nlp_499ed2b6b575411f99cec67017464d8f",
+          "sequence": 4,
+          "key": "generation",
+          "name": "Question formulation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_12f2a333841a43ec92b173c616d166b9",
+          "technique": "Schema-constrained pretrained model",
+          "implementation": "packages/learner_state_core/assessment/provider.py:generate_question",
+          "input": {
+            "plan": {
+              "concept_id": "fraction_definition",
+              "kind": "guided_practice",
+              "intent": "repair",
+              "reason": "The last saved explanation leaves these criteria unverified: Explain the role of the numerator in the fraction as the number of parts considered.; Explain the role of the denominator in the fraction as the total number of equal parts or the reference quantity.",
+              "difficulty": "foundational",
+              "missing_criteria": [
+                "Explain the role of the numerator in the fraction as the number of parts considered.",
+                "Explain the role of the denominator in the fraction as the total number of equal parts or the reference quantity."
+              ],
+              "required_criteria": [
+                {
+                  "criterion_id": "gap_44263ffee8ac9c3a302c",
+                  "description": "Explain the role of the numerator in the fraction as the number of parts considered."
+                },
+                {
+                  "criterion_id": "gap_3bd8ba0e64e8595801e4",
+                  "description": "Explain the role of the denominator in the fraction as the total number of equal parts or the reference quantity."
+                }
+              ],
+              "hypotheses": [],
+              "evidence_ids": [
+                "evidence_3c0f16491cc042e69d8394fd0c272058"
+              ],
+              "state_snapshot_id": "state_73c2c49ab33b474790f8c43c972aa8fb",
+              "policy_version": "focused-adaptive-planner-v2"
+            },
+            "retrieval": {
+              "query": "Fraction definition A fraction denotes a ratio of the numerator to the denominator, representing a part of a whole or a ratio between two quantities. Explain the role of the numerator in the fraction as the number of parts considered. Explain the role of the denominator in the fraction as the total number of equal parts or the reference quantity.",
+              "scope": {
+                "learner_id": "verification_synthetic_learner",
+                "topic_key": "b0581a2bae10b7a8847a9973d8ed3752627649ac"
+              },
+              "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+              "materials": [
+                {
+                  "chunk_id": "chunk_6a9043cbd8f7499f8c572ef6fc595e79",
+                  "source_id": "source_284662151d2c44a08f2943c1ec228654",
+                  "kind": "study_notes",
+                  "content": "Equivalent fractions represent the same value. Multiply or divide both numerator and denominator by the same nonzero number. Changing only the numerator usually changes the value. A fraction denotes a ratio of numerator to denominator.",
+                  "metadata": {
+                    "start": 0,
+                    "end": 235,
+                    "title": "Equivalent fractions · supplied notes"
+                  },
+                  "rank": -9.528028126297177e-06,
+                  "retrieval_method": "fts5_bm25"
+                }
+              ],
+              "evidence": [
+                {
+                  "chunk_id": "chunk_274679dd7bdd4f9387b1867d67f146f1",
+                  "source_id": "evidence_3c0f16491cc042e69d8394fd0c272058",
+                  "kind": "learner_evidence",
+                  "content": "fraction_definition Equivalent fractions I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it. The response shows understanding that a fraction denotes a ratio between numerator and denominator by explaining that multiplying numerator and denominator by the same number preserves the ratio, while changing only the numerator changes the value.",
+                  "metadata": {
+                    "evidence_id": "evidence_3c0f16491cc042e69d8394fd0c272058",
+                    "concept_id": "fraction_definition",
+                    "category": "partial",
+                    "source_quote": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+                    "conversation_id": "conversation_f41b356969e94ba0b53f7b034c6894df",
+                    "turn_id": "turn_af63748947334820a1858e7d0caf562a"
+                  },
+                  "rank": -1.2474028677434918e-05,
+                  "retrieval_method": "fts5_bm25"
+                }
+              ]
+            },
+            "state_snapshot_id": "state_73c2c49ab33b474790f8c43c972aa8fb"
+          },
+          "parameters": {
+            "model": "gpt-4.1-mini",
+            "prompt_version": "saved-state-question-v1"
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:32:08.360515+00:00",
+          "completed_at": "2026-11-01T17:32:11.285579+00:00",
+          "duration_ms": 2916.431,
+          "output": {
+            "concept_id": "fraction_definition",
+            "kind": "guided_practice",
+            "prompt": "Consider the fraction 3/5. Explain what the numerator (3) represents in terms of parts considered, and what the denominator (5) represents in terms of the total number of equal parts or the reference quantity. How do these roles together define the value of the fraction?",
+            "expected_focus": "Explain the role of the numerator as the number of parts considered and the role of the denominator as the total number of equal parts or reference quantity in a fraction, using a specific example.",
+            "learning_support": "",
+            "source_citations": [
+              "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+            ],
+            "usage": {
+              "completion_tokens": 322,
+              "prompt_tokens": 2826,
+              "total_tokens": 3148,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": 0,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": 0
+              },
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cached_tokens": 0
+              },
+              "latency_checkpoint": {
+                "engine_tbt_ms": 6,
+                "engine_ttft_ms": 47,
+                "engine_ttlt_ms": 2012,
+                "pre_inference_ms": 75,
+                "service_tbt_ms": 6,
+                "service_ttft_ms": 298,
+                "service_ttlt_ms": 2258,
+                "user_visible_ttft_ms": 223
+              }
+            }
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_1485e4da4f3f4171b0f8c321a6afee06",
+          "trace_id": "nlp_499ed2b6b575411f99cec67017464d8f",
+          "sequence": 5,
+          "key": "validation",
+          "name": "Evidence validation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_cda12632507547f889614300c2e4c55d",
+          "technique": "Pydantic · exact spans · rubric and reference checks",
+          "implementation": "packages/learner_state_core/assessment/service.py:validate_observation",
+          "input": {
+            "candidate_question": {
+              "concept_id": "fraction_definition",
+              "kind": "guided_practice",
+              "prompt": "Consider the fraction 3/5. Explain what the numerator (3) represents in terms of parts considered, and what the denominator (5) represents in terms of the total number of equal parts or the reference quantity. How do these roles together define the value of the fraction?",
+              "expected_focus": "Explain the role of the numerator as the number of parts considered and the role of the denominator as the total number of equal parts or reference quantity in a fraction, using a specific example.",
+              "learning_support": "",
+              "source_citations": [
+                "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+              ]
+            }
+          },
+          "parameters": {
+            "checks": [
+              "target",
+              "citations",
+              "rubric_ids",
+              "required_criteria",
+              "novelty"
+            ]
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:32:11.291433+00:00",
+          "completed_at": "2026-11-01T17:32:11.307877+00:00",
+          "duration_ms": 1.031,
+          "output": {
+            "validated": true
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_3973d55340414b53932a048a0d00e4ad",
+          "trace_id": "nlp_499ed2b6b575411f99cec67017464d8f",
+          "sequence": 6,
+          "key": "persistence",
+          "name": "Atomic persistence",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_1485e4da4f3f4171b0f8c321a6afee06",
+          "technique": "SQLite WAL transaction · optimistic version check",
+          "implementation": "packages/learner_state_core/assessment/service.py",
+          "input": {
+            "kind": "question",
+            "snapshot_id": "state_73c2c49ab33b474790f8c43c972aa8fb"
+          },
+          "parameters": {},
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:32:11.320275+00:00",
+          "completed_at": "2026-11-01T17:32:11.347912+00:00",
+          "duration_ms": 10.688,
+          "output": {
+            "question_id": "question_fe81c48e50454e79ade0ed69419d30c0",
+            "committed": true,
+            "generation_failure": null
+          },
+          "error": null
+        }
+      ],
+      "incomplete_warning": null
+    },
+    {
+      "ordinal": 3,
+      "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+      "learner_id": "verification_synthetic_learner",
+      "conversation_id": "conversation_f41b356969e94ba0b53f7b034c6894df",
+      "question_id": "question_743e536203e746f6b4081970d2e3fbfd",
+      "operation": "answer",
+      "status": "completed",
+      "started_at": "2026-11-01T17:32:03.573664+00:00",
+      "completed_at": "2026-11-01T17:32:11.372545+00:00",
+      "duration_ms": 7796.323,
+      "metadata": {
+        "parent_trace_id": null,
+        "confidence_calibrated": false,
+        "turn_id": "turn_af63748947334820a1858e7d0caf562a",
+        "evidence_id": "evidence_3c0f16491cc042e69d8394fd0c272058",
+        "snapshot_before_id": "state_22f481c13df14b44970b190b240f5d7c",
+        "snapshot_after_id": "state_73c2c49ab33b474790f8c43c972aa8fb"
+      },
+      "stages": [
+        {
+          "stage_id": "stage_63b6bc079a514a20b3dfc3917ec1430c",
+          "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+          "sequence": 1,
+          "key": "retrieval",
+          "name": "Scoped source retrieval",
+          "parent_stage_id": null,
+          "previous_stage_id": null,
+          "technique": "SQLite FTS5 · Porter/unicode61 · BM25",
+          "implementation": "packages/learner_state_core/assessment/storage.py:retrieve",
+          "input": {
+            "concept_id": "fraction_definition",
+            "snapshot_id": "state_22f481c13df14b44970b190b240f5d7c"
+          },
+          "parameters": {
+            "limit": 5,
+            "ranking": "bm25",
+            "fallback": "scoped_recent"
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:32:03.590651+00:00",
+          "completed_at": "2026-11-01T17:32:03.602614+00:00",
+          "duration_ms": 4.906,
+          "output": {
+            "query": "Fraction definition A fraction denotes a ratio of the numerator to the denominator, representing a part of a whole or a ratio between two quantities. ",
+            "scope": {
+              "learner_id": "verification_synthetic_learner",
+              "topic_key": "b0581a2bae10b7a8847a9973d8ed3752627649ac"
+            },
+            "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+            "materials": [
+              {
+                "chunk_id": "chunk_6a9043cbd8f7499f8c572ef6fc595e79",
+                "source_id": "source_284662151d2c44a08f2943c1ec228654",
+                "kind": "study_notes",
+                "content": "Equivalent fractions represent the same value. Multiply or divide both numerator and denominator by the same nonzero number. Changing only the numerator usually changes the value. A fraction denotes a ratio of numerator to denominator.",
+                "metadata": {
+                  "start": 0,
+                  "end": 235,
+                  "title": "Equivalent fractions · supplied notes"
+                },
+                "rank": -7.32142857142857e-06,
+                "retrieval_method": "fts5_bm25"
+              }
+            ],
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_4cc56ad4d69941e7889cadcd92a9fe28",
+          "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+          "sequence": 2,
+          "key": "input",
+          "name": "Input validation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_63b6bc079a514a20b3dfc3917ec1430c",
+          "technique": "Pydantic request contract",
+          "implementation": "packages/learner_state_core/assessment/models.py",
+          "input": {
+            "question_id": "question_743e536203e746f6b4081970d2e3fbfd",
+            "request_id": "544def69-e0b8-4eae-bf6f-c7d6d79100a4"
+          },
+          "parameters": {},
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:32:03.628319+00:00",
+          "completed_at": "2026-11-01T17:32:03.643251+00:00",
+          "duration_ms": 0.534,
+          "output": {
+            "response_text": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+            "question": {
+              "concept_id": "fraction_definition",
+              "kind": "explain",
+              "prompt": "Explain why a fraction represents a ratio between the numerator and the denominator, and how this ratio relates to the concept of a part of a whole or a comparison between two quantities. Use your explanation to clarify what the numerator and denominator each signify in this ratio.",
+              "expected_focus": "Explain the meaning of a fraction as a ratio, detailing the roles of numerator and denominator and how they represent parts of a whole or ratios between quantities.",
+              "learning_support": "",
+              "source_citations": [
+                "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+              ],
+              "usage": {
+                "completion_tokens": 334,
+                "prompt_tokens": 1902,
+                "total_tokens": 2236,
+                "completion_tokens_details": {
+                  "accepted_prediction_tokens": 0,
+                  "audio_tokens": 0,
+                  "reasoning_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                },
+                "prompt_tokens_details": {
+                  "audio_tokens": 0,
+                  "cached_tokens": 0
+                },
+                "latency_checkpoint": {
+                  "engine_tbt_ms": 6,
+                  "engine_ttft_ms": 45,
+                  "engine_ttlt_ms": 1929,
+                  "pre_inference_ms": 122,
+                  "service_tbt_ms": 6,
+                  "service_ttft_ms": 314,
+                  "service_ttlt_ms": 2192,
+                  "user_visible_ttft_ms": 192
+                }
+              },
+              "question_id": "question_743e536203e746f6b4081970d2e3fbfd",
+              "created_at": "2026-11-01T17:32:02.355426+00:00",
+              "generation_trace": {
+                "trace_id": "nlp_1ef30bb56238429f8bbeac6163de29fa",
+                "state_snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+                "context_sha256": "472a141976c83f61fa0c1831bc305cac2911e037322046b7067291afa2eb7f31",
+                "context": {
+                  "topic": {
+                    "title": "Equivalent fractions",
+                    "overview": "Equivalent fractions are fractions that represent the same value or proportion, even though they may have different numerators and denominators. To find equivalent fractions, multiply or divide both the numerator and denominator of a fraction by the same nonzero number. Changing only the numerator or only the denominator without the corresponding change in the other part usually changes the value of the fraction. A fraction itself denotes a ratio of the numerator to the denominator.",
+                    "concepts": [
+                      {
+                        "concept_id": "fraction_definition",
+                        "name": "Fraction definition",
+                        "description": "A fraction denotes a ratio of the numerator to the denominator, representing a part of a whole or a ratio between two quantities.",
+                        "prerequisites": []
+                      },
+                      {
+                        "concept_id": "equivalent_fractions",
+                        "name": "Equivalent fractions",
+                        "description": "Equivalent fractions represent the same value or proportion, even if their numerators and denominators are different.",
+                        "prerequisites": []
+                      },
+                      {
+                        "concept_id": "finding_equivalents",
+                        "name": "Finding equivalent fractions",
+                        "description": "Equivalent fractions can be found by multiplying or dividing both the numerator and denominator of a fraction by the same nonzero number.",
+                        "prerequisites": [
+                          "fraction_definition"
+                        ]
+                      },
+                      {
+                        "concept_id": "changing_numerator_only",
+                        "name": "Changing numerator only",
+                        "description": "Changing only the numerator of a fraction usually changes the value of the fraction, so it does not produce an equivalent fraction.",
+                        "prerequisites": [
+                          "fraction_definition"
+                        ]
+                      }
+                    ]
+                  },
+                  "state": {
+                    "snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+                    "timestamp": "2026-11-01T17:31:59.104133+00:00",
+                    "policy_version": "criterion-weighted-state-v1",
+                    "concepts": {
+                      "fraction_definition": {
+                        "concept_id": "fraction_definition",
+                        "name": "Fraction definition",
+                        "alpha": 1.0,
+                        "beta": 1.0,
+                        "estimate": 0.5,
+                        "uncertainty": 0.28868,
+                        "observation_count": 0,
+                        "informative_count": 0,
+                        "evidence_ids": [],
+                        "response_hashes": [],
+                        "hypotheses": {},
+                        "criterion_gaps": {},
+                        "missing_criteria": [],
+                        "last_category": null
+                      },
+                      "equivalent_fractions": {
+                        "concept_id": "equivalent_fractions",
+                        "name": "Equivalent fractions",
+                        "alpha": 1.0,
+                        "beta": 1.0,
+                        "estimate": 0.5,
+                        "uncertainty": 0.28868,
+                        "observation_count": 0,
+                        "informative_count": 0,
+                        "evidence_ids": [],
+                        "response_hashes": [],
+                        "hypotheses": {},
+                        "criterion_gaps": {},
+                        "missing_criteria": [],
+                        "last_category": null
+                      },
+                      "finding_equivalents": {
+                        "concept_id": "finding_equivalents",
+                        "name": "Finding equivalent fractions",
+                        "alpha": 1.0,
+                        "beta": 1.0,
+                        "estimate": 0.5,
+                        "uncertainty": 0.28868,
+                        "observation_count": 0,
+                        "informative_count": 0,
+                        "evidence_ids": [],
+                        "response_hashes": [],
+                        "hypotheses": {},
+                        "criterion_gaps": {},
+                        "missing_criteria": [],
+                        "last_category": null
+                      },
+                      "changing_numerator_only": {
+                        "concept_id": "changing_numerator_only",
+                        "name": "Changing numerator only",
+                        "alpha": 1.0,
+                        "beta": 1.0,
+                        "estimate": 0.5,
+                        "uncertainty": 0.28868,
+                        "observation_count": 0,
+                        "informative_count": 0,
+                        "evidence_ids": [],
+                        "response_hashes": [],
+                        "hypotheses": {},
+                        "criterion_gaps": {},
+                        "missing_criteria": [],
+                        "last_category": null
+                      }
+                    }
+                  },
+                  "plan": {
+                    "concept_id": "fraction_definition",
+                    "kind": "explain",
+                    "intent": "diagnose",
+                    "reason": "Collect an initial explanation; there is no evidence for this concept yet.",
+                    "difficulty": "foundational",
+                    "missing_criteria": [],
+                    "required_criteria": [],
+                    "hypotheses": [],
+                    "evidence_ids": [],
+                    "state_snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+                    "policy_version": "focused-adaptive-planner-v2"
+                  },
+                  "retrieval": {
+                    "query": "Fraction definition A fraction denotes a ratio of the numerator to the denominator, representing a part of a whole or a ratio between two quantities. ",
+                    "scope": {
+                      "learner_id": "verification_synthetic_learner",
+                      "topic_key": "b0581a2bae10b7a8847a9973d8ed3752627649ac"
+                    },
+                    "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+                    "materials": [
+                      {
+                        "chunk_id": "chunk_6a9043cbd8f7499f8c572ef6fc595e79",
+                        "source_id": "source_284662151d2c44a08f2943c1ec228654",
+                        "kind": "study_notes",
+                        "content": "Equivalent fractions represent the same value. Multiply or divide both numerator and denominator by the same nonzero number. Changing only the numerator usually changes the value. A fraction denotes a ratio of numerator to denominator.",
+                        "metadata": {
+                          "start": 0,
+                          "end": 235,
+                          "title": "Equivalent fractions · supplied notes"
+                        },
+                        "rank": -7.32142857142857e-06,
+                        "retrieval_method": "fts5_bm25"
+                      }
+                    ],
+                    "evidence": []
+                  },
+                  "allowed_source_citations": [
+                    "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+                  ],
+                  "previous_questions": [],
+                  "contract_version": "saved-state-question-v1"
+                },
+                "plan": {
+                  "concept_id": "fraction_definition",
+                  "kind": "explain",
+                  "intent": "diagnose",
+                  "reason": "Collect an initial explanation; there is no evidence for this concept yet.",
+                  "difficulty": "foundational",
+                  "missing_criteria": [],
+                  "required_criteria": [],
+                  "hypotheses": [],
+                  "evidence_ids": [],
+                  "state_snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+                  "policy_version": "focused-adaptive-planner-v2"
+                },
+                "source_citations": [
+                  "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+                ],
+                "model": "gpt-4.1-mini",
+                "attempts": 1,
+                "duration_ms": 3023.22,
+                "prompt_version": "saved-state-question-v1"
+              }
+            },
+            "session_id": "conversation_f41b356969e94ba0b53f7b034c6894df",
+            "source_kind": "learner_response",
+            "validated": true
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_2a8c1965c5234ada9d3eb09b17706259",
+          "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+          "sequence": 3,
+          "key": "preprocessing",
+          "name": "Text transformations",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_4cc56ad4d69941e7889cadcd92a9fe28",
+          "technique": "NFKC · regex tokens/sentences · lexical features",
+          "implementation": "packages/learner_state_core/assessment/nlp.py:analyze",
+          "input": {
+            "original_text": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it."
+          },
+          "parameters": {
+            "version": "unicode-math-spans-v2",
+            "offsets": "original Unicode code points",
+            "negation_removed": false
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:32:03.656199+00:00",
+          "completed_at": "2026-11-01T17:32:03.669265+00:00",
+          "duration_ms": 0.98,
+          "output": {
+            "raw_text": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+            "normalized_text": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+            "token_spans": [
+              {
+                "token": "I",
+                "start": 0,
+                "end": 1
+              },
+              {
+                "token": "multiply",
+                "start": 2,
+                "end": 10
+              },
+              {
+                "token": "both",
+                "start": 11,
+                "end": 15
+              },
+              {
+                "token": "numerator",
+                "start": 16,
+                "end": 25
+              },
+              {
+                "token": "and",
+                "start": 26,
+                "end": 29
+              },
+              {
+                "token": "denominator",
+                "start": 30,
+                "end": 41
+              },
+              {
+                "token": "by",
+                "start": 42,
+                "end": 44
+              },
+              {
+                "token": "the",
+                "start": 45,
+                "end": 48
+              },
+              {
+                "token": "same",
+                "start": 49,
+                "end": 53
+              },
+              {
+                "token": "nonzero",
+                "start": 54,
+                "end": 61
+              },
+              {
+                "token": "number",
+                "start": 62,
+                "end": 68
+              },
+              {
+                "token": ",",
+                "start": 68,
+                "end": 69
+              },
+              {
+                "token": "so",
+                "start": 70,
+                "end": 72
+              },
+              {
+                "token": "their",
+                "start": 73,
+                "end": 78
+              },
+              {
+                "token": "ratio",
+                "start": 79,
+                "end": 84
+              },
+              {
+                "token": "stays",
+                "start": 85,
+                "end": 90
+              },
+              {
+                "token": "unchanged",
+                "start": 91,
+                "end": 100
+              },
+              {
+                "token": ".",
+                "start": 100,
+                "end": 101
+              },
+              {
+                "token": "For",
+                "start": 102,
+                "end": 105
+              },
+              {
+                "token": "example",
+                "start": 106,
+                "end": 113
+              },
+              {
+                "token": ",",
+                "start": 113,
+                "end": 114
+              },
+              {
+                "token": "1",
+                "start": 115,
+                "end": 116
+              },
+              {
+                "token": "/",
+                "start": 116,
+                "end": 117
+              },
+              {
+                "token": "2",
+                "start": 117,
+                "end": 118
+              },
+              {
+                "token": "=",
+                "start": 119,
+                "end": 120
+              },
+              {
+                "token": "2",
+                "start": 121,
+                "end": 122
+              },
+              {
+                "token": "/",
+                "start": 122,
+                "end": 123
+              },
+              {
+                "token": "4",
+                "start": 123,
+                "end": 124
+              },
+              {
+                "token": "because",
+                "start": 125,
+                "end": 132
+              },
+              {
+                "token": "multiplying",
+                "start": 133,
+                "end": 144
+              },
+              {
+                "token": "both",
+                "start": 145,
+                "end": 149
+              },
+              {
+                "token": "parts",
+                "start": 150,
+                "end": 155
+              },
+              {
+                "token": "by",
+                "start": 156,
+                "end": 158
+              },
+              {
+                "token": "two",
+                "start": 159,
+                "end": 162
+              },
+              {
+                "token": "preserves",
+                "start": 163,
+                "end": 172
+              },
+              {
+                "token": "the",
+                "start": 173,
+                "end": 176
+              },
+              {
+                "token": "value",
+                "start": 177,
+                "end": 182
+              },
+              {
+                "token": ";",
+                "start": 182,
+                "end": 183
+              },
+              {
+                "token": "multiplying",
+                "start": 184,
+                "end": 195
+              },
+              {
+                "token": "only",
+                "start": 196,
+                "end": 200
+              },
+              {
+                "token": "the",
+                "start": 201,
+                "end": 204
+              },
+              {
+                "token": "numerator",
+                "start": 205,
+                "end": 214
+              },
+              {
+                "token": "would",
+                "start": 215,
+                "end": 220
+              },
+              {
+                "token": "change",
+                "start": 221,
+                "end": 227
+              },
+              {
+                "token": "it",
+                "start": 228,
+                "end": 230
+              },
+              {
+                "token": ".",
+                "start": 230,
+                "end": 231
+              }
+            ],
+            "token_count": 46,
+            "sentences": [
+              {
+                "text": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged.",
+                "start": 0,
+                "end": 101
+              },
+              {
+                "text": " For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+                "start": 101,
+                "end": 231
+              }
+            ],
+            "keywords": [
+              "both",
+              "numerator",
+              "multiplying",
+              "multiply",
+              "denominator",
+              "same",
+              "nonzero",
+              "number",
+              "ratio",
+              "stays",
+              "unchanged",
+              "example",
+              "because",
+              "parts",
+              "two",
+              "preserves"
+            ],
+            "response_hash": "99c59e313d45e0494b374f77783356424d1ec51be5b22d26e8a2fdecc6027c2d",
+            "negation_cues": [],
+            "uncertainty_cues": [],
+            "version": "unicode-math-spans-v2"
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_e0bc49c9d2b04b949cd00e9ad9c67d2f",
+          "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+          "sequence": 4,
+          "key": "extraction",
+          "name": "Cognitive interpretation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_2a8c1965c5234ada9d3eb09b17706259",
+          "technique": "Schema-constrained pretrained model",
+          "implementation": "packages/learner_state_core/assessment/provider.py:evaluate",
+          "input": {
+            "response_text": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+            "question_id": "question_743e536203e746f6b4081970d2e3fbfd",
+            "state_snapshot_id": "state_22f481c13df14b44970b190b240f5d7c"
+          },
+          "parameters": {
+            "model": "gpt-4.1-mini",
+            "prompt_version": "rubric-evidence-v1",
+            "confidence_calibrated": false
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:32:03.681757+00:00",
+          "completed_at": "2026-11-01T17:32:07.444060+00:00",
+          "duration_ms": 3750.439,
+          "output": {
+            "concept_id": "fraction_definition",
+            "source_quote": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+            "claim": "The response shows understanding that a fraction denotes a ratio between numerator and denominator by explaining that multiplying numerator and denominator by the same number preserves the ratio, while changing only the numerator changes the value.",
+            "category": "partial",
+            "confidence": 0.7,
+            "met_criteria": [
+              "understand_ratio"
+            ],
+            "missing_criteria": [
+              "role_numerator",
+              "role_denominator"
+            ],
+            "misconception": null,
+            "contradicts_hypothesis_ids": [],
+            "feedback": "You understand that a fraction represents a ratio between numerator and denominator and how equivalent fractions preserve this ratio. However, you did not explain the specific roles of numerator and denominator in representing parts of a whole or quantities. Try to clarify what each part signifies in the fraction.",
+            "coaching": "A fraction represents a ratio where the numerator is the number of parts considered, and the denominator is the total number of equal parts or the reference quantity. This ratio shows how much of the whole or quantity is taken or compared. For example, in 3/4, 3 is the numerator indicating three parts taken, and 4 is the denominator indicating the whole is divided into four equal parts.",
+            "source_citations": [
+              "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+            ],
+            "_usage": {
+              "completion_tokens": 303,
+              "prompt_tokens": 3628,
+              "total_tokens": 3931,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": 0,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": 0
+              },
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cached_tokens": 0
+              },
+              "latency_checkpoint": {
+                "engine_tbt_ms": 7,
+                "engine_ttft_ms": 55,
+                "engine_ttlt_ms": 2032,
+                "pre_inference_ms": 87,
+                "service_tbt_ms": 7,
+                "service_ttft_ms": 172,
+                "service_ttlt_ms": 2145,
+                "user_visible_ttft_ms": 86
+              }
+            }
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_ae7f197404404aef94cc04dc7193b0e4",
+          "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+          "sequence": 5,
+          "key": "validation",
+          "name": "Evidence validation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_e0bc49c9d2b04b949cd00e9ad9c67d2f",
+          "technique": "Pydantic · exact spans · rubric and reference checks",
+          "implementation": "packages/learner_state_core/assessment/service.py:validate_observation",
+          "input": {
+            "candidate": {
+              "concept_id": "fraction_definition",
+              "source_quote": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+              "claim": "The response shows understanding that a fraction denotes a ratio between numerator and denominator by explaining that multiplying numerator and denominator by the same number preserves the ratio, while changing only the numerator changes the value.",
+              "category": "partial",
+              "confidence": 0.7,
+              "met_criteria": [
+                "understand_ratio"
+              ],
+              "missing_criteria": [
+                "role_numerator",
+                "role_denominator"
+              ],
+              "misconception": null,
+              "contradicts_hypothesis_ids": [],
+              "feedback": "You understand that a fraction represents a ratio between numerator and denominator and how equivalent fractions preserve this ratio. However, you did not explain the specific roles of numerator and denominator in representing parts of a whole or quantities. Try to clarify what each part signifies in the fraction.",
+              "coaching": "A fraction represents a ratio where the numerator is the number of parts considered, and the denominator is the total number of equal parts or the reference quantity. This ratio shows how much of the whole or quantity is taken or compared. For example, in 3/4, 3 is the numerator indicating three parts taken, and 4 is the denominator indicating the whole is divided into four equal parts.",
+              "source_citations": [
+                "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+              ],
+              "_usage": {
+                "completion_tokens": 303,
+                "prompt_tokens": 3628,
+                "total_tokens": 3931,
+                "completion_tokens_details": {
+                  "accepted_prediction_tokens": 0,
+                  "audio_tokens": 0,
+                  "reasoning_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                },
+                "prompt_tokens_details": {
+                  "audio_tokens": 0,
+                  "cached_tokens": 0
+                },
+                "latency_checkpoint": {
+                  "engine_tbt_ms": 7,
+                  "engine_ttft_ms": 55,
+                  "engine_ttlt_ms": 2032,
+                  "pre_inference_ms": 87,
+                  "service_tbt_ms": 7,
+                  "service_ttft_ms": 172,
+                  "service_ttlt_ms": 2145,
+                  "user_visible_ttft_ms": 86
+                }
+              }
+            }
+          },
+          "parameters": {
+            "schema": "ExtractedObservation",
+            "checks": [
+              "schema",
+              "quote",
+              "rubric_partition",
+              "citations",
+              "contradiction_ids"
+            ]
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:32:07.904210+00:00",
+          "completed_at": "2026-11-01T17:32:07.999066+00:00",
+          "duration_ms": 2.327,
+          "output": {
+            "schema_valid": true,
+            "quote_verified": true,
+            "confidence_calibrated": false,
+            "abstained": false
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_922c184acc014e4580868c54cbf27fef",
+          "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+          "sequence": 6,
+          "key": "grounding",
+          "name": "Concept grounding",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_ae7f197404404aef94cc04dc7193b0e4",
+          "technique": "Assigned-concept identity constraint",
+          "implementation": "packages/learner_state_core/assessment/service.py:ground_observation",
+          "input": {
+            "concept_id": "fraction_definition",
+            "question_concept_id": "fraction_definition"
+          },
+          "parameters": {},
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:32:08.074162+00:00",
+          "completed_at": "2026-11-01T17:32:08.129335+00:00",
+          "duration_ms": 0.109,
+          "output": {
+            "accepted_concept": {
+              "concept_id": "fraction_definition",
+              "name": "Fraction definition",
+              "description": "A fraction denotes a ratio of the numerator to the denominator, representing a part of a whole or a ratio between two quantities.",
+              "prerequisites": []
+            },
+            "candidate_concept_ids": [
+              "fraction_definition"
+            ],
+            "method": "assigned_concept_constraint",
+            "source_quote": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+            "similarity_score": null,
+            "taxonomy_provenance": "model_authored_topic_map_unverified"
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_b8f4c07f71fb49a78d32ab54acfd90a3",
+          "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+          "sequence": 7,
+          "key": "evidence",
+          "name": "Cognitive Evidence",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_922c184acc014e4580868c54cbf27fef",
+          "technique": "Validated structured evidence assembly",
+          "implementation": "packages/learner_state_core/assessment/service.py:answer",
+          "input": {
+            "source_kind": "learner_response",
+            "source_quote": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it."
+          },
+          "parameters": {},
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:32:08.149638+00:00",
+          "completed_at": "2026-11-01T17:32:08.168231+00:00",
+          "duration_ms": 0.128,
+          "output": {
+            "concept_id": "fraction_definition",
+            "source_quote": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+            "claim": "The response shows understanding that a fraction denotes a ratio between numerator and denominator by explaining that multiplying numerator and denominator by the same number preserves the ratio, while changing only the numerator changes the value.",
+            "category": "partial",
+            "confidence": 0.7,
+            "met_criteria": [
+              "understand_ratio"
+            ],
+            "missing_criteria": [
+              "role_numerator",
+              "role_denominator"
+            ],
+            "misconception": null,
+            "contradicts_hypothesis_ids": [],
+            "feedback": "You understand that a fraction represents a ratio between numerator and denominator and how equivalent fractions preserve this ratio. However, you did not explain the specific roles of numerator and denominator in representing parts of a whole or quantities. Try to clarify what each part signifies in the fraction.",
+            "coaching": "A fraction represents a ratio where the numerator is the number of parts considered, and the denominator is the total number of equal parts or the reference quantity. This ratio shows how much of the whole or quantity is taken or compared. For example, in 3/4, 3 is the numerator indicating three parts taken, and 4 is the denominator indicating the whole is divided into four equal parts.",
+            "source_citations": [
+              "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+            ],
+            "evidence_id": "evidence_3c0f16491cc042e69d8394fd0c272058",
+            "question_id": "question_743e536203e746f6b4081970d2e3fbfd",
+            "timestamp": "2026-11-01T17:32:08.149638+00:00",
+            "source_start": 0,
+            "source_end": 231,
+            "extractor_model": "gpt-4.1-mini",
+            "confidence_calibrated": false,
+            "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+            "source_interaction_id": "turn_af63748947334820a1858e7d0caf562a",
+            "session_id": "conversation_f41b356969e94ba0b53f7b034c6894df",
+            "validation_status": "passed"
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_33515f5ce1114928a9a8a1bde6d4cc23",
+          "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+          "sequence": 8,
+          "key": "state_update",
+          "name": "Learner-state computation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_b8f4c07f71fb49a78d32ab54acfd90a3",
+          "technique": "Criterion-weighted Beta update",
+          "implementation": "packages/learner_state_core/assessment/state.py:integrate",
+          "input": {
+            "state_before": {
+              "snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+              "timestamp": "2026-11-01T17:31:59.104133+00:00",
+              "policy_version": "criterion-weighted-state-v1",
+              "concepts": {
+                "fraction_definition": {
+                  "concept_id": "fraction_definition",
+                  "name": "Fraction definition",
+                  "alpha": 1.0,
+                  "beta": 1.0,
+                  "estimate": 0.5,
+                  "uncertainty": 0.28868,
+                  "observation_count": 0,
+                  "informative_count": 0,
+                  "evidence_ids": [],
+                  "response_hashes": [],
+                  "hypotheses": {},
+                  "criterion_gaps": {},
+                  "missing_criteria": [],
+                  "last_category": null
+                },
+                "equivalent_fractions": {
+                  "concept_id": "equivalent_fractions",
+                  "name": "Equivalent fractions",
+                  "alpha": 1.0,
+                  "beta": 1.0,
+                  "estimate": 0.5,
+                  "uncertainty": 0.28868,
+                  "observation_count": 0,
+                  "informative_count": 0,
+                  "evidence_ids": [],
+                  "response_hashes": [],
+                  "hypotheses": {},
+                  "criterion_gaps": {},
+                  "missing_criteria": [],
+                  "last_category": null
+                },
+                "finding_equivalents": {
+                  "concept_id": "finding_equivalents",
+                  "name": "Finding equivalent fractions",
+                  "alpha": 1.0,
+                  "beta": 1.0,
+                  "estimate": 0.5,
+                  "uncertainty": 0.28868,
+                  "observation_count": 0,
+                  "informative_count": 0,
+                  "evidence_ids": [],
+                  "response_hashes": [],
+                  "hypotheses": {},
+                  "criterion_gaps": {},
+                  "missing_criteria": [],
+                  "last_category": null
+                },
+                "changing_numerator_only": {
+                  "concept_id": "changing_numerator_only",
+                  "name": "Changing numerator only",
+                  "alpha": 1.0,
+                  "beta": 1.0,
+                  "estimate": 0.5,
+                  "uncertainty": 0.28868,
+                  "observation_count": 0,
+                  "informative_count": 0,
+                  "evidence_ids": [],
+                  "response_hashes": [],
+                  "hypotheses": {},
+                  "criterion_gaps": {},
+                  "missing_criteria": [],
+                  "last_category": null
+                }
+              }
+            },
+            "evidence_id": "evidence_3c0f16491cc042e69d8394fd0c272058"
+          },
+          "parameters": {
+            "policy": "criterion-weighted-state-v1"
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:32:08.189618+00:00",
+          "completed_at": "2026-11-01T17:32:08.228470+00:00",
+          "duration_ms": 1.023,
+          "output": {
+            "state_before": {
+              "snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+              "timestamp": "2026-11-01T17:31:59.104133+00:00",
+              "policy_version": "criterion-weighted-state-v1",
+              "concepts": {
+                "fraction_definition": {
+                  "concept_id": "fraction_definition",
+                  "name": "Fraction definition",
+                  "alpha": 1.0,
+                  "beta": 1.0,
+                  "estimate": 0.5,
+                  "uncertainty": 0.28868,
+                  "observation_count": 0,
+                  "informative_count": 0,
+                  "evidence_ids": [],
+                  "response_hashes": [],
+                  "hypotheses": {},
+                  "criterion_gaps": {},
+                  "missing_criteria": [],
+                  "last_category": null
+                },
+                "equivalent_fractions": {
+                  "concept_id": "equivalent_fractions",
+                  "name": "Equivalent fractions",
+                  "alpha": 1.0,
+                  "beta": 1.0,
+                  "estimate": 0.5,
+                  "uncertainty": 0.28868,
+                  "observation_count": 0,
+                  "informative_count": 0,
+                  "evidence_ids": [],
+                  "response_hashes": [],
+                  "hypotheses": {},
+                  "criterion_gaps": {},
+                  "missing_criteria": [],
+                  "last_category": null
+                },
+                "finding_equivalents": {
+                  "concept_id": "finding_equivalents",
+                  "name": "Finding equivalent fractions",
+                  "alpha": 1.0,
+                  "beta": 1.0,
+                  "estimate": 0.5,
+                  "uncertainty": 0.28868,
+                  "observation_count": 0,
+                  "informative_count": 0,
+                  "evidence_ids": [],
+                  "response_hashes": [],
+                  "hypotheses": {},
+                  "criterion_gaps": {},
+                  "missing_criteria": [],
+                  "last_category": null
+                },
+                "changing_numerator_only": {
+                  "concept_id": "changing_numerator_only",
+                  "name": "Changing numerator only",
+                  "alpha": 1.0,
+                  "beta": 1.0,
+                  "estimate": 0.5,
+                  "uncertainty": 0.28868,
+                  "observation_count": 0,
+                  "informative_count": 0,
+                  "evidence_ids": [],
+                  "response_hashes": [],
+                  "hypotheses": {},
+                  "criterion_gaps": {},
+                  "missing_criteria": [],
+                  "last_category": null
+                }
+              }
+            },
+            "state_after": {
+              "snapshot_id": "state_73c2c49ab33b474790f8c43c972aa8fb",
+              "timestamp": "2026-11-01T17:32:08.227929+00:00",
+              "policy_version": "criterion-weighted-state-v1",
+              "concepts": {
+                "fraction_definition": {
+                  "concept_id": "fraction_definition",
+                  "name": "Fraction definition",
+                  "alpha": 1.233333,
+                  "beta": 1.466667,
+                  "estimate": 0.45679,
+                  "uncertainty": 0.25897,
+                  "observation_count": 1,
+                  "informative_count": 1,
+                  "evidence_ids": [
+                    "evidence_3c0f16491cc042e69d8394fd0c272058"
+                  ],
+                  "response_hashes": [
+                    "99c59e313d45e0494b374f77783356424d1ec51be5b22d26e8a2fdecc6027c2d"
+                  ],
+                  "hypotheses": {},
+                  "criterion_gaps": {
+                    "gap_44263ffee8ac9c3a302c": {
+                      "criterion_id": "gap_44263ffee8ac9c3a302c",
+                      "description": "Explain the role of the numerator in the fraction as the number of parts considered.",
+                      "status": "open",
+                      "evidence_ids": [
+                        "evidence_3c0f16491cc042e69d8394fd0c272058"
+                      ],
+                      "resolved_by_evidence_ids": []
+                    },
+                    "gap_3bd8ba0e64e8595801e4": {
+                      "criterion_id": "gap_3bd8ba0e64e8595801e4",
+                      "description": "Explain the role of the denominator in the fraction as the total number of equal parts or the reference quantity.",
+                      "status": "open",
+                      "evidence_ids": [
+                        "evidence_3c0f16491cc042e69d8394fd0c272058"
+                      ],
+                      "resolved_by_evidence_ids": []
+                    }
+                  },
+                  "missing_criteria": [
+                    "Explain the role of the numerator in the fraction as the number of parts considered.",
+                    "Explain the role of the denominator in the fraction as the total number of equal parts or the reference quantity."
+                  ],
+                  "last_category": "partial"
+                },
+                "equivalent_fractions": {
+                  "concept_id": "equivalent_fractions",
+                  "name": "Equivalent fractions",
+                  "alpha": 1.0,
+                  "beta": 1.0,
+                  "estimate": 0.5,
+                  "uncertainty": 0.28868,
+                  "observation_count": 0,
+                  "informative_count": 0,
+                  "evidence_ids": [],
+                  "response_hashes": [],
+                  "hypotheses": {},
+                  "criterion_gaps": {},
+                  "missing_criteria": [],
+                  "last_category": null
+                },
+                "finding_equivalents": {
+                  "concept_id": "finding_equivalents",
+                  "name": "Finding equivalent fractions",
+                  "alpha": 1.0,
+                  "beta": 1.0,
+                  "estimate": 0.5,
+                  "uncertainty": 0.28868,
+                  "observation_count": 0,
+                  "informative_count": 0,
+                  "evidence_ids": [],
+                  "response_hashes": [],
+                  "hypotheses": {},
+                  "criterion_gaps": {},
+                  "missing_criteria": [],
+                  "last_category": null
+                },
+                "changing_numerator_only": {
+                  "concept_id": "changing_numerator_only",
+                  "name": "Changing numerator only",
+                  "alpha": 1.0,
+                  "beta": 1.0,
+                  "estimate": 0.5,
+                  "uncertainty": 0.28868,
+                  "observation_count": 0,
+                  "informative_count": 0,
+                  "evidence_ids": [],
+                  "response_hashes": [],
+                  "hypotheses": {},
+                  "criterion_gaps": {},
+                  "missing_criteria": [],
+                  "last_category": null
+                }
+              }
+            },
+            "changes": {
+              "concept_id": "fraction_definition",
+              "rule": "weighted_criterion_update",
+              "confidence": 0.7,
+              "coverage": 0.3333333333333333,
+              "novelty_factor": 1.0,
+              "informativeness": 1.0,
+              "duplicate_response": false,
+              "weight": 0.7,
+              "delta_alpha": 0.233333,
+              "delta_beta": 0.466667,
+              "before_alpha": 1.0,
+              "before_beta": 1.0,
+              "after_alpha": 1.233333,
+              "after_beta": 1.466667,
+              "before_estimate": 0.5,
+              "after_estimate": 0.45679,
+              "delta_estimate": -0.04321,
+              "before_uncertainty": 0.28868,
+              "after_uncertainty": 0.25897,
+              "hypothesis_changes": [],
+              "resolved_criteria": [],
+              "formula": "w=confidence×novelty×min(tokens/16,1); α′=α+w×rubric_coverage; β′=β+w×(1−coverage)×slip_factor; estimate=α′/(α′+β′)",
+              "limitation": "Heuristic evidence estimate, not a calibrated measurement of understanding. Tutor coaching never updates these parameters."
+            },
+            "persisted": false
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_d0690d8acf864ef4b1ea24b5ab5c36b4",
+          "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+          "sequence": 9,
+          "key": "persistence",
+          "name": "Atomic persistence",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_33515f5ce1114928a9a8a1bde6d4cc23",
+          "technique": "SQLite WAL transaction · optimistic version check",
+          "implementation": "packages/learner_state_core/assessment/service.py",
+          "input": {
+            "turn_id": "turn_af63748947334820a1858e7d0caf562a",
+            "evidence_id": "evidence_3c0f16491cc042e69d8394fd0c272058",
+            "expected_snapshot_id": "state_22f481c13df14b44970b190b240f5d7c"
+          },
+          "parameters": {},
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:32:08.244626+00:00",
+          "completed_at": "2026-11-01T17:32:08.273949+00:00",
+          "duration_ms": 11.719,
+          "output": {
+            "turn_id": "turn_af63748947334820a1858e7d0caf562a",
+            "evidence_id": "evidence_3c0f16491cc042e69d8394fd0c272058",
+            "snapshot_id": "state_73c2c49ab33b474790f8c43c972aa8fb",
+            "revision": 1,
+            "committed": true
+          },
+          "error": null
+        }
+      ],
+      "incomplete_warning": null
+    },
+    {
+      "ordinal": 2,
+      "trace_id": "nlp_1ef30bb56238429f8bbeac6163de29fa",
+      "learner_id": "verification_synthetic_learner",
+      "conversation_id": "conversation_f41b356969e94ba0b53f7b034c6894df",
+      "question_id": "question_743e536203e746f6b4081970d2e3fbfd",
+      "operation": "generation",
+      "status": "completed",
+      "started_at": "2026-11-01T17:31:59.146622+00:00",
+      "completed_at": "2026-11-01T17:32:02.395490+00:00",
+      "duration_ms": 3247.498,
+      "metadata": {
+        "parent_trace_id": "nlp_41779be56d2a4ec58c2bcda02a3133fc",
+        "confidence_calibrated": false
+      },
+      "stages": [
+        {
+          "stage_id": "stage_2bb821686a97408b8b33509e7ebc2a63",
+          "trace_id": "nlp_1ef30bb56238429f8bbeac6163de29fa",
+          "sequence": 1,
+          "key": "planning",
+          "name": "Diagnostic question planning",
+          "parent_stage_id": null,
+          "previous_stage_id": null,
+          "technique": "Deterministic criterion/prerequisite policy",
+          "implementation": "packages/learner_state_core/assessment/state.py:plan_next",
+          "input": {
+            "state_snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+            "prior_turn_ids": []
+          },
+          "parameters": {},
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:31:59.178584+00:00",
+          "completed_at": "2026-11-01T17:31:59.187629+00:00",
+          "duration_ms": 0.189,
+          "output": {
+            "concept_id": "fraction_definition",
+            "kind": "explain",
+            "intent": "diagnose",
+            "reason": "Collect an initial explanation; there is no evidence for this concept yet.",
+            "difficulty": "foundational",
+            "missing_criteria": [],
+            "required_criteria": [],
+            "hypotheses": [],
+            "evidence_ids": [],
+            "state_snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+            "policy_version": "focused-adaptive-planner-v2"
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_ca4a21e79d1847e9a3dfd4e6b395b38f",
+          "trace_id": "nlp_1ef30bb56238429f8bbeac6163de29fa",
+          "sequence": 2,
+          "key": "retrieval",
+          "name": "Scoped source retrieval",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_2bb821686a97408b8b33509e7ebc2a63",
+          "technique": "SQLite FTS5 · Porter/unicode61 · BM25",
+          "implementation": "packages/learner_state_core/assessment/storage.py:retrieve",
+          "input": {
+            "concept_id": "fraction_definition",
+            "snapshot_id": "state_22f481c13df14b44970b190b240f5d7c"
+          },
+          "parameters": {
+            "limit": 5,
+            "ranking": "bm25",
+            "fallback": "scoped_recent"
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:31:59.209005+00:00",
+          "completed_at": "2026-11-01T17:31:59.241506+00:00",
+          "duration_ms": 3.539,
+          "output": {
+            "query": "Fraction definition A fraction denotes a ratio of the numerator to the denominator, representing a part of a whole or a ratio between two quantities. ",
+            "scope": {
+              "learner_id": "verification_synthetic_learner",
+              "topic_key": "b0581a2bae10b7a8847a9973d8ed3752627649ac"
+            },
+            "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+            "materials": [
+              {
+                "chunk_id": "chunk_6a9043cbd8f7499f8c572ef6fc595e79",
+                "source_id": "source_284662151d2c44a08f2943c1ec228654",
+                "kind": "study_notes",
+                "content": "Equivalent fractions represent the same value. Multiply or divide both numerator and denominator by the same nonzero number. Changing only the numerator usually changes the value. A fraction denotes a ratio of numerator to denominator.",
+                "metadata": {
+                  "start": 0,
+                  "end": 235,
+                  "title": "Equivalent fractions · supplied notes"
+                },
+                "rank": -7.32142857142857e-06,
+                "retrieval_method": "fts5_bm25"
+              }
+            ],
+            "evidence": []
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_430d3a7031bc4d19a62db794e0f3a23a",
+          "trace_id": "nlp_1ef30bb56238429f8bbeac6163de29fa",
+          "sequence": 3,
+          "key": "validation",
+          "name": "Evidence validation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_ca4a21e79d1847e9a3dfd4e6b395b38f",
+          "technique": "Pydantic · exact spans · rubric and reference checks",
+          "implementation": "packages/learner_state_core/assessment/service.py:validate_observation",
+          "input": {
+            "material_count": 1
+          },
+          "parameters": {
+            "checks": [
+              "minimum_source_material"
+            ]
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:31:59.333572+00:00",
+          "completed_at": "2026-11-01T17:31:59.366043+00:00",
+          "duration_ms": 0.107,
+          "output": {
+            "material_available": true
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_d46959e721fa48339217fa294a7ed4d6",
+          "trace_id": "nlp_1ef30bb56238429f8bbeac6163de29fa",
+          "sequence": 4,
+          "key": "generation",
+          "name": "Question formulation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_430d3a7031bc4d19a62db794e0f3a23a",
+          "technique": "Schema-constrained pretrained model",
+          "implementation": "packages/learner_state_core/assessment/provider.py:generate_question",
+          "input": {
+            "plan": {
+              "concept_id": "fraction_definition",
+              "kind": "explain",
+              "intent": "diagnose",
+              "reason": "Collect an initial explanation; there is no evidence for this concept yet.",
+              "difficulty": "foundational",
+              "missing_criteria": [],
+              "required_criteria": [],
+              "hypotheses": [],
+              "evidence_ids": [],
+              "state_snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+              "policy_version": "focused-adaptive-planner-v2"
+            },
+            "retrieval": {
+              "query": "Fraction definition A fraction denotes a ratio of the numerator to the denominator, representing a part of a whole or a ratio between two quantities. ",
+              "scope": {
+                "learner_id": "verification_synthetic_learner",
+                "topic_key": "b0581a2bae10b7a8847a9973d8ed3752627649ac"
+              },
+              "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+              "materials": [
+                {
+                  "chunk_id": "chunk_6a9043cbd8f7499f8c572ef6fc595e79",
+                  "source_id": "source_284662151d2c44a08f2943c1ec228654",
+                  "kind": "study_notes",
+                  "content": "Equivalent fractions represent the same value. Multiply or divide both numerator and denominator by the same nonzero number. Changing only the numerator usually changes the value. A fraction denotes a ratio of numerator to denominator.",
+                  "metadata": {
+                    "start": 0,
+                    "end": 235,
+                    "title": "Equivalent fractions · supplied notes"
+                  },
+                  "rank": -7.32142857142857e-06,
+                  "retrieval_method": "fts5_bm25"
+                }
+              ],
+              "evidence": []
+            },
+            "state_snapshot_id": "state_22f481c13df14b44970b190b240f5d7c"
+          },
+          "parameters": {
+            "model": "gpt-4.1-mini",
+            "prompt_version": "saved-state-question-v1"
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:31:59.376707+00:00",
+          "completed_at": "2026-11-01T17:32:02.238248+00:00",
+          "duration_ms": 2844.819,
+          "output": {
+            "concept_id": "fraction_definition",
+            "kind": "explain",
+            "prompt": "Explain why a fraction represents a ratio between the numerator and the denominator, and how this ratio relates to the concept of a part of a whole or a comparison between two quantities. Use your explanation to clarify what the numerator and denominator each signify in this ratio.",
+            "expected_focus": "Explain the meaning of a fraction as a ratio, detailing the roles of numerator and denominator and how they represent parts of a whole or ratios between quantities.",
+            "learning_support": "",
+            "source_citations": [
+              "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+            ],
+            "usage": {
+              "completion_tokens": 334,
+              "prompt_tokens": 1902,
+              "total_tokens": 2236,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": 0,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": 0
+              },
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cached_tokens": 0
+              },
+              "latency_checkpoint": {
+                "engine_tbt_ms": 6,
+                "engine_ttft_ms": 45,
+                "engine_ttlt_ms": 1929,
+                "pre_inference_ms": 122,
+                "service_tbt_ms": 6,
+                "service_ttft_ms": 314,
+                "service_ttlt_ms": 2192,
+                "user_visible_ttft_ms": 192
+              }
+            }
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_6f42864b6e4b48b1b7ff25bc693c436c",
+          "trace_id": "nlp_1ef30bb56238429f8bbeac6163de29fa",
+          "sequence": 5,
+          "key": "validation",
+          "name": "Evidence validation",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_d46959e721fa48339217fa294a7ed4d6",
+          "technique": "Pydantic · exact spans · rubric and reference checks",
+          "implementation": "packages/learner_state_core/assessment/service.py:validate_observation",
+          "input": {
+            "candidate_question": {
+              "concept_id": "fraction_definition",
+              "kind": "explain",
+              "prompt": "Explain why a fraction represents a ratio between the numerator and the denominator, and how this ratio relates to the concept of a part of a whole or a comparison between two quantities. Use your explanation to clarify what the numerator and denominator each signify in this ratio.",
+              "expected_focus": "Explain the meaning of a fraction as a ratio, detailing the roles of numerator and denominator and how they represent parts of a whole or ratios between quantities.",
+              "learning_support": "",
+              "source_citations": [
+                "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+              ]
+            }
+          },
+          "parameters": {
+            "checks": [
+              "target",
+              "citations",
+              "rubric_ids",
+              "required_criteria",
+              "novelty"
+            ]
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:32:02.278741+00:00",
+          "completed_at": "2026-11-01T17:32:02.314768+00:00",
+          "duration_ms": 0.224,
+          "output": {
+            "validated": true
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_a1ccbef6a7e249c4a95178cda6fdf8b2",
+          "trace_id": "nlp_1ef30bb56238429f8bbeac6163de29fa",
+          "sequence": 6,
+          "key": "persistence",
+          "name": "Atomic persistence",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_6f42864b6e4b48b1b7ff25bc693c436c",
+          "technique": "SQLite WAL transaction · optimistic version check",
+          "implementation": "packages/learner_state_core/assessment/service.py",
+          "input": {
+            "kind": "question",
+            "snapshot_id": "state_22f481c13df14b44970b190b240f5d7c"
+          },
+          "parameters": {},
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:32:02.327828+00:00",
+          "completed_at": "2026-11-01T17:32:02.363488+00:00",
+          "duration_ms": 12.751,
+          "output": {
+            "question_id": "question_743e536203e746f6b4081970d2e3fbfd",
+            "committed": true,
+            "generation_failure": null
+          },
+          "error": null
+        }
+      ],
+      "incomplete_warning": null
+    },
+    {
+      "ordinal": 1,
+      "trace_id": "nlp_41779be56d2a4ec58c2bcda02a3133fc",
+      "learner_id": "verification_synthetic_learner",
+      "conversation_id": "conversation_f41b356969e94ba0b53f7b034c6894df",
+      "question_id": null,
+      "operation": "create",
+      "status": "completed",
+      "started_at": "2026-11-01T17:31:36.855719+00:00",
+      "completed_at": "2026-11-01T17:32:02.405794+00:00",
+      "duration_ms": 25548.1,
+      "metadata": {
+        "parent_trace_id": null,
+        "confidence_calibrated": false
+      },
+      "stages": [
+        {
+          "stage_id": "stage_38ee777d97cf4369956c345484b9d908",
+          "trace_id": "nlp_41779be56d2a4ec58c2bcda02a3133fc",
+          "sequence": 1,
+          "key": "topic",
+          "name": "Concept map construction",
+          "parent_stage_id": null,
+          "previous_stage_id": null,
+          "technique": "Model-assisted structured extraction",
+          "implementation": "packages/learner_state_core/assessment/provider.py:build_topic",
+          "input": {
+            "topic": "Equivalent fractions",
+            "notes_character_count": 235
+          },
+          "parameters": {
+            "model": "gpt-4.1-mini",
+            "contract": "TopicDefinition"
+          },
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:31:37.012950+00:00",
+          "completed_at": "2026-11-01T17:31:59.049791+00:00",
+          "duration_ms": 21974.763,
+          "output": {
+            "title": "Equivalent fractions",
+            "overview": "Equivalent fractions are fractions that represent the same value or proportion, even though they may have different numerators and denominators. To find equivalent fractions, multiply or divide both the numerator and denominator of a fraction by the same nonzero number. Changing only the numerator or only the denominator without the corresponding change in the other part usually changes the value of the fraction. A fraction itself denotes a ratio of the numerator to the denominator.",
+            "concepts": [
+              {
+                "concept_id": "fraction_definition",
+                "name": "Fraction definition",
+                "description": "A fraction denotes a ratio of the numerator to the denominator, representing a part of a whole or a ratio between two quantities.",
+                "prerequisites": []
+              },
+              {
+                "concept_id": "equivalent_fractions",
+                "name": "Equivalent fractions",
+                "description": "Equivalent fractions represent the same value or proportion, even if their numerators and denominators are different.",
+                "prerequisites": []
+              },
+              {
+                "concept_id": "finding_equivalents",
+                "name": "Finding equivalent fractions",
+                "description": "Equivalent fractions can be found by multiplying or dividing both the numerator and denominator of a fraction by the same nonzero number.",
+                "prerequisites": [
+                  "fraction_definition"
+                ]
+              },
+              {
+                "concept_id": "changing_numerator_only",
+                "name": "Changing numerator only",
+                "description": "Changing only the numerator of a fraction usually changes the value of the fraction, so it does not produce an equivalent fraction.",
+                "prerequisites": [
+                  "fraction_definition"
+                ]
+              }
+            ]
+          },
+          "error": null
+        },
+        {
+          "stage_id": "stage_f43191fdbdbb417eb071e9e8a92221ad",
+          "trace_id": "nlp_41779be56d2a4ec58c2bcda02a3133fc",
+          "sequence": 2,
+          "key": "persistence",
+          "name": "Atomic persistence",
+          "parent_stage_id": null,
+          "previous_stage_id": "stage_38ee777d97cf4369956c345484b9d908",
+          "technique": "SQLite WAL transaction · optimistic version check",
+          "implementation": "packages/learner_state_core/assessment/service.py",
+          "input": {
+            "kind": "topic_and_conversation"
+          },
+          "parameters": {},
+          "status": "completed",
+          "attempt": 1,
+          "started_at": "2026-11-01T17:31:59.076167+00:00",
+          "completed_at": "2026-11-01T17:31:59.129367+00:00",
+          "duration_ms": 33.876,
+          "output": {
+            "conversation_id": "conversation_f41b356969e94ba0b53f7b034c6894df",
+            "topic_key": "b0581a2bae10b7a8847a9973d8ed3752627649ac",
+            "committed": true
+          },
+          "error": null
+        }
+      ],
+      "incomplete_warning": null
+    }
+  ],
+  "saved_database_record": {
+    "turn_id": "turn_af63748947334820a1858e7d0caf562a",
+    "timestamp": "2026-11-01T17:32:08.244626+00:00",
+    "question": {
+      "concept_id": "fraction_definition",
+      "kind": "explain",
+      "prompt": "Explain why a fraction represents a ratio between the numerator and the denominator, and how this ratio relates to the concept of a part of a whole or a comparison between two quantities. Use your explanation to clarify what the numerator and denominator each signify in this ratio.",
+      "expected_focus": "Explain the meaning of a fraction as a ratio, detailing the roles of numerator and denominator and how they represent parts of a whole or ratios between quantities.",
+      "learning_support": "",
+      "criteria": [
+        {
+          "criterion_id": "understand_ratio",
+          "description": "Demonstrate understanding that a fraction denotes a ratio between numerator and denominator."
+        },
+        {
+          "criterion_id": "role_numerator",
+          "description": "Explain the role of the numerator in the fraction as the number of parts considered."
+        },
+        {
+          "criterion_id": "role_denominator",
+          "description": "Explain the role of the denominator in the fraction as the total number of equal parts or the reference quantity."
+        }
+      ],
+      "reference_answer": "A fraction represents a ratio between the numerator and the denominator, where the numerator indicates how many parts of a whole or quantity are being considered, and the denominator indicates the total number of equal parts that make up the whole or the reference quantity. This ratio shows the proportion of the whole or the relationship between two quantities. For example, in the fraction 3/4, the numerator 3 means three parts are taken, and the denominator 4 means the whole is divided into four equal parts, so the fraction represents three out of four equal parts, or the ratio 3 to 4.",
+      "source_citations": [
+        "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+      ],
+      "usage": {
+        "completion_tokens": 334,
+        "prompt_tokens": 1902,
+        "total_tokens": 2236,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        },
+        "latency_checkpoint": {
+          "engine_tbt_ms": 6,
+          "engine_ttft_ms": 45,
+          "engine_ttlt_ms": 1929,
+          "pre_inference_ms": 122,
+          "service_tbt_ms": 6,
+          "service_ttft_ms": 314,
+          "service_ttlt_ms": 2192,
+          "user_visible_ttft_ms": 192
+        }
+      },
+      "question_id": "question_743e536203e746f6b4081970d2e3fbfd",
+      "created_at": "2026-11-01T17:32:02.355426+00:00",
+      "generation_trace": {
+        "trace_id": "nlp_1ef30bb56238429f8bbeac6163de29fa",
+        "state_snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+        "context_sha256": "472a141976c83f61fa0c1831bc305cac2911e037322046b7067291afa2eb7f31",
+        "context": {
+          "topic": {
+            "title": "Equivalent fractions",
+            "overview": "Equivalent fractions are fractions that represent the same value or proportion, even though they may have different numerators and denominators. To find equivalent fractions, multiply or divide both the numerator and denominator of a fraction by the same nonzero number. Changing only the numerator or only the denominator without the corresponding change in the other part usually changes the value of the fraction. A fraction itself denotes a ratio of the numerator to the denominator.",
+            "concepts": [
+              {
+                "concept_id": "fraction_definition",
+                "name": "Fraction definition",
+                "description": "A fraction denotes a ratio of the numerator to the denominator, representing a part of a whole or a ratio between two quantities.",
+                "prerequisites": []
+              },
+              {
+                "concept_id": "equivalent_fractions",
+                "name": "Equivalent fractions",
+                "description": "Equivalent fractions represent the same value or proportion, even if their numerators and denominators are different.",
+                "prerequisites": []
+              },
+              {
+                "concept_id": "finding_equivalents",
+                "name": "Finding equivalent fractions",
+                "description": "Equivalent fractions can be found by multiplying or dividing both the numerator and denominator of a fraction by the same nonzero number.",
+                "prerequisites": [
+                  "fraction_definition"
+                ]
+              },
+              {
+                "concept_id": "changing_numerator_only",
+                "name": "Changing numerator only",
+                "description": "Changing only the numerator of a fraction usually changes the value of the fraction, so it does not produce an equivalent fraction.",
+                "prerequisites": [
+                  "fraction_definition"
+                ]
+              }
+            ]
+          },
+          "state": {
+            "snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+            "timestamp": "2026-11-01T17:31:59.104133+00:00",
+            "policy_version": "criterion-weighted-state-v1",
+            "concepts": {
+              "fraction_definition": {
+                "concept_id": "fraction_definition",
+                "name": "Fraction definition",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              },
+              "equivalent_fractions": {
+                "concept_id": "equivalent_fractions",
+                "name": "Equivalent fractions",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              },
+              "finding_equivalents": {
+                "concept_id": "finding_equivalents",
+                "name": "Finding equivalent fractions",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              },
+              "changing_numerator_only": {
+                "concept_id": "changing_numerator_only",
+                "name": "Changing numerator only",
+                "alpha": 1.0,
+                "beta": 1.0,
+                "estimate": 0.5,
+                "uncertainty": 0.28868,
+                "observation_count": 0,
+                "informative_count": 0,
+                "evidence_ids": [],
+                "response_hashes": [],
+                "hypotheses": {},
+                "criterion_gaps": {},
+                "missing_criteria": [],
+                "last_category": null
+              }
+            }
+          },
+          "plan": {
+            "concept_id": "fraction_definition",
+            "kind": "explain",
+            "intent": "diagnose",
+            "reason": "Collect an initial explanation; there is no evidence for this concept yet.",
+            "difficulty": "foundational",
+            "missing_criteria": [],
+            "required_criteria": [],
+            "hypotheses": [],
+            "evidence_ids": [],
+            "state_snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+            "policy_version": "focused-adaptive-planner-v2"
+          },
+          "retrieval": {
+            "query": "Fraction definition A fraction denotes a ratio of the numerator to the denominator, representing a part of a whole or a ratio between two quantities. ",
+            "scope": {
+              "learner_id": "verification_synthetic_learner",
+              "topic_key": "b0581a2bae10b7a8847a9973d8ed3752627649ac"
+            },
+            "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+            "materials": [
+              {
+                "chunk_id": "chunk_6a9043cbd8f7499f8c572ef6fc595e79",
+                "source_id": "source_284662151d2c44a08f2943c1ec228654",
+                "kind": "study_notes",
+                "content": "Equivalent fractions represent the same value. Multiply or divide both numerator and denominator by the same nonzero number. Changing only the numerator usually changes the value. A fraction denotes a ratio of numerator to denominator.",
+                "metadata": {
+                  "start": 0,
+                  "end": 235,
+                  "title": "Equivalent fractions · supplied notes"
+                },
+                "rank": -7.32142857142857e-06,
+                "retrieval_method": "fts5_bm25"
+              }
+            ],
+            "evidence": []
+          },
+          "allowed_source_citations": [
+            "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+          ],
+          "previous_questions": [],
+          "contract_version": "saved-state-question-v1"
+        },
+        "plan": {
+          "concept_id": "fraction_definition",
+          "kind": "explain",
+          "intent": "diagnose",
+          "reason": "Collect an initial explanation; there is no evidence for this concept yet.",
+          "difficulty": "foundational",
+          "missing_criteria": [],
+          "required_criteria": [],
+          "hypotheses": [],
+          "evidence_ids": [],
+          "state_snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+          "policy_version": "focused-adaptive-planner-v2"
+        },
+        "source_citations": [
+          "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+        ],
+        "model": "gpt-4.1-mini",
+        "attempts": 1,
+        "duration_ms": 3023.22,
+        "prompt_version": "saved-state-question-v1"
+      }
+    },
+    "response_text": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+    "nlp": {
+      "raw_text": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+      "normalized_text": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+      "token_spans": [
+        {
+          "token": "I",
+          "start": 0,
+          "end": 1
+        },
+        {
+          "token": "multiply",
+          "start": 2,
+          "end": 10
+        },
+        {
+          "token": "both",
+          "start": 11,
+          "end": 15
+        },
+        {
+          "token": "numerator",
+          "start": 16,
+          "end": 25
+        },
+        {
+          "token": "and",
+          "start": 26,
+          "end": 29
+        },
+        {
+          "token": "denominator",
+          "start": 30,
+          "end": 41
+        },
+        {
+          "token": "by",
+          "start": 42,
+          "end": 44
+        },
+        {
+          "token": "the",
+          "start": 45,
+          "end": 48
+        },
+        {
+          "token": "same",
+          "start": 49,
+          "end": 53
+        },
+        {
+          "token": "nonzero",
+          "start": 54,
+          "end": 61
+        },
+        {
+          "token": "number",
+          "start": 62,
+          "end": 68
+        },
+        {
+          "token": ",",
+          "start": 68,
+          "end": 69
+        },
+        {
+          "token": "so",
+          "start": 70,
+          "end": 72
+        },
+        {
+          "token": "their",
+          "start": 73,
+          "end": 78
+        },
+        {
+          "token": "ratio",
+          "start": 79,
+          "end": 84
+        },
+        {
+          "token": "stays",
+          "start": 85,
+          "end": 90
+        },
+        {
+          "token": "unchanged",
+          "start": 91,
+          "end": 100
+        },
+        {
+          "token": ".",
+          "start": 100,
+          "end": 101
+        },
+        {
+          "token": "For",
+          "start": 102,
+          "end": 105
+        },
+        {
+          "token": "example",
+          "start": 106,
+          "end": 113
+        },
+        {
+          "token": ",",
+          "start": 113,
+          "end": 114
+        },
+        {
+          "token": "1",
+          "start": 115,
+          "end": 116
+        },
+        {
+          "token": "/",
+          "start": 116,
+          "end": 117
+        },
+        {
+          "token": "2",
+          "start": 117,
+          "end": 118
+        },
+        {
+          "token": "=",
+          "start": 119,
+          "end": 120
+        },
+        {
+          "token": "2",
+          "start": 121,
+          "end": 122
+        },
+        {
+          "token": "/",
+          "start": 122,
+          "end": 123
+        },
+        {
+          "token": "4",
+          "start": 123,
+          "end": 124
+        },
+        {
+          "token": "because",
+          "start": 125,
+          "end": 132
+        },
+        {
+          "token": "multiplying",
+          "start": 133,
+          "end": 144
+        },
+        {
+          "token": "both",
+          "start": 145,
+          "end": 149
+        },
+        {
+          "token": "parts",
+          "start": 150,
+          "end": 155
+        },
+        {
+          "token": "by",
+          "start": 156,
+          "end": 158
+        },
+        {
+          "token": "two",
+          "start": 159,
+          "end": 162
+        },
+        {
+          "token": "preserves",
+          "start": 163,
+          "end": 172
+        },
+        {
+          "token": "the",
+          "start": 173,
+          "end": 176
+        },
+        {
+          "token": "value",
+          "start": 177,
+          "end": 182
+        },
+        {
+          "token": ";",
+          "start": 182,
+          "end": 183
+        },
+        {
+          "token": "multiplying",
+          "start": 184,
+          "end": 195
+        },
+        {
+          "token": "only",
+          "start": 196,
+          "end": 200
+        },
+        {
+          "token": "the",
+          "start": 201,
+          "end": 204
+        },
+        {
+          "token": "numerator",
+          "start": 205,
+          "end": 214
+        },
+        {
+          "token": "would",
+          "start": 215,
+          "end": 220
+        },
+        {
+          "token": "change",
+          "start": 221,
+          "end": 227
+        },
+        {
+          "token": "it",
+          "start": 228,
+          "end": 230
+        },
+        {
+          "token": ".",
+          "start": 230,
+          "end": 231
+        }
+      ],
+      "token_count": 46,
+      "sentences": [
+        {
+          "text": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged.",
+          "start": 0,
+          "end": 101
+        },
+        {
+          "text": " For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+          "start": 101,
+          "end": 231
+        }
+      ],
+      "keywords": [
+        "both",
+        "numerator",
+        "multiplying",
+        "multiply",
+        "denominator",
+        "same",
+        "nonzero",
+        "number",
+        "ratio",
+        "stays",
+        "unchanged",
+        "example",
+        "because",
+        "parts",
+        "two",
+        "preserves"
+      ],
+      "response_hash": "99c59e313d45e0494b374f77783356424d1ec51be5b22d26e8a2fdecc6027c2d",
+      "negation_cues": [],
+      "uncertainty_cues": [],
+      "version": "unicode-math-spans-v2"
+    },
+    "evidence": {
+      "concept_id": "fraction_definition",
+      "source_quote": "I multiply both numerator and denominator by the same nonzero number, so their ratio stays unchanged. For example, 1/2 = 2/4 because multiplying both parts by two preserves the value; multiplying only the numerator would change it.",
+      "claim": "The response shows understanding that a fraction denotes a ratio between numerator and denominator by explaining that multiplying numerator and denominator by the same number preserves the ratio, while changing only the numerator changes the value.",
+      "category": "partial",
+      "confidence": 0.7,
+      "met_criteria": [
+        "understand_ratio"
+      ],
+      "missing_criteria": [
+        "role_numerator",
+        "role_denominator"
+      ],
+      "misconception": null,
+      "contradicts_hypothesis_ids": [],
+      "feedback": "You understand that a fraction represents a ratio between numerator and denominator and how equivalent fractions preserve this ratio. However, you did not explain the specific roles of numerator and denominator in representing parts of a whole or quantities. Try to clarify what each part signifies in the fraction.",
+      "coaching": "A fraction represents a ratio where the numerator is the number of parts considered, and the denominator is the total number of equal parts or the reference quantity. This ratio shows how much of the whole or quantity is taken or compared. For example, in 3/4, 3 is the numerator indicating three parts taken, and 4 is the denominator indicating the whole is divided into four equal parts.",
+      "source_citations": [
+        "chunk_6a9043cbd8f7499f8c572ef6fc595e79"
+      ],
+      "evidence_id": "evidence_3c0f16491cc042e69d8394fd0c272058",
+      "question_id": "question_743e536203e746f6b4081970d2e3fbfd",
+      "timestamp": "2026-11-01T17:32:08.149638+00:00",
+      "source_start": 0,
+      "source_end": 231,
+      "extractor_model": "gpt-4.1-mini",
+      "confidence_calibrated": false,
+      "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+      "source_interaction_id": "turn_af63748947334820a1858e7d0caf562a",
+      "session_id": "conversation_f41b356969e94ba0b53f7b034c6894df",
+      "validation_status": "passed"
+    },
+    "state_before": {
+      "snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+      "timestamp": "2026-11-01T17:31:59.104133+00:00",
+      "policy_version": "criterion-weighted-state-v1",
+      "concepts": {
+        "fraction_definition": {
+          "concept_id": "fraction_definition",
+          "name": "Fraction definition",
+          "alpha": 1.0,
+          "beta": 1.0,
+          "estimate": 0.5,
+          "uncertainty": 0.28868,
+          "observation_count": 0,
+          "informative_count": 0,
+          "evidence_ids": [],
+          "response_hashes": [],
+          "hypotheses": {},
+          "criterion_gaps": {},
+          "missing_criteria": [],
+          "last_category": null
+        },
+        "equivalent_fractions": {
+          "concept_id": "equivalent_fractions",
+          "name": "Equivalent fractions",
+          "alpha": 1.0,
+          "beta": 1.0,
+          "estimate": 0.5,
+          "uncertainty": 0.28868,
+          "observation_count": 0,
+          "informative_count": 0,
+          "evidence_ids": [],
+          "response_hashes": [],
+          "hypotheses": {},
+          "criterion_gaps": {},
+          "missing_criteria": [],
+          "last_category": null
+        },
+        "finding_equivalents": {
+          "concept_id": "finding_equivalents",
+          "name": "Finding equivalent fractions",
+          "alpha": 1.0,
+          "beta": 1.0,
+          "estimate": 0.5,
+          "uncertainty": 0.28868,
+          "observation_count": 0,
+          "informative_count": 0,
+          "evidence_ids": [],
+          "response_hashes": [],
+          "hypotheses": {},
+          "criterion_gaps": {},
+          "missing_criteria": [],
+          "last_category": null
+        },
+        "changing_numerator_only": {
+          "concept_id": "changing_numerator_only",
+          "name": "Changing numerator only",
+          "alpha": 1.0,
+          "beta": 1.0,
+          "estimate": 0.5,
+          "uncertainty": 0.28868,
+          "observation_count": 0,
+          "informative_count": 0,
+          "evidence_ids": [],
+          "response_hashes": [],
+          "hypotheses": {},
+          "criterion_gaps": {},
+          "missing_criteria": [],
+          "last_category": null
+        }
+      }
+    },
+    "state_after": {
+      "snapshot_id": "state_73c2c49ab33b474790f8c43c972aa8fb",
+      "timestamp": "2026-11-01T17:32:08.227929+00:00",
+      "policy_version": "criterion-weighted-state-v1",
+      "concepts": {
+        "fraction_definition": {
+          "concept_id": "fraction_definition",
+          "name": "Fraction definition",
+          "alpha": 1.233333,
+          "beta": 1.466667,
+          "estimate": 0.45679,
+          "uncertainty": 0.25897,
+          "observation_count": 1,
+          "informative_count": 1,
+          "evidence_ids": [
+            "evidence_3c0f16491cc042e69d8394fd0c272058"
+          ],
+          "response_hashes": [
+            "99c59e313d45e0494b374f77783356424d1ec51be5b22d26e8a2fdecc6027c2d"
+          ],
+          "hypotheses": {},
+          "criterion_gaps": {
+            "gap_44263ffee8ac9c3a302c": {
+              "criterion_id": "gap_44263ffee8ac9c3a302c",
+              "description": "Explain the role of the numerator in the fraction as the number of parts considered.",
+              "status": "open",
+              "evidence_ids": [
+                "evidence_3c0f16491cc042e69d8394fd0c272058"
+              ],
+              "resolved_by_evidence_ids": []
+            },
+            "gap_3bd8ba0e64e8595801e4": {
+              "criterion_id": "gap_3bd8ba0e64e8595801e4",
+              "description": "Explain the role of the denominator in the fraction as the total number of equal parts or the reference quantity.",
+              "status": "open",
+              "evidence_ids": [
+                "evidence_3c0f16491cc042e69d8394fd0c272058"
+              ],
+              "resolved_by_evidence_ids": []
+            }
+          },
+          "missing_criteria": [
+            "Explain the role of the numerator in the fraction as the number of parts considered.",
+            "Explain the role of the denominator in the fraction as the total number of equal parts or the reference quantity."
+          ],
+          "last_category": "partial"
+        },
+        "equivalent_fractions": {
+          "concept_id": "equivalent_fractions",
+          "name": "Equivalent fractions",
+          "alpha": 1.0,
+          "beta": 1.0,
+          "estimate": 0.5,
+          "uncertainty": 0.28868,
+          "observation_count": 0,
+          "informative_count": 0,
+          "evidence_ids": [],
+          "response_hashes": [],
+          "hypotheses": {},
+          "criterion_gaps": {},
+          "missing_criteria": [],
+          "last_category": null
+        },
+        "finding_equivalents": {
+          "concept_id": "finding_equivalents",
+          "name": "Finding equivalent fractions",
+          "alpha": 1.0,
+          "beta": 1.0,
+          "estimate": 0.5,
+          "uncertainty": 0.28868,
+          "observation_count": 0,
+          "informative_count": 0,
+          "evidence_ids": [],
+          "response_hashes": [],
+          "hypotheses": {},
+          "criterion_gaps": {},
+          "missing_criteria": [],
+          "last_category": null
+        },
+        "changing_numerator_only": {
+          "concept_id": "changing_numerator_only",
+          "name": "Changing numerator only",
+          "alpha": 1.0,
+          "beta": 1.0,
+          "estimate": 0.5,
+          "uncertainty": 0.28868,
+          "observation_count": 0,
+          "informative_count": 0,
+          "evidence_ids": [],
+          "response_hashes": [],
+          "hypotheses": {},
+          "criterion_gaps": {},
+          "missing_criteria": [],
+          "last_category": null
+        }
+      }
+    },
+    "state_changes": {
+      "concept_id": "fraction_definition",
+      "rule": "weighted_criterion_update",
+      "confidence": 0.7,
+      "coverage": 0.3333333333333333,
+      "novelty_factor": 1.0,
+      "informativeness": 1.0,
+      "duplicate_response": false,
+      "weight": 0.7,
+      "delta_alpha": 0.233333,
+      "delta_beta": 0.466667,
+      "before_alpha": 1.0,
+      "before_beta": 1.0,
+      "after_alpha": 1.233333,
+      "after_beta": 1.466667,
+      "before_estimate": 0.5,
+      "after_estimate": 0.45679,
+      "delta_estimate": -0.04321,
+      "before_uncertainty": 0.28868,
+      "after_uncertainty": 0.25897,
+      "hypothesis_changes": [],
+      "resolved_criteria": [],
+      "formula": "w=confidence×novelty×min(tokens/16,1); α′=α+w×rubric_coverage; β′=β+w×(1−coverage)×slip_factor; estimate=α′/(α′+β′)",
+      "limitation": "Heuristic evidence estimate, not a calibrated measurement of understanding. Tutor coaching never updates these parameters."
+    },
+    "extraction_trace": {
+      "trace_id": "nlp_479e4a2cee6741b09b855e8b2bccb2c6",
+      "context_sha256": "a5640d2117bd592f981c92a0b02e8733abfda7565fcfceba2af603ee1e5132f1",
+      "state_snapshot_id": "state_22f481c13df14b44970b190b240f5d7c",
+      "model": "gpt-4.1-mini",
+      "retrieval": {
+        "query": "Fraction definition A fraction denotes a ratio of the numerator to the denominator, representing a part of a whole or a ratio between two quantities. ",
+        "scope": {
+          "learner_id": "verification_synthetic_learner",
+          "topic_key": "b0581a2bae10b7a8847a9973d8ed3752627649ac"
+        },
+        "method": "SQLite FTS5 · Porter/Unicode tokens · BM25",
+        "materials": [
+          {
+            "chunk_id": "chunk_6a9043cbd8f7499f8c572ef6fc595e79",
+            "source_id": "source_284662151d2c44a08f2943c1ec228654",
+            "kind": "study_notes",
+            "content": "Equivalent fractions represent the same value. Multiply or divide both numerator and denominator by the same nonzero number. Changing only the numerator usually changes the value. A fraction denotes a ratio of numerator to denominator.",
+            "metadata": {
+              "start": 0,
+              "end": 235,
+              "title": "Equivalent fractions · supplied notes"
+            },
+            "rank": -7.32142857142857e-06,
+            "retrieval_method": "fts5_bm25"
+          }
+        ],
+        "evidence": []
+      },
+      "validation_attempts": [],
+      "prompt_version": "rubric-evidence-v1",
+      "quote_validated": true,
+      "duration_ms": 4658.71,
+      "usage": {
+        "completion_tokens": 303,
+        "prompt_tokens": 3628,
+        "total_tokens": 3931,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        },
+        "latency_checkpoint": {
+          "engine_tbt_ms": 7,
+          "engine_ttft_ms": 55,
+          "engine_ttlt_ms": 2032,
+          "pre_inference_ms": 87,
+          "service_tbt_ms": 7,
+          "service_ttft_ms": 172,
+          "service_ttlt_ms": 2145,
+          "user_visible_ttft_ms": 86
+        }
+      }
+    }
+  }
+}

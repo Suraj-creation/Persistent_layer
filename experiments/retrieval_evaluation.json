@@ -1,0 +1,1166 @@
+{
+  "evaluation_scope": "12 repository-authored regression queries: 10 in-scope and 2 out-of-scope; no student labels, independent relevance review, or learning-impact claim.",
+  "corpus": {
+    "namespace": "curriculum",
+    "documents": 10,
+    "unique_entities": 10,
+    "chunks": 10,
+    "entities": 10,
+    "edges": 10,
+    "index_version": "curriculum-graph-rrf-v2",
+    "index_fingerprint": "INDEX_61236e4b220a16ecb8971fa5"
+  },
+  "modes": {
+    "naive": {
+      "summary": {
+        "recall_at_3": 0.8,
+        "mrr_at_3": 0.8,
+        "top_1_accuracy": 0.8,
+        "out_of_scope_abstention_rate": 1,
+        "repeat_determinism_rate": 1,
+        "citation_resolution_rate": 1,
+        "median_query_latency_ms": 5.7635000000000005
+      },
+      "queries": [
+        {
+          "query": "Why can't I add the bottom numbers when adding fractions?",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_like_denominators:like_denominator_addition",
+            "curriculum:fraction_equivalence",
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "recall_at_3": 0.0,
+          "reciprocal_rank_at_3": 0,
+          "top_1_relevant": false,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 8.096
+        },
+        {
+          "query": "I added the top and bottom numbers independently",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule",
+            "curriculum:fraction_basics:numerator_denominator_inversion",
+            "curriculum:fraction_equivalence"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 6.372
+        },
+        {
+          "query": "How do I find a common denominator for unlike fractions?",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators",
+            "curriculum:fraction_addition_like_denominators",
+            "curriculum:fraction_addition_unlike_denominators:cross_multiplication_addition_confusion"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 6.198
+        },
+        {
+          "query": "What is the denominator and numerator of a fraction?",
+          "relevant": [
+            "curriculum:fraction_basics",
+            "curriculum:fraction_basics:numerator_denominator_inversion"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators",
+            "curriculum:fraction_addition_like_denominators",
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "recall_at_3": 0.0,
+          "reciprocal_rank_at_3": 0,
+          "top_1_relevant": false,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 6.037
+        },
+        {
+          "query": "Does adding one to both parts create equivalent fractions?",
+          "relevant": [
+            "curriculum:fraction_equivalence:additive_equivalence"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_equivalence:additive_equivalence",
+            "curriculum:fraction_addition_unlike_denominators",
+            "curriculum:fraction_equivalence"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 6.286
+        },
+        {
+          "query": "Multiply numerator and denominator by the same factor",
+          "relevant": [
+            "curriculum:fraction_equivalence"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_equivalence",
+            "curriculum:fraction_basics:numerator_denominator_inversion",
+            "curriculum:fraction_equivalence:additive_equivalence"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.816
+        },
+        {
+          "query": "When adding fractions with the same denominator should I keep the denominator?",
+          "relevant": [
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_like_denominators",
+            "curriculum:fraction_addition_like_denominators:like_denominator_addition",
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.711
+        },
+        {
+          "query": "I understand common denominators but made an arithmetic calculation slip",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:calculation_slip"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators:calculation_slip",
+            "curriculum:fraction_addition_unlike_denominators",
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.654
+        },
+        {
+          "query": "I confuse cross multiplication with fraction addition",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:cross_multiplication_addition_confusion"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators:cross_multiplication_addition_confusion",
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule",
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.546
+        },
+        {
+          "query": "Equal slices parts of a whole denominator unit size",
+          "relevant": [
+            "curriculum:fraction_basics"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_basics",
+            "curriculum:fraction_addition_unlike_denominators",
+            "curriculum:fraction_basics:numerator_denominator_inversion"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.626
+        },
+        {
+          "query": "quantum quasar astrophysics",
+          "relevant": [],
+          "retrieved_document_ids": [],
+          "recall_at_3": null,
+          "reciprocal_rank_at_3": null,
+          "top_1_relevant": null,
+          "expected_abstention": true,
+          "abstained": true,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 3.958
+        },
+        {
+          "query": "banana orchard horticulture",
+          "relevant": [],
+          "retrieved_document_ids": [],
+          "recall_at_3": null,
+          "reciprocal_rank_at_3": null,
+          "top_1_relevant": null,
+          "expected_abstention": true,
+          "abstained": true,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 3.626
+        }
+      ]
+    },
+    "local": {
+      "summary": {
+        "recall_at_3": 0.85,
+        "mrr_at_3": 0.8,
+        "top_1_accuracy": 0.7,
+        "out_of_scope_abstention_rate": 1,
+        "repeat_determinism_rate": 1,
+        "citation_resolution_rate": 1,
+        "median_query_latency_ms": 4.946
+      },
+      "queries": [
+        {
+          "query": "Why can't I add the bottom numbers when adding fractions?",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_like_denominators:like_denominator_addition",
+            "curriculum:fraction_addition_like_denominators",
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "recall_at_3": 0.0,
+          "reciprocal_rank_at_3": 0,
+          "top_1_relevant": false,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.125
+        },
+        {
+          "query": "I added the top and bottom numbers independently",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule",
+            "curriculum:fraction_basics:numerator_denominator_inversion",
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.085
+        },
+        {
+          "query": "How do I find a common denominator for unlike fractions?",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators",
+            "curriculum:fraction_addition_like_denominators",
+            "curriculum:fraction_addition_like_denominators:like_denominator_addition"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.068
+        },
+        {
+          "query": "What is the denominator and numerator of a fraction?",
+          "relevant": [
+            "curriculum:fraction_basics",
+            "curriculum:fraction_basics:numerator_denominator_inversion"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators",
+            "curriculum:fraction_basics:numerator_denominator_inversion",
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "recall_at_3": 0.5,
+          "reciprocal_rank_at_3": 0.5,
+          "top_1_relevant": false,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.182
+        },
+        {
+          "query": "Does adding one to both parts create equivalent fractions?",
+          "relevant": [
+            "curriculum:fraction_equivalence:additive_equivalence"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_equivalence:additive_equivalence",
+            "curriculum:fraction_equivalence",
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.186
+        },
+        {
+          "query": "Multiply numerator and denominator by the same factor",
+          "relevant": [
+            "curriculum:fraction_equivalence"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_basics:numerator_denominator_inversion",
+            "curriculum:fraction_equivalence",
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 0.5,
+          "top_1_relevant": false,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 4.989
+        },
+        {
+          "query": "When adding fractions with the same denominator should I keep the denominator?",
+          "relevant": [
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_like_denominators",
+            "curriculum:fraction_addition_like_denominators:like_denominator_addition",
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 4.785
+        },
+        {
+          "query": "I understand common denominators but made an arithmetic calculation slip",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:calculation_slip"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators:calculation_slip",
+            "curriculum:fraction_addition_unlike_denominators",
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 4.664
+        },
+        {
+          "query": "I confuse cross multiplication with fraction addition",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:cross_multiplication_addition_confusion"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators:cross_multiplication_addition_confusion",
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule",
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 4.903
+        },
+        {
+          "query": "Equal slices parts of a whole denominator unit size",
+          "relevant": [
+            "curriculum:fraction_basics"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_basics",
+            "curriculum:fraction_basics:numerator_denominator_inversion",
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 4.892
+        },
+        {
+          "query": "quantum quasar astrophysics",
+          "relevant": [],
+          "retrieved_document_ids": [],
+          "recall_at_3": null,
+          "reciprocal_rank_at_3": null,
+          "top_1_relevant": null,
+          "expected_abstention": true,
+          "abstained": true,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 3.67
+        },
+        {
+          "query": "banana orchard horticulture",
+          "relevant": [],
+          "retrieved_document_ids": [],
+          "recall_at_3": null,
+          "reciprocal_rank_at_3": null,
+          "top_1_relevant": null,
+          "expected_abstention": true,
+          "abstained": true,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 3.444
+        }
+      ]
+    },
+    "global": {
+      "summary": {
+        "recall_at_3": 0.85,
+        "mrr_at_3": 0.8,
+        "top_1_accuracy": 0.7,
+        "out_of_scope_abstention_rate": 1,
+        "repeat_determinism_rate": 1,
+        "citation_resolution_rate": 1,
+        "median_query_latency_ms": 4.891
+      },
+      "queries": [
+        {
+          "query": "Why can't I add the bottom numbers when adding fractions?",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_like_denominators:like_denominator_addition",
+            "curriculum:fraction_addition_like_denominators",
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "recall_at_3": 0.0,
+          "reciprocal_rank_at_3": 0,
+          "top_1_relevant": false,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 4.91
+        },
+        {
+          "query": "I added the top and bottom numbers independently",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule",
+            "curriculum:fraction_basics:numerator_denominator_inversion",
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 4.868
+        },
+        {
+          "query": "How do I find a common denominator for unlike fractions?",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators",
+            "curriculum:fraction_addition_like_denominators",
+            "curriculum:fraction_addition_unlike_denominators:cross_multiplication_addition_confusion"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 4.872
+        },
+        {
+          "query": "What is the denominator and numerator of a fraction?",
+          "relevant": [
+            "curriculum:fraction_basics",
+            "curriculum:fraction_basics:numerator_denominator_inversion"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators",
+            "curriculum:fraction_basics:numerator_denominator_inversion",
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "recall_at_3": 0.5,
+          "reciprocal_rank_at_3": 0.5,
+          "top_1_relevant": false,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 4.602
+        },
+        {
+          "query": "Does adding one to both parts create equivalent fractions?",
+          "relevant": [
+            "curriculum:fraction_equivalence:additive_equivalence"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_equivalence:additive_equivalence",
+            "curriculum:fraction_equivalence",
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 4.84
+        },
+        {
+          "query": "Multiply numerator and denominator by the same factor",
+          "relevant": [
+            "curriculum:fraction_equivalence"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_basics:numerator_denominator_inversion",
+            "curriculum:fraction_equivalence",
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 0.5,
+          "top_1_relevant": false,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 4.957
+        },
+        {
+          "query": "When adding fractions with the same denominator should I keep the denominator?",
+          "relevant": [
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_like_denominators",
+            "curriculum:fraction_addition_like_denominators:like_denominator_addition",
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.037
+        },
+        {
+          "query": "I understand common denominators but made an arithmetic calculation slip",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:calculation_slip"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators:calculation_slip",
+            "curriculum:fraction_addition_unlike_denominators",
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.184
+        },
+        {
+          "query": "I confuse cross multiplication with fraction addition",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:cross_multiplication_addition_confusion"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators:cross_multiplication_addition_confusion",
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule",
+            "curriculum:fraction_equivalence"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.015
+        },
+        {
+          "query": "Equal slices parts of a whole denominator unit size",
+          "relevant": [
+            "curriculum:fraction_basics"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_basics",
+            "curriculum:fraction_basics:numerator_denominator_inversion",
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.134
+        },
+        {
+          "query": "quantum quasar astrophysics",
+          "relevant": [],
+          "retrieved_document_ids": [],
+          "recall_at_3": null,
+          "reciprocal_rank_at_3": null,
+          "top_1_relevant": null,
+          "expected_abstention": true,
+          "abstained": true,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 3.725
+        },
+        {
+          "query": "banana orchard horticulture",
+          "relevant": [],
+          "retrieved_document_ids": [],
+          "recall_at_3": null,
+          "reciprocal_rank_at_3": null,
+          "top_1_relevant": null,
+          "expected_abstention": true,
+          "abstained": true,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 3.761
+        }
+      ]
+    },
+    "hybrid": {
+      "summary": {
+        "recall_at_3": 0.85,
+        "mrr_at_3": 0.8,
+        "top_1_accuracy": 0.7,
+        "out_of_scope_abstention_rate": 1,
+        "repeat_determinism_rate": 1,
+        "citation_resolution_rate": 1,
+        "median_query_latency_ms": 5.1795
+      },
+      "queries": [
+        {
+          "query": "Why can't I add the bottom numbers when adding fractions?",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_like_denominators:like_denominator_addition",
+            "curriculum:fraction_addition_like_denominators",
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "recall_at_3": 0.0,
+          "reciprocal_rank_at_3": 0,
+          "top_1_relevant": false,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.031
+        },
+        {
+          "query": "I added the top and bottom numbers independently",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule",
+            "curriculum:fraction_basics:numerator_denominator_inversion",
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.151
+        },
+        {
+          "query": "How do I find a common denominator for unlike fractions?",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators",
+            "curriculum:fraction_addition_like_denominators",
+            "curriculum:fraction_addition_like_denominators:like_denominator_addition"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.269
+        },
+        {
+          "query": "What is the denominator and numerator of a fraction?",
+          "relevant": [
+            "curriculum:fraction_basics",
+            "curriculum:fraction_basics:numerator_denominator_inversion"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators",
+            "curriculum:fraction_basics:numerator_denominator_inversion",
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "recall_at_3": 0.5,
+          "reciprocal_rank_at_3": 0.5,
+          "top_1_relevant": false,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.112
+        },
+        {
+          "query": "Does adding one to both parts create equivalent fractions?",
+          "relevant": [
+            "curriculum:fraction_equivalence:additive_equivalence"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_equivalence:additive_equivalence",
+            "curriculum:fraction_equivalence",
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.33
+        },
+        {
+          "query": "Multiply numerator and denominator by the same factor",
+          "relevant": [
+            "curriculum:fraction_equivalence"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_basics:numerator_denominator_inversion",
+            "curriculum:fraction_equivalence",
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 0.5,
+          "top_1_relevant": false,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 4.862
+        },
+        {
+          "query": "When adding fractions with the same denominator should I keep the denominator?",
+          "relevant": [
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_like_denominators",
+            "curriculum:fraction_addition_like_denominators:like_denominator_addition",
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.223
+        },
+        {
+          "query": "I understand common denominators but made an arithmetic calculation slip",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:calculation_slip"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators:calculation_slip",
+            "curriculum:fraction_addition_unlike_denominators",
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.266
+        },
+        {
+          "query": "I confuse cross multiplication with fraction addition",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:cross_multiplication_addition_confusion"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators:cross_multiplication_addition_confusion",
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule",
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.208
+        },
+        {
+          "query": "Equal slices parts of a whole denominator unit size",
+          "relevant": [
+            "curriculum:fraction_basics"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_basics",
+            "curriculum:fraction_basics:numerator_denominator_inversion",
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.257
+        },
+        {
+          "query": "quantum quasar astrophysics",
+          "relevant": [],
+          "retrieved_document_ids": [],
+          "recall_at_3": null,
+          "reciprocal_rank_at_3": null,
+          "top_1_relevant": null,
+          "expected_abstention": true,
+          "abstained": true,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 3.939
+        },
+        {
+          "query": "banana orchard horticulture",
+          "relevant": [],
+          "retrieved_document_ids": [],
+          "recall_at_3": null,
+          "reciprocal_rank_at_3": null,
+          "top_1_relevant": null,
+          "expected_abstention": true,
+          "abstained": true,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 3.789
+        }
+      ]
+    },
+    "mix": {
+      "summary": {
+        "recall_at_3": 0.8,
+        "mrr_at_3": 0.8,
+        "top_1_accuracy": 0.8,
+        "out_of_scope_abstention_rate": 1,
+        "repeat_determinism_rate": 1,
+        "citation_resolution_rate": 1,
+        "median_query_latency_ms": 5.1085
+      },
+      "queries": [
+        {
+          "query": "Why can't I add the bottom numbers when adding fractions?",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_like_denominators:like_denominator_addition",
+            "curriculum:fraction_addition_like_denominators",
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "recall_at_3": 0.0,
+          "reciprocal_rank_at_3": 0,
+          "top_1_relevant": false,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.202
+        },
+        {
+          "query": "I added the top and bottom numbers independently",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule",
+            "curriculum:fraction_basics:numerator_denominator_inversion",
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.11
+        },
+        {
+          "query": "How do I find a common denominator for unlike fractions?",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators",
+            "curriculum:fraction_addition_like_denominators",
+            "curriculum:fraction_addition_like_denominators:like_denominator_addition"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.125
+        },
+        {
+          "query": "What is the denominator and numerator of a fraction?",
+          "relevant": [
+            "curriculum:fraction_basics",
+            "curriculum:fraction_basics:numerator_denominator_inversion"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators",
+            "curriculum:fraction_addition_like_denominators",
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "recall_at_3": 0.0,
+          "reciprocal_rank_at_3": 0,
+          "top_1_relevant": false,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 4.781
+        },
+        {
+          "query": "Does adding one to both parts create equivalent fractions?",
+          "relevant": [
+            "curriculum:fraction_equivalence:additive_equivalence"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_equivalence:additive_equivalence",
+            "curriculum:fraction_equivalence",
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.077
+        },
+        {
+          "query": "Multiply numerator and denominator by the same factor",
+          "relevant": [
+            "curriculum:fraction_equivalence"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_equivalence",
+            "curriculum:fraction_basics:numerator_denominator_inversion",
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.037
+        },
+        {
+          "query": "When adding fractions with the same denominator should I keep the denominator?",
+          "relevant": [
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_like_denominators",
+            "curriculum:fraction_addition_like_denominators:like_denominator_addition",
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.308
+        },
+        {
+          "query": "I understand common denominators but made an arithmetic calculation slip",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:calculation_slip"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators:calculation_slip",
+            "curriculum:fraction_addition_unlike_denominators",
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.107
+        },
+        {
+          "query": "I confuse cross multiplication with fraction addition",
+          "relevant": [
+            "curriculum:fraction_addition_unlike_denominators:cross_multiplication_addition_confusion"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_addition_unlike_denominators:cross_multiplication_addition_confusion",
+            "curriculum:fraction_addition_unlike_denominators:denominator_addition_rule",
+            "curriculum:fraction_addition_unlike_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.196
+        },
+        {
+          "query": "Equal slices parts of a whole denominator unit size",
+          "relevant": [
+            "curriculum:fraction_basics"
+          ],
+          "retrieved_document_ids": [
+            "curriculum:fraction_basics",
+            "curriculum:fraction_basics:numerator_denominator_inversion",
+            "curriculum:fraction_addition_like_denominators"
+          ],
+          "recall_at_3": 1.0,
+          "reciprocal_rank_at_3": 1.0,
+          "top_1_relevant": true,
+          "expected_abstention": false,
+          "abstained": false,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 5.202
+        },
+        {
+          "query": "quantum quasar astrophysics",
+          "relevant": [],
+          "retrieved_document_ids": [],
+          "recall_at_3": null,
+          "reciprocal_rank_at_3": null,
+          "top_1_relevant": null,
+          "expected_abstention": true,
+          "abstained": true,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 3.847
+        },
+        {
+          "query": "banana orchard horticulture",
+          "relevant": [],
+          "retrieved_document_ids": [],
+          "recall_at_3": null,
+          "reciprocal_rank_at_3": null,
+          "top_1_relevant": null,
+          "expected_abstention": true,
+          "abstained": true,
+          "repeat_identical": true,
+          "citations_resolve": true,
+          "latency_ms": 3.949
+        }
+      ]
+    }
+  },
+  "cases_sha256": "d2836c4a94710211d88bd039c32e57236049ee051d7c28ab347d9c870c4f8624"
+}

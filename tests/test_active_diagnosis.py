@@ -48,3 +48,18 @@ def test_active_diagnosis_selection():
         opt.targeted_misconception_id == "denominator_addition_rule"
         for opt in selected_item.options
     )
+
+
+def test_empty_item_bank_and_excluded_items_are_respected():
+    state = ConceptState(concept_id="c", concept_name="c", mastery_estimate=0)
+    assert ActiveDiagnosisProber(item_bank=[]).select_best_diagnostic_probe("c", state) is None
+    prober = ActiveDiagnosisProber()
+    state.concept_id = "fraction_addition_unlike_denominators"
+    assert prober.select_best_diagnostic_probe(state.concept_id, state, [item.item_id for item in FRACTION_DIAGNOSTIC_BANK]) is None
+
+
+def test_information_gain_is_bounded_by_prior_entropy_with_normalized_likelihoods():
+    state = ConceptState(concept_id="fraction_addition_unlike_denominators", concept_name="addition", mastery_estimate=0.5)
+    result = ActiveDiagnosisProber().select_best_diagnostic_probe(state.concept_id, state)
+    assert result is not None
+    assert 0 <= result[1] <= 1

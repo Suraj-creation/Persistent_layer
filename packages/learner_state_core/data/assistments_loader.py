@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone, timedelta
+
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 import pandas as pd
@@ -126,6 +128,7 @@ class FoundationalAssistLoader:
                     correctness=int(row.get("correct", 0)),
                     attempt_number=int(row.get("attempt_count", 1)),
                     hint_used=bool(row.get("hint_count", 0) > 0),
+                    timestamp=datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(seconds=int(row.name)),
                 )
             )
         return interactions

@@ -38,12 +38,14 @@ REQUIRED_COLUMNS = {
 }
 
 
+# Normalize text into a stable supervised input.
 def _clean_text(value: Any) -> str:
     if pd.isna(value):
         return ""
     return re.sub(r"\s+", " ", str(value)).strip()
 
 
+# Clean one part of a potentially missing category or misconception label.
 def _label_component(value: Any) -> str:
     cleaned = _clean_text(value)
     if cleaned.lower() in {"", "na", "n/a", "nan", "none", "null"}:
@@ -51,6 +53,7 @@ def _label_component(value: Any) -> str:
     return cleaned
 
 
+# Combine the question, chosen answer and explanation into one model input.
 def _model_input(question: Any, answer: Any, explanation: Any) -> str:
     return (
         f"Question: {_clean_text(question)}\n"
@@ -59,6 +62,7 @@ def _model_input(question: Any, answer: Any, explanation: Any) -> str:
     )
 
 
+# Fingerprint the exact dataset file used for a training run.
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as f:
@@ -67,13 +71,17 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+# Validate and clean the authorized labelled dataset before any fitting.
 def load_training_rows(path: Path) -> tuple[pd.DataFrame, dict[str, int]]:
+    # Stop when the expected training file is unavailable.
     if not path.is_file():
         raise FileNotFoundError(
             f"MAP training file not found: {path}. Place an authorized train.csv there after accepting the dataset rules."
         )
 
+    # Read the labelled competition data from disk.
     df = pd.read_csv(path)
+    # Check that the input contains all required text and target fields.
     missing = sorted(REQUIRED_COLUMNS.difference(df.columns))
     if missing:
         raise ValueError(
@@ -81,6 +89,7 @@ def load_training_rows(path: Path) -> tuple[pd.DataFrame, dict[str, int]]:
             + ", ".join(missing)
         )
 
+    # Assemble normalized model inputs and supervised target labels.
     rows = pd.DataFrame(
         {
             "question_id": df["QuestionId"].map(_clean_text),
@@ -97,19 +106,23 @@ def load_training_rows(path: Path) -> tuple[pd.DataFrame, dict[str, int]]:
     rows["target"] = rows["category"] + ":" + rows["misconception"]
     rows = rows[rows["question_id"].ne("") & rows["model_input"].str.strip().ne("")]
 
+    # Find repeated text that points to conflicting labels.
     labels_per_input = rows.groupby("model_input", sort=False)["target"].nunique()
     conflicting_inputs = set(labels_per_input[labels_per_input > 1].index)
     conflict_rows = int(rows["model_input"].isin(conflicting_inputs).sum())
+    # Exclude conflicting inputs from the supervised training set.
     if conflicting_inputs:
         rows = rows[~rows["model_input"].isin(conflicting_inputs)].copy()
 
     before_dedup = len(rows)
+    # Keep only one copy of each exact input and target pair.
     rows = rows.drop_duplicates(subset=["model_input", "target"], keep="first").reset_index(drop=True)
     exact_duplicate_rows = before_dedup - len(rows)
     rows["group_id"] = rows["model_input"].map(
         lambda text: hashlib.sha256(text.casefold().encode("utf-8")).hexdigest()
     )
 
+    # Require at least two target labels to fit a classifier.
     if rows["target"].nunique() < 2:
         raise ValueError("MAP training data must contain at least two distinct Category:Misconception labels.")
 
@@ -124,7 +137,9 @@ def load_training_rows(path: Path) -> tuple[pd.DataFrame, dict[str, int]]:
     return rows, audit
 
 
+# Define the proposed offline text classification pipeline.
 def make_model(max_features: int, max_iter: int, seed: int) -> Pipeline:
+    # Combine word-based and character-based TF-IDF features.
     features = FeatureUnion(
         [
             (
@@ -152,6 +167,7 @@ def make_model(max_features: int, max_iter: int, seed: int) -> Pipeline:
         ],
         transformer_weights={"word_tfidf": 1.0, "char_tfidf": 0.7},
     )
+    # Fit a class-balanced logistic classifier on those textual features.
     classifier = LogisticRegression(
         C=4.0,
         class_weight="balanced",
@@ -159,9 +175,11 @@ def make_model(max_features: int, max_iter: int, seed: int) -> Pipeline:
         random_state=seed,
         solver="lbfgs",
     )
+    # Keep feature extraction and classification in one reusable pipeline.
     return Pipeline([("features", features), ("classifier", classifier)])
 
 
+# Score the rank of the known label among the first three predictions.
 def map_at_3(y_true: np.ndarray, probabilities: np.ndarray, labels: np.ndarray) -> float:
     k = min(3, len(labels))
     top_indices = np.argsort(probabilities, axis=1)[:, ::-1][:, :k]
@@ -177,6 +195,7 @@ def map_at_3(y_true: np.ndarray, probabilities: np.ndarray, labels: np.ndarray) 
     return float(np.mean(scores)) if scores else 0.0
 
 
+# Measure calibration of the confidence assigned to the top label.
 def top_label_ece(y_true: np.ndarray, probabilities: np.ndarray, labels: np.ndarray, bins: int = 10) -> float:
     if len(y_true) == 0:
         return 0.0
@@ -194,6 +213,7 @@ def top_label_ece(y_true: np.ndarray, probabilities: np.ndarray, labels: np.ndar
     return float(ece)
 
 
+# Compare held-out predictions with labels and report metric coverage.
 def evaluate(
     y_true: np.ndarray,
     probabilities: np.ndarray,
@@ -254,6 +274,7 @@ def evaluate(
     }
 
 
+# Parse dataset, output and reproducibility options.
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--train-csv", type=Path, default=Path("data/raw/map/train.csv"))
@@ -268,6 +289,7 @@ def parse_args() -> argparse.Namespace:
         help="Confirm you have accepted the MAP competition rules and are using the data for non-commercial research/education.",
     )
     args = parser.parse_args()
+    # Require the explicit dataset authorization flag before loading training data.
     if not args.confirm_map_data_access_authorization:
         parser.error(
             "MAP data use is gated by its competition rules. Sign in and accept the rules yourself before using the dataset, then rerun with --confirm-map-data-access-authorization."
@@ -277,18 +299,23 @@ def parse_args() -> argparse.Namespace:
     return args
 
 
+# Run grouped evaluation, then fit and save the offline model when the data is present.
 def main() -> None:
     args = parse_args()
     rows, audit = load_training_rows(args.train_csv)
     if rows["group_id"].nunique() < args.folds:
         raise ValueError("There are fewer unique model inputs than requested validation folds.")
 
+    # Prepare the complete class order needed to compare different fold outputs.
     all_labels = np.asarray(sorted(rows["target"].unique()))
     label_positions = {label: idx for idx, label in enumerate(all_labels)}
+    # Allocate one prediction row per original sample for held-out evaluation.
     oof_probabilities = np.zeros((len(rows), len(all_labels)), dtype=np.float64)
     oof_label_seen_in_training = np.zeros(len(rows), dtype=bool)
+    # Keep duplicate normalized text groups together across validation folds.
     splitter = StratifiedGroupKFold(n_splits=args.folds, shuffle=True, random_state=args.seed)
 
+    # Train and evaluate a different model on each group-wise fold.
     for fold, (train_indices, validation_indices) in enumerate(
         splitter.split(rows["model_input"], rows["target"], groups=rows["group_id"])
     ):
@@ -298,13 +325,19 @@ def main() -> None:
             raise ValueError(f"Fold {fold} has fewer than two training labels; reduce --folds or revise the split.")
 
         validation_model = make_model(args.max_features, args.max_iter, args.seed)
+        # Learn text features and classifier weights from this fold's training rows only.
         validation_model.fit(train_rows["model_input"], train_rows["target"])
+        # Produce probability predictions for held-out rows.
         fold_probabilities = validation_model.predict_proba(validation_rows["model_input"])
+        # Map this model's class columns to the common target index.
         fold_labels = validation_model.named_steps["classifier"].classes_
         for fold_label_index, label in enumerate(fold_labels):
+            # Store each validation probability in the global evaluation matrix.
             oof_probabilities[validation_indices, label_positions[label]] = fold_probabilities[:, fold_label_index]
+        # Track whether each evaluated label was seen by that fold's fitted model.
         oof_label_seen_in_training[validation_indices] = validation_rows["target"].isin(fold_labels).to_numpy()
 
+    # Compute the offline metrics on the out-of-fold predictions.
     metrics = evaluate(
         rows["target"].to_numpy(),
         oof_probabilities,
@@ -313,10 +346,13 @@ def main() -> None:
         oof_label_seen_in_training,
     )
 
+    # Create a fresh pipeline for the final training artifact.
     final_model = make_model(args.max_features, args.max_iter, args.seed)
+    # Fit this final pipeline using all accepted rows.
     final_model.fit(rows["model_input"], rows["target"])
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
+    # Save the fitted pipeline only when the training process was actually run.
     joblib.dump(final_model, args.output_dir / "model.joblib")
     final_labels = final_model.named_steps["classifier"].classes_.tolist()
     (args.output_dir / "labels.json").write_text(
@@ -324,6 +360,7 @@ def main() -> None:
         encoding="utf-8",
     )
 
+    # Assemble the report with provenance and evaluation settings.
     report = {
         "task": "MAP Category:Misconception classification",
         "model": "word+character TF-IDF with class-balanced logistic regression",

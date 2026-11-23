@@ -1,0 +1,1214 @@
+{
+ "url": "http://127.0.0.1:64867/__visual_check?screen=setup",
+ "at": "2026-11-02T20:58:17.852Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 1,
+   "filled": [
+    0.24
+   ],
+   "motion": {
+    "elements": 0,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 900,
+     "screens": 1,
+     "words": 101,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 13,
+     "sections": 0,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Explore your understanding",
+     "words": 3,
+     "chars": 26,
+     "lines": 2,
+     "size": 32,
+     "vw": 2.2,
+     "font": "Segoe UI",
+     "weight": 700,
+     "tracking": -0.03,
+     "leading": 1.2,
+     "top": 418,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "Explore your understanding",
+     "words": 3,
+     "lines": 2,
+     "size": 32,
+     "font": "Segoe UI"
+    },
+    "headings": [
+     {
+      "text": "Explore your understanding",
+      "words": 3,
+      "chars": 26,
+      "lines": 2,
+      "size": 32,
+      "vw": 2.2,
+      "font": "Segoe UI",
+      "weight": 700,
+      "tracking": -0.031,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.18,
+      "top": 418,
+      "tag": "h1",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Segoe UI",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      13,
+      14,
+      15,
+      23,
+      32
+     ],
+     "sizeCount": 5,
+     "notLoaded": [],
+     "body": {
+      "font": "Segoe UI",
+      "size": 13,
+      "leading": 1.9,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 7.3
+     },
+     "measureChars": 55,
+     "max": {
+      "size": 32,
+      "vw": 2.2,
+      "font": "Segoe UI",
+      "text": "Explore your understanding"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.06,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f1f4f2",
+     "bodyBgHsl": {
+      "h": 140,
+      "s": 0.12,
+      "l": 0.95
+     },
+     "dark": false,
+     "sectionBgs": [],
+     "textColors": [
+      {
+       "color": "#465062",
+       "share": 0.67
+      },
+      {
+       "color": "#202b2b",
+       "share": 0.18
+      },
+      {
+       "color": "#52625e",
+       "share": 0.08
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.07
+      },
+      {
+       "color": "#086d60",
+       "share": 0
+      }
+     ],
+     "button": {
+      "bg": "#202b2b",
+      "hsl": {
+       "h": 180,
+       "s": 0.15,
+       "l": 0.15
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 7,
+     "inHero": 7,
+     "radius": 8,
+     "height": 48,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Skip to workspace",
+      "New assessment",
+      "Learning workspace",
+      "Conversations",
+      "Reports"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 2,
+     "hairlineSamples": [
+      "aside.sidebar 248px",
+      "header.topbar 1192px"
+     ],
+     "outlinedBoxes": 1,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 2,
+     "boxRadius": 8,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 0,
+     "fixed": true,
+     "height": 900,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": []
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 900,
+    "margins": {
+     "left": 16,
+     "right": 44
+    },
+    "sections": [],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Explore your understanding",
+      "size": 32,
+      "top": 418,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 356,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 2,
+    "bodySize": 13,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0.11,
+    "voidBox": {
+     "x": 240,
+     "y": 120,
+     "w": 1200,
+     "h": 120
+    }
+   },
+   "app": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "dark": false,
+    "ground": "#f1f4f2",
+    "sidebar": {
+     "w": 248,
+     "tag": "aside",
+     "links": 6,
+     "share": 0.17
+    },
+    "topbar": {
+     "h": 56
+    },
+    "canvas": {
+     "left": 36,
+     "right": 36
+    },
+    "hero": {
+     "text": "Explore your understanding",
+     "words": 3,
+     "chars": 26,
+     "lines": 2,
+     "size": 32,
+     "vw": 2.2,
+     "font": "Segoe UI",
+     "weight": 700,
+     "tracking": -0.03,
+     "leading": 1.2,
+     "top": 418,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 0,
+    "layout": {
+     "panels": 3,
+     "firstScreen": 3,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 3,
+     "radii": [
+      [
+       0,
+       2
+      ],
+      [
+       8,
+       1
+      ]
+     ],
+     "heavyBorders": 0,
+     "borderSamples": [],
+     "heavyShadows": 0,
+     "softShadows": 0,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 1,
+     "hues": 1,
+     "samples": [
+      {
+       "hue": 141,
+       "size": 44,
+       "radius": "8px"
+      }
+     ]
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 0,
+     "tabularShare": null,
+     "kpiMax": null
+    },
+    "rows": null,
+    "chartHues": 0,
+    "placeholders": [],
+    "type": {
+     "under13": 0,
+     "tiny": 0,
+     "tinySamples": [],
+     "sizes": [
+      13,
+      14,
+      15,
+      23,
+      32
+     ]
+    },
+    "title": {
+     "text": "Explore your understanding",
+     "size": 32,
+     "top": 418
+    },
+    "colourShare": 0
+   },
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 1,
+   "filled": [
+    0.47
+   ],
+   "motion": {
+    "elements": 0,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 1024,
+     "screens": 1,
+     "words": 96,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 13,
+     "sections": 0,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Explore your understanding",
+     "words": 3,
+     "chars": 26,
+     "lines": 1,
+     "size": 27,
+     "vw": 3.5,
+     "font": "Segoe UI",
+     "weight": 700,
+     "tracking": -0.04,
+     "leading": 1.2,
+     "top": 251,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "Explore your understanding",
+     "words": 3,
+     "lines": 1,
+     "size": 27,
+     "font": "Segoe UI"
+    },
+    "headings": [
+     {
+      "text": "Explore your understanding",
+      "words": 3,
+      "chars": 26,
+      "lines": 1,
+      "size": 27,
+      "vw": 3.5,
+      "font": "Segoe UI",
+      "weight": 700,
+      "tracking": -0.037,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.66,
+      "top": 251,
+      "tag": "h1",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Segoe UI",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      13,
+      14,
+      15,
+      21,
+      27
+     ],
+     "sizeCount": 5,
+     "notLoaded": [],
+     "body": {
+      "font": "Segoe UI",
+      "size": 13,
+      "leading": 1.9,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 7.3
+     },
+     "measureChars": 67,
+     "max": {
+      "size": 27,
+      "vw": 3.5,
+      "font": "Segoe UI",
+      "text": "Explore your understanding"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.06,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f1f4f2",
+     "bodyBgHsl": {
+      "h": 140,
+      "s": 0.12,
+      "l": 0.95
+     },
+     "dark": false,
+     "sectionBgs": [],
+     "textColors": [
+      {
+       "color": "#465062",
+       "share": 0.65
+      },
+      {
+       "color": "#202b2b",
+       "share": 0.18
+      },
+      {
+       "color": "#52625e",
+       "share": 0.09
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.08
+      },
+      {
+       "color": "#086d60",
+       "share": 0
+      }
+     ],
+     "button": {
+      "bg": "#202b2b",
+      "hsl": {
+       "h": 180,
+       "s": 0.15,
+       "l": 0.15
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 7,
+     "inHero": 7,
+     "radius": 8,
+     "height": 48,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Skip to workspace",
+      "New assessment",
+      "Learning workspace",
+      "Conversations",
+      "Reports"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 2,
+     "hairlineSamples": [
+      "aside.sidebar 216px",
+      "header.topbar 552px"
+     ],
+     "outlinedBoxes": 1,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 2,
+     "boxRadius": 8,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 0,
+     "fixed": true,
+     "height": 1024,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": []
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 1024,
+    "margins": {
+     "left": 16,
+     "right": 33
+    },
+    "sections": [],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Explore your understanding",
+      "size": 27,
+      "top": 251,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 240,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 2,
+    "bodySize": 13,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "dark": false,
+    "ground": "#f1f4f2",
+    "sidebar": {
+     "w": 216,
+     "tag": "aside",
+     "links": 6,
+     "share": 0.28
+    },
+    "topbar": {
+     "h": 56
+    },
+    "canvas": {
+     "left": 24,
+     "right": 25
+    },
+    "hero": {
+     "text": "Explore your understanding",
+     "words": 3,
+     "chars": 26,
+     "lines": 1,
+     "size": 27,
+     "vw": 3.5,
+     "font": "Segoe UI",
+     "weight": 700,
+     "tracking": -0.04,
+     "leading": 1.2,
+     "top": 251,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 0,
+    "layout": {
+     "panels": 3,
+     "firstScreen": 3,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 3,
+     "radii": [
+      [
+       0,
+       2
+      ],
+      [
+       8,
+       1
+      ]
+     ],
+     "heavyBorders": 0,
+     "borderSamples": [],
+     "heavyShadows": 0,
+     "softShadows": 0,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 0,
+     "hues": 0,
+     "samples": []
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 0,
+     "tabularShare": null,
+     "kpiMax": null
+    },
+    "rows": null,
+    "chartHues": 0,
+    "placeholders": [],
+    "type": {
+     "under13": 0,
+     "tiny": 0,
+     "tinySamples": [],
+     "sizes": [
+      13,
+      14,
+      15,
+      21,
+      27
+     ]
+    },
+    "title": {
+     "text": "Explore your understanding",
+     "size": 27,
+     "top": 251
+    },
+    "colourShare": 0.001
+   },
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 1,
+   "filled": [
+    0.64
+   ],
+   "motion": {
+    "elements": 0,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 844,
+     "screens": 1,
+     "words": 75,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 13,
+     "sections": 0,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Explore your understanding",
+     "words": 3,
+     "chars": 26,
+     "lines": 1,
+     "size": 24,
+     "vw": 6.2,
+     "font": "Segoe UI",
+     "weight": 700,
+     "tracking": -0.04,
+     "leading": 1.2,
+     "top": 236,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "Explore your understanding",
+     "words": 3,
+     "lines": 1,
+     "size": 24,
+     "font": "Segoe UI"
+    },
+    "headings": [
+     {
+      "text": "Explore your understanding",
+      "words": 3,
+      "chars": 26,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Segoe UI",
+      "weight": 700,
+      "tracking": -0.042,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 236,
+      "tag": "h1",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Segoe UI",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      12,
+      13,
+      14,
+      15,
+      18,
+      24
+     ],
+     "sizeCount": 6,
+     "notLoaded": [],
+     "body": {
+      "font": "Segoe UI",
+      "size": 14,
+      "leading": 1.5,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 7.3
+     },
+     "measureChars": 51,
+     "max": {
+      "size": 24,
+      "vw": 6.2,
+      "font": "Segoe UI",
+      "text": "Explore your understanding"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.08,
+     "smallText": 5
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f1f4f2",
+     "bodyBgHsl": {
+      "h": 140,
+      "s": 0.12,
+      "l": 0.95
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#ffffff",
+       "top": 332,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#465062",
+       "share": 0.59
+      },
+      {
+       "color": "#202b2b",
+       "share": 0.24
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.1
+      },
+      {
+       "color": "#52625e",
+       "share": 0.07
+      },
+      {
+       "color": "#086d60",
+       "share": 0
+      }
+     ],
+     "button": {
+      "bg": "#202b2b",
+      "hsl": {
+       "h": 180,
+       "s": 0.15,
+       "l": 0.15
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 7,
+     "inHero": 7,
+     "radius": 8,
+     "height": 44,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Skip to workspace",
+      "New assessment",
+      "Learning workspace",
+      "Conversations",
+      "Reports"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 2,
+     "hairlineSamples": [
+      "aside.sidebar 390px",
+      "header.topbar 390px"
+     ],
+     "outlinedBoxes": 1,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 2,
+     "boxRadius": 8,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 0,
+     "fixed": false,
+     "height": 92,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": []
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 844,
+    "margins": {
+     "left": 12,
+     "right": 12
+    },
+    "sections": [
+     {
+      "sel": "aside.sidebar",
+      "tag": "aside",
+      "top": 0,
+      "height": 176,
+      "words": 9,
+      "media": 0,
+      "middle": 4,
+      "heading": null,
+      "left": 12,
+      "right": 12,
+      "textLeft": 48,
+      "textRight": 22,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div#workspace-content.main-shell",
+      "tag": "div",
+      "top": 176,
+      "height": 575,
+      "words": 67,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Explore your understanding",
+       "size": 24,
+       "tag": "h1"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 16,
+      "fullBleed": false,
+      "footer": true,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Explore your understanding",
+      "size": 24,
+      "top": 236,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 16,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 2,
+    "bodySize": 14,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "dark": false,
+    "ground": "#f1f4f2",
+    "sidebar": null,
+    "topbar": null,
+    "canvas": {
+     "left": 12,
+     "right": 12
+    },
+    "hero": {
+     "text": "Explore your understanding",
+     "words": 3,
+     "chars": 26,
+     "lines": 1,
+     "size": 24,
+     "vw": 6.2,
+     "font": "Segoe UI",
+     "weight": 700,
+     "tracking": -0.04,
+     "leading": 1.2,
+     "top": 236,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 0,
+    "layout": {
+     "panels": 1,
+     "firstScreen": 1,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 1,
+     "radii": [
+      [
+       8,
+       1
+      ]
+     ],
+     "heavyBorders": 0,
+     "borderSamples": [],
+     "heavyShadows": 0,
+     "softShadows": 0,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 0,
+     "hues": 0,
+     "samples": []
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 0,
+     "tabularShare": null,
+     "kpiMax": null
+    },
+    "rows": null,
+    "chartHues": 0,
+    "placeholders": [],
+    "type": {
+     "under13": 0.22,
+     "tiny": 0,
+     "tinySamples": [],
+     "sizes": [
+      12,
+      13,
+      14,
+      15,
+      18,
+      24
+     ]
+    },
+    "title": {
+     "text": "Explore your understanding",
+     "size": 24,
+     "top": 236
+    },
+    "colourShare": 0
+   },
+   "consoleErrors": []
+  }
+ ],
+ "findings": [],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "C:\\Users\\Govin\\Desktop\\NLP\\docs\\verification\\product-transformation\\taste-setup\\desktop-fold.jpg",
+   "pages": [
+    "C:\\Users\\Govin\\Desktop\\NLP\\docs\\verification\\product-transformation\\taste-setup\\desktop-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "C:\\Users\\Govin\\Desktop\\NLP\\docs\\verification\\product-transformation\\taste-setup\\tablet-fold.jpg",
+   "pages": [
+    "C:\\Users\\Govin\\Desktop\\NLP\\docs\\verification\\product-transformation\\taste-setup\\tablet-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "C:\\Users\\Govin\\Desktop\\NLP\\docs\\verification\\product-transformation\\taste-setup\\mobile-fold.jpg",
+   "pages": [
+    "C:\\Users\\Govin\\Desktop\\NLP\\docs\\verification\\product-transformation\\taste-setup\\mobile-page-01.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

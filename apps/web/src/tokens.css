@@ -1,0 +1,42 @@
+/* Shared product roles. Component styles consume these instead of choosing colors. */
+:root {
+  --font-body: "Segoe UI", system-ui, -apple-system, sans-serif;
+  --text-xs: 13px;
+  --text-sm: 14px;
+  --text-base: 15px;
+  --text-lg: 17px;
+  --text-question: 23px;
+  --text-title: 32px;
+  --sidebar-width: 248px;
+  --inspector-width: 344px;
+  --content-max: 1600px;
+  --ink: #202b2b;
+  --muted: #52625e;
+  --canvas: #f1f4f2;
+  --surface: #ffffff;
+  --surface-quiet: #f7f9f7;
+  --surface-selected: #e4ebe7;
+  --line: #d5ded8;
+  --control-border: #9eafa5;
+  --accent: #086d60;
+  --accent-hover: #05564c;
+  --accent-soft: #e2eee7;
+  --positive: #256248;
+  --positive-soft: #e8f5ef;
+  --warning: #793d13;
+  --warning-soft: #fff5e7;
+  --negative: #932e2e;
+  --negative-soft: #fff0ed;
+  --focus: #148a78;
+  --radius-panel: 8px;
+  --radius-control: 6px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --control-height: 44px;
+  --motion-fast: 160ms;
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+}

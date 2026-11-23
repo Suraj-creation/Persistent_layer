@@ -29,6 +29,8 @@ export interface CognitiveEvidence {
   prompt_version: string;
   schema_version: string;
   review_status: string;
+  contradicted_hypothesis_ids?: string[];
+  retrieval_citation_ids?: string[];
 }
 
 export interface MisconceptionBelief {
@@ -109,6 +111,7 @@ export interface ChatMessage {
   diagnostic_probe?: DiagnosticItem;
   diagnostic_rationale?: string;
   selected_option?: string;
+  retrieval?: RetrievalResult;
 }
 
 export interface ChatResponse {
@@ -118,6 +121,7 @@ export interface ChatResponse {
   events: StateChangeEvent[];
   recommended_diagnostic_probe?: DiagnosticItem;
   diagnostic_rationale?: string;
+  retrieval?: RetrievalResult;
 }
 
 export interface ProcessInteractionResponse {
@@ -127,6 +131,7 @@ export interface ProcessInteractionResponse {
   events: StateChangeEvent[];
   recommended_diagnostic_probe?: DiagnosticItem;
   diagnostic_rationale?: string;
+  retrieval?: RetrievalResult;
 }
 
 export interface DatasetAuditReport {
@@ -199,6 +204,105 @@ export interface BenchmarkResults {
   };
 }
 
+export interface TrainingArtifactMetadata {
+  name: string;
+  path: string;
+  type: string;
+  available: boolean;
+  expected_sha256?: string | null;
+  actual_sha256?: string | null;
+  checksum_verified: boolean;
+}
+
+export interface TrainingMetricSummary {
+  mean_across_splits: number;
+  sd_across_splits: number;
+}
+
+export interface TrainingResearchSummary {
+  status: 'available' | 'partial';
+  purpose: string;
+  runtime_boundary: {
+    bkt_used_for_live_learner_state: boolean;
+    map_classifier_trained_or_used: boolean;
+    eedi_graph_used_for_runtime_retrieval: boolean;
+    live_state_method: string;
+    notice: string;
+  };
+  assistments_bkt: {
+    status: string;
+    dataset?: string;
+    source_url?: string;
+    task: string;
+    model: string;
+    target: string;
+    skill_filter?: string;
+    split_design?: string;
+    test_ratio?: number;
+    data_audit: Record<string, number | string>;
+    primary_split: Record<string, number>;
+    primary_split_metrics: Record<string, number>;
+    summary_across_splits: Array<{
+      name: string;
+      metrics: Record<string, TrainingMetricSummary>;
+    }>;
+    paired_bkt_minus_baselines: Record<string, Record<string, number>>;
+    seeds: Array<{
+      seed: number;
+      train_rows: number;
+      test_rows: number;
+      train_students: number;
+      test_students: number;
+      models: Record<string, Record<string, number>>;
+      artifacts: TrainingArtifactMetadata[];
+    }>;
+    skill_metrics: Record<string, Record<string, number>>;
+    skill_parameters: Array<{
+      skill: string;
+      by_seed: Record<string, Record<string, number>>;
+    }>;
+    artifacts: TrainingArtifactMetadata[];
+    data_sha256?: string;
+    trained_at_utc?: string;
+    evaluated_at_utc?: string;
+    versions: Record<string, string>;
+    limitations: string[];
+    calibration_note?: string;
+  };
+  eedi_graph: {
+    status: string;
+    dataset?: string;
+    revision?: string;
+    license?: string;
+    attribution?: string;
+    source_url?: string;
+    row_counts: Record<string, number>;
+    unique_counts: Record<string, number>;
+    weight_validation: Record<string, boolean | number>;
+    file_sha256: Record<string, string>;
+    data_role?: string;
+    runtime_integrated: boolean;
+    researcher_index?: { documents: number; edges: number; index_fingerprint: string };
+  };
+  map_classifier: {
+    status: string;
+    model_available: boolean;
+    reason: string;
+    method: string;
+    planned_validation: string;
+    planned_metrics: string[];
+    runtime_integrated: boolean;
+  };
+  other_dataset_status: Array<{
+    dataset: string;
+    status: string;
+    role: string;
+    limitation: string;
+  }>;
+  related_reports: string[];
+  warnings: string[];
+}
+
 export interface LearnerAuditReport {
   learner_id: string;
   report_markdown: string;
@@ -206,4 +310,26 @@ export interface LearnerAuditReport {
   total_evidence: number;
   total_audit_events: number;
   snapshot: LearnerStateSnapshot;
+}
+
+export interface RetrievalResult {
+  query: string;
+  mode: 'local' | 'global' | 'hybrid' | 'naive' | 'mix';
+  namespace: string;
+  index_version: string;
+  index_fingerprint: string;
+  context: string;
+  abstained: boolean;
+  truncated: boolean;
+  ranking_note: string;
+  relationships: Array<{ source_id: string; target_id: string; relation: string; weight: number }>;
+  hits: Array<{ citation_id: string; document_id: string; title: string; text: string; source: string; source_revision: string; license: string; entity_ids: string[]; score: number; channels: string[] }>;
+}
+
+export interface ConversationTurn {
+  interaction_id: string;
+  user: string;
+  selected_option?: string;
+  timestamp: string;
+  response: ChatResponse;
 }

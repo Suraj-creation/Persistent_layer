@@ -40,3 +40,20 @@ def test_classical_bkt_baseline():
     assert "ece" in eval_results
     assert 0.0 <= eval_results["accuracy"] <= 1.0
     assert 0.0 <= eval_results["ece"] <= 1.0
+
+
+def test_bkt_evaluation_rejects_missing_predictions_and_marks_single_class_auc_undefined():
+    from types import SimpleNamespace
+    baseline = ClassicalBKTBaseline()
+    baseline.model = SimpleNamespace(predict=lambda **kwargs: pd.DataFrame({'correct': [1, 1], 'correct_predictions': [0.7, 0.8]}))
+    assert baseline.evaluate(pd.DataFrame())['auc'] is None
+    baseline.model = SimpleNamespace(predict=lambda **kwargs: pd.DataFrame({'correct': [1, 1]}))
+    with pytest.raises(ValueError, match='correct_predictions'):
+        baseline.evaluate(pd.DataFrame())
+
+
+def test_ece_includes_probability_one_and_rejects_invalid_scores():
+    import numpy as np
+    assert ClassicalBKTBaseline.compute_ece(np.array([1, 0]), np.array([1.0, 0.0])) == 0
+    with pytest.raises(ValueError):
+        ClassicalBKTBaseline.compute_ece(np.array([1]), np.array([1.2]))

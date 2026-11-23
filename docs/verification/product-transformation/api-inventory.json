@@ -1,0 +1,322 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/v2/status",
+    "handler": "assessment_status",
+    "line": 88,
+    "parameters": {},
+    "response_model": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/conversations",
+    "handler": "list_conversations",
+    "line": 94,
+    "parameters": {
+      "learner_id": "str"
+    },
+    "response_model": null
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/conversations",
+    "handler": "create_assessment",
+    "line": 99,
+    "parameters": {
+      "req": "StartConversation"
+    },
+    "response_model": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/conversations/{conversation_id}",
+    "handler": "get_assessment",
+    "line": 104,
+    "parameters": {
+      "conversation_id": "str",
+      "learner_id": "str"
+    },
+    "response_model": null
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/conversations/{conversation_id}/answers",
+    "handler": "answer_assessment",
+    "line": 109,
+    "parameters": {
+      "conversation_id": "str",
+      "req": "AnswerRequest"
+    },
+    "response_model": null
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/conversations/{conversation_id}/next",
+    "handler": "next_assessment_question",
+    "line": 114,
+    "parameters": {
+      "conversation_id": "str",
+      "req": "IdentityRequest"
+    },
+    "response_model": null
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/conversations/{conversation_id}/finish",
+    "handler": "finish_assessment",
+    "line": 119,
+    "parameters": {
+      "conversation_id": "str",
+      "req": "IdentityRequest"
+    },
+    "response_model": null
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/conversations/{conversation_id}/sources",
+    "handler": "update_assessment_sources",
+    "line": 124,
+    "parameters": {
+      "conversation_id": "str",
+      "req": "SourceUpdateRequest"
+    },
+    "response_model": null
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/conversations/{conversation_id}/resume",
+    "handler": "resume_assessment",
+    "line": 129,
+    "parameters": {
+      "conversation_id": "str",
+      "req": "IdentityRequest"
+    },
+    "response_model": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/conversations/{conversation_id}/report",
+    "handler": "assessment_report",
+    "line": 134,
+    "parameters": {
+      "conversation_id": "str",
+      "learner_id": "str"
+    },
+    "response_model": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/observability/traces",
+    "handler": "list_nlp_executions",
+    "line": 139,
+    "parameters": {
+      "learner_id": "str",
+      "conversation_id": "str | None",
+      "question_id": "str | None",
+      "operation": "str | None",
+      "status": "str | None",
+      "limit": "int",
+      "before": "int | None",
+      "search": "str | None",
+      "stage": "str | None",
+      "error_only": "bool",
+      "started_after": "datetime | None",
+      "started_before": "datetime | None"
+    },
+    "response_model": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/observability/traces/{trace_id}",
+    "handler": "get_nlp_execution",
+    "line": 162,
+    "parameters": {
+      "trace_id": "str",
+      "learner_id": "str"
+    },
+    "response_model": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/observability/techniques",
+    "handler": "nlp_techniques",
+    "line": 170,
+    "parameters": {},
+    "response_model": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/observability/records",
+    "handler": "nlp_saved_records",
+    "line": 175,
+    "parameters": {
+      "learner_id": "str",
+      "conversation_id": "str | None",
+      "limit": "int",
+      "before": "int | None"
+    },
+    "response_model": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/observability/records/{turn_id}",
+    "handler": "nlp_saved_record",
+    "line": 182,
+    "parameters": {
+      "turn_id": "str",
+      "learner_id": "str"
+    },
+    "response_model": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/observability/research",
+    "handler": "nlp_research_status",
+    "line": 190,
+    "parameters": {
+      "learner_id": "str",
+      "run_id": "str | None"
+    },
+    "response_model": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/health",
+    "handler": "health_check",
+    "line": 228,
+    "parameters": {},
+    "response_model": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/taxonomy",
+    "handler": "get_curriculum_taxonomy",
+    "line": 245,
+    "parameters": {},
+    "response_model": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/audit",
+    "handler": "get_dataset_audits",
+    "line": 251,
+    "parameters": {},
+    "response_model": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/benchmarks",
+    "handler": "get_benchmark_results",
+    "line": 266,
+    "parameters": {},
+    "response_model": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/learners",
+    "handler": "list_learners",
+    "line": 278,
+    "parameters": {},
+    "response_model": null
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/interactions/process",
+    "handler": "process_student_interaction",
+    "line": 285,
+    "parameters": {
+      "req": "ProcessInteractionRequest"
+    },
+    "response_model": "LearningTurn"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/chat",
+    "handler": "chat_with_tutor",
+    "line": 290,
+    "parameters": {
+      "req": "ChatRequest"
+    },
+    "response_model": "LearningTurn"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/learners/{learner_id}/session",
+    "handler": "get_learner_session",
+    "line": 295,
+    "parameters": {
+      "learner_id": "str"
+    },
+    "response_model": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/learners/{learner_id}/traces",
+    "handler": "get_learner_traces",
+    "line": 306,
+    "parameters": {
+      "learner_id": "str"
+    },
+    "response_model": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/learners/{learner_id}/snapshots",
+    "handler": "get_learner_snapshots",
+    "line": 311,
+    "parameters": {
+      "learner_id": "str"
+    },
+    "response_model": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/learners/{learner_id}/state",
+    "handler": "get_learner_state",
+    "line": 316,
+    "parameters": {
+      "learner_id": "str"
+    },
+    "response_model": "LearnerStateSnapshot"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/learners/{learner_id}/evidence",
+    "handler": "get_learner_evidence_ledger",
+    "line": 323,
+    "parameters": {
+      "learner_id": "str"
+    },
+    "response_model": "List[CognitiveEvidence]"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/learners/{learner_id}/events",
+    "handler": "get_learner_state_events",
+    "line": 329,
+    "parameters": {
+      "learner_id": "str"
+    },
+    "response_model": "List[StateChangeEvent]"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/learners/{learner_id}/replay",
+    "handler": "replay_learner_trajectory",
+    "line": 357,
+    "parameters": {
+      "learner_id": "str"
+    },
+    "response_model": null
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/learners/{learner_id}/audit_report",
+    "handler": "get_learner_audit_report",
+    "line": 378,
+    "parameters": {
+      "learner_id": "str"
+    },
+    "response_model": null
+  }
+]

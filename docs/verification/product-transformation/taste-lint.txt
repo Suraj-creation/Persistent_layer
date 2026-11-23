@@ -1,0 +1,15 @@
+TASTESKILL · LINT   23 file(s)
+
+WARN
+  [shadow] Shadow. Elements at rest carry none; only real overlays (menu, dialog, sticky bar) may.  (4×)
+      apps/web/src/styles.css:31  box-shadow:
+      apps/web/src/styles.css:1599  box-shadow:
+      apps/web/src/workspace-theme.css:25  box-shadow:
+      apps/web/src/workspace-theme.css:143  box-shadow:
+  [mono] Monospace type. Only literal code may be monospace.  (1×)
+      apps/web/src/styles.css:1516  font-family: Consolas, monospace
+  [em-dash] Em-dash habit. Use a full stop or a comma; keep at most one or two on a page.  (1×)
+      (all files):0  17 em dashes
+
+RESULT: 0 FAIL, 6 WARN
+Interface fragments marked data-ui keep their own borders and shadows. Any other line that must keep a flagged pattern for a real reason can carry the comment taste-skill-ignore.

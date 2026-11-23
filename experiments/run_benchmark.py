@@ -190,7 +190,7 @@ def run_3_tier_benchmark(seed: int = 42) -> Dict[str, Any]:
     y_test_gt_misc = np.array(y_test_gt_misc)
     y_test_pred_misc = np.array(y_test_pred_misc)
 
-    auc_t3 = float(roc_auc_score(y_test_gt, y_test_pred_prob)) if len(np.unique(y_test_gt)) > 1 else 0.75
+    auc_t3 = float(roc_auc_score(y_test_gt, y_test_pred_prob)) if len(np.unique(y_test_gt)) > 1 else 0.50
     acc_t3 = float(accuracy_score(y_test_gt, (y_test_pred_prob >= 0.5).astype(int)))
     brier_t3 = float(brier_score_loss(y_test_gt, y_test_pred_prob))
     ece_t3 = float(compute_ece(y_test_gt, y_test_pred_prob))
@@ -220,8 +220,12 @@ def run_3_tier_benchmark(seed: int = 42) -> Dict[str, Any]:
             "The same response templates recur across synthetic learners, so the text classifier can memorize generator patterns.",
             "This run is for exercising software paths only and must not be cited as an empirical benchmark.",
             "Tier 3 is a hand-tuned state policy, not a trained model; its probabilities are not calibrated.",
+            "Tier 2 classifies the current response text, while Tiers 1 and 3 predict correctness from previous responses. These are different tasks, so deltas are descriptive fixture values only.",
         ],
         "sample_size": len(df),
+        "state_policy_version": state_engine.policy_version,
+        "extractor_version": "rule-based-baseline-v3",
+        "seed": seed,
         "tiers": {
             "tier_1_correctness_only_pybkt": {
                 "name": "Tier 1: Correctness-Only KT (pyBKT)",
@@ -248,7 +252,7 @@ def run_3_tier_benchmark(seed: int = 42) -> Dict[str, Any]:
     }
 
     # Save to JSON
-    output_dir = Path("experiments")
+    output_dir = PROJECT_ROOT / "experiments"
     output_dir.mkdir(exist_ok=True)
     results_path = output_dir / "benchmark_results.json"
     with open(results_path, "w", encoding="utf-8") as f:
@@ -278,7 +282,7 @@ def run_3_tier_benchmark(seed: int = 42) -> Dict[str, Any]:
 | **ECE (Calibration Error)** (lower is better) | {tier1_metrics['ece']:.4f} | {tier2_metrics['ece']:.4f} | **{tier3_metrics['ece']:.4f}** | -{tier1_metrics['ece'] - tier3_metrics['ece']:.4f} |
 | **Misconception Precision** | {tier1_metrics['misconception_precision']:.4f} | {tier2_metrics['misconception_precision']:.4f} | **{tier3_metrics['misconception_precision']:.4f}** | +{tier3_metrics['misconception_precision']:.4f} |
 | **Misconception Recall** | {tier1_metrics['misconception_recall']:.4f} | {tier2_metrics['misconception_recall']:.4f} | **{tier3_metrics['misconception_recall']:.4f}** | +{tier3_metrics['misconception_recall']:.4f} |
-| **Misconception Macro-F1** | {tier1_metrics['misconception_f1']:.4f} | {tier2_metrics['misconception_f1']:.4f} | **{tier3_metrics['misconception_f1']:.4f}** | **+{tier3_metrics['misconception_f1']:.4f}** |
+| **Binary Misconception F1** | {tier1_metrics['misconception_f1']:.4f} | {tier2_metrics['misconception_f1']:.4f} | **{tier3_metrics['misconception_f1']:.4f}** | **+{tier3_metrics['misconception_f1']:.4f}** |
 
 ---
 
@@ -286,6 +290,8 @@ def run_3_tier_benchmark(seed: int = 42) -> Dict[str, Any]:
 1. The tiers run against repeated, hand-authored response templates, so the split does not test generalization to new wording or real learners.
 2. Tier 3 AUC is **{tier3_metrics['auc']:.4f}** versus Tier 1's **{tier1_metrics['auc']:.4f}**; Tier 3 ECE is **{tier3_metrics['ece']:.4f}**. These fixture metrics do not show improved prediction or calibrated probabilities.
 3. Tier 1's zero misconception F1 is assigned because pyBKT emits no misconception class; it is not a measured head-to-head diagnosis result.
+4. Tier 2 uses the current explanation. Tiers 1 and 3 use previous responses. The tasks differ and their score deltas are not a fair model comparison.
+5. This run uses state policy `{state_engine.policy_version}`, rule extractor `rule-based-baseline-v3`, and seed `{seed}`.
 
 For the real-data training and evaluation plan, see `DATA_AND_TRAINING_PLAN.md`.
 """
